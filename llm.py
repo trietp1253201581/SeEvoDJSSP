@@ -18,7 +18,10 @@ class OpenRouterLLM:
                                           'gemini-2.5-pro-exp']):
         self.model = model
         self.url = "https://openrouter.ai/api/v1/chat/completions"
-        self.key = "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"
+        with open('./config.json', 'r') as f:
+            data = json.dump(f)
+        
+        self.key = data['OPEN_ROUTER_KEY']
         
     def get_model(self):
         if self.model == 'deepseek-v3-0324':
