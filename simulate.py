@@ -1,4 +1,5 @@
-from model import HDR
+from model import HDR, TerminalDictMaker
+import model
 from problem import Problem, Job, Machine
 import copy
 from typing import List
@@ -9,11 +10,20 @@ def _print_with_debug(msg: str, debug: bool=False):
         print(msg)
         
 class Simulator:
-    def __init__(self, hdr: HDR, problem: Problem):
+    def __init__(self, hdr: HDR, problem: Problem, pool_size: int):
         self.hdr = hdr
         self.problem = problem
+        self.waiting_pool: List[Job] = []
+        self.job_pool: List[Job] = []
+        self.pool_size = pool_size
         
-    def simulate(self, top_k: int, debug: bool=False):
+    def add_job_into_pool(self, new_job: Job):
+        if len(self.job_pool) < self.pool_size:
+            self.job_pool.append(new_job)
+            return True
+        return False
+        
+    def simulate(self, debug: bool=False, sleep_time: int|None=None):
         jobs = copy.deepcopy(self.problem.jobs)
         machines = copy.deepcopy(self.problem.machines)
         
@@ -24,7 +34,8 @@ class Simulator:
         for machine in machines:
             machine.clear()
             
-        job_pool: List[Job] = []
+        self.waiting_pool.clear()    
+        self.job_pool.clear()
         
         curr_time = 0
         
@@ -35,46 +46,54 @@ class Simulator:
             for job in jobs:
                 if job.time_arr <= curr_time:
                     if job.status != Job.Status.ARRIVED:
-                        if job.status == Job.Status.IN_POOL or job.status == Job.Status.READY:
+                        if job.status == Job.Status.WAITING or job.status == Job.Status.READY:
                             job.wait_time += job.status.value
                         continue
                     else: #job.status == Job.Status.ARRIVED:
-                        job_pool.append(job)
+                        self.waiting_pool.append(job)
                         job.wait_time = 0
-                        job.status = Job.Status.IN_POOL
-                        _print_with_debug(f'\tAdd job {job.id} into job pool!', debug)
+                        job.status = Job.Status.WAITING
+                        _print_with_debug(f'\tAdd job {job.id} into waiting pool!', debug)
             
-            # Current pool
-            pool_str = f'[{", ".join(str(job.id) for job in job_pool)}]'
-            _print_with_debug(f"\tJob pool: {pool_str}", debug)
+            # Current waiting pool
+            pool_str = f'[{", ".join(str(job.id) for job in self.waiting_pool)}]'
+            _print_with_debug(f"\tWaiting pool: {pool_str}", debug)
             
             # Calculate job priority from hdr and problem
-            for job in job_pool:
+            for job in self.waiting_pool:
                 next_opr = job.oprs[job.next_opr]
-                mean_p = 0
-                for m, p in next_opr.available_machines.items():
-                    mean_p += p
-                mean_p /= len(next_opr.available_machines)
+
+                terminal_maker = TerminalDictMaker()
+                terminal_maker.add_terminal(model.JAT, job.time_arr)
+                terminal_maker.add_terminal(model.JCD, job.get_next_deadline())
+                terminal_maker.add_terminal(model.JD, job.get_job_deadline())
+                terminal_maker.add_terminal(model.JNPT, next_opr.get_avg_process_time())
+                terminal_maker.add_terminal(model.JRO, job.get_remain_opr())
+                terminal_maker.add_terminal(model.JRT, job.get_remain_process_time())
+                terminal_maker.add_terminal(model.JTPT, job.get_total_process_time())
+                terminal_maker.add_terminal(model.JS, job.get_slack_time())
+                terminal_maker.add_terminal(model.JW, job.weight)
+                terminal_maker.add_terminal(model.JWT, job.wait_time)
+                terminal_maker.add_terminal(model.TNOW, curr_time)
+                terminal_maker.add_terminal(model.UTIL, sum(m.get_util() for m in machines)/len(machines))
+                
                 job.prior = self.hdr.execute(
-                    d=next_opr.deadline,
-                    ct=curr_time,
-                    p=mean_p,
-                    now_opr=job.next_opr-1,
-                    ta=job.time_arr,
-                    wt=job.wait_time
+                    **terminal_maker.var_dicts
                 )
             
-            job_pool.sort(key=lambda x: x.prior, reverse=True)
-            for i in range(min(len(job_pool), top_k) - 1):
-                job_pool[i].status = Job.Status.READY
-            job_str = f'{", ".join(str(j.id) for j in job_pool[:top_k])}'
-            _print_with_debug(f"\tTop {top_k} ready job: {job_str}", debug)
+            self.waiting_pool.sort(key=lambda x: x.prior, reverse=True)
+            num_jobs_ready = min(self.pool_size, len(self.waiting_pool))
+            self.job_pool = self.waiting_pool[:num_jobs_ready]
+            self.waiting_pool = self.waiting_pool[num_jobs_ready:]
+
+            job_str = f'[{", ".join(str(j.id) for j in self.job_pool)}]'
+            _print_with_debug(f"\tJob pool: {job_str}", debug)
                 
             # Assign ready job into machine if available, choose a machine that 
             # next operation process in least time
-            for i in range(min(len(job_pool), top_k)):
-                print(f"\tEvaluate job {job_pool[i].id}")
-                job = job_pool[i]
+            for i in range(len(self.job_pool)):
+                print(f"\tEvaluate job {self.job_pool[i].id}")
+                job = self.job_pool[i]
                 next_opr = job.oprs[job.next_opr]
                 best_machine = None
                 best_score = float('-inf')
@@ -93,12 +112,8 @@ class Simulator:
                 best_machine.curr_job = job
                 best_machine.finish_time = curr_time + next_opr.available_machines.get(best_machine)
                 job.status = Job.Status.PROCESSING
+                self.job_pool.remove(job)
                 _print_with_debug(f"\tAssign job {job.id} to machine {best_machine.id}", debug)
-                
-            # Clear processing job
-            for job in job_pool[:]:
-                if job.status == Job.Status.PROCESSING:
-                    job_pool.remove(job)
                 
             # Check status of each machine
             for machine in machines:

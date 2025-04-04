@@ -1,6 +1,47 @@
 from abc import ABC, abstractmethod
 import ast
 import re
+from typing import Dict
+
+class Terminal:
+    def __init__(self, label: str, description: str=""):
+        self.label = label
+        self.description = description
+        
+    def __str__(self):
+        return f'{self.label}({self.description})'
+    
+    def __eq__(self, value):
+        if not isinstance(value, Terminal):
+            return False
+        return self.label == value.label
+    
+JNPT = Terminal('jnpt', "Next operation processing time of a job")
+JTPT = Terminal('japt', "Total process time of job")
+JRT = Terminal('jrt', "Remaining time to complete job")
+JRO = Terminal('jro', "Remaining operations to complete job")
+JWT = Terminal('jwt', "Job waiting time in waiting pool and job pool")
+JAT = Terminal('jat', "Arriving time of a job")
+JD = Terminal('jd', "Job Deadline")
+JCD = Terminal('jcd', "Deadline of next operation of a job")
+JS = Terminal('js', "Slack time of a job")
+JW = Terminal('jw', "Weight of job")
+ML = Terminal('ml', "Time from process current job")
+MR = Terminal('mr', "Remaining time to completed current job")
+MREL = Terminal('mrel', "Relaxing Time of machine")
+MPR = Terminal('mpr', "Num of processed opr in this machine")
+MUTIL = Terminal('mutil', "Now utilization")
+TNOW = Terminal('tnow', "Current time of system")
+UTIL = Terminal('util', "Now utilization of system")
+AVGWT = Terminal('avgwt', "Average wait time of all jobs")
+
+class TerminalDictMaker:
+    def __init__(self):
+        self.var_dicts: Dict[str, any] = {}
+        
+    def add_terminal(self, new_terminal: Terminal, new_value: int|float):
+        self.var_dicts[new_terminal] = new_value
+        
 
 class HDR(ABC):
     @abstractmethod
