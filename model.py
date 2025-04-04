@@ -11,6 +11,9 @@ class Terminal:
     def __str__(self):
         return f'{self.label}({self.description})'
     
+    def __hash__(self):
+        return hash(self.label)
+    
     def __eq__(self, value):
         if not isinstance(value, Terminal):
             return False
@@ -35,12 +38,19 @@ TNOW = Terminal('tnow', "Current time of system")
 UTIL = Terminal('util', "Now utilization of system")
 AVGWT = Terminal('avgwt', "Average wait time of all jobs")
 
+AVAIABLE_TERMINALS = [
+    JNPT, JAT, JCD, JD, JRO, JRT, JS, JW, JWT, JTPT,
+    ML, MR, MREL, MPR, MUTIL, 
+    TNOW, UTIL, AVGWT
+]
+
 class TerminalDictMaker:
     def __init__(self):
         self.var_dicts: Dict[str, any] = {}
         
     def add_terminal(self, new_terminal: Terminal, new_value: int|float):
-        self.var_dicts[new_terminal] = new_value
+        self.var_dicts[new_terminal.label] = new_value
+        
         
 
 class HDR(ABC):
@@ -95,7 +105,6 @@ class CodeSegmentHDR(HDR):
         local_vars = {}
         exec(self.code, globals(), local_vars)
         func = local_vars['hdr']
-        
         try:
             return func(**kwargs)
         except TypeError as e:

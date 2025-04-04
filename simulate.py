@@ -71,11 +71,11 @@ class Simulator:
                 terminal_maker.add_terminal(model.JRO, job.get_remain_opr())
                 terminal_maker.add_terminal(model.JRT, job.get_remain_process_time())
                 terminal_maker.add_terminal(model.JTPT, job.get_total_process_time())
-                terminal_maker.add_terminal(model.JS, job.get_slack_time())
+                terminal_maker.add_terminal(model.JS, job.get_slack_time(curr_time))
                 terminal_maker.add_terminal(model.JW, job.weight)
                 terminal_maker.add_terminal(model.JWT, job.wait_time)
                 terminal_maker.add_terminal(model.TNOW, curr_time)
-                terminal_maker.add_terminal(model.UTIL, sum(m.get_util() for m in machines)/len(machines))
+                terminal_maker.add_terminal(model.UTIL, sum(m.get_util(curr_time) for m in machines)/len(machines))
                 
                 job.prior = self.hdr.execute(
                     **terminal_maker.var_dicts
@@ -83,8 +83,11 @@ class Simulator:
             
             self.waiting_pool.sort(key=lambda x: x.prior, reverse=True)
             num_jobs_ready = min(self.pool_size, len(self.waiting_pool))
-            self.job_pool = self.waiting_pool[:num_jobs_ready]
-            self.waiting_pool = self.waiting_pool[num_jobs_ready:]
+            for job in self.waiting_pool[:num_jobs_ready]:
+                if len(self.job_pool) < self.pool_size:
+                    self.job_pool.append(job)
+                    job.status = Job.Status.READY
+                    self.waiting_pool.remove(job)
 
             job_str = f'[{", ".join(str(j.id) for j in self.job_pool)}]'
             _print_with_debug(f"\tJob pool: {job_str}", debug)
@@ -112,9 +115,13 @@ class Simulator:
                 best_machine.curr_job = job
                 best_machine.finish_time = curr_time + next_opr.available_machines.get(best_machine)
                 job.status = Job.Status.PROCESSING
-                self.job_pool.remove(job)
-                _print_with_debug(f"\tAssign job {job.id} to machine {best_machine.id}", debug)
                 
+                _print_with_debug(f"\tAssign job {job.id} to machine {best_machine.id}", debug)
+            
+            for job in self.job_pool[:]:
+                if job.status == Job.Status.PROCESSING:
+                    self.job_pool.remove(job)
+            
             # Check status of each machine
             for machine in machines:
                 if machine.get_status() == Machine.Status.RELAX:
@@ -139,20 +146,19 @@ class Simulator:
             for machine in machines:
                 print(f"\t\tMachine {machine.id}: {machine.get_status()}")
             
-            curr_time += 1
+            curr_time += 1 
             if debug:
-                time.sleep(1)
+                time.sleep(1 if sleep_time is None else sleep_time)
         makespan = max(m.finish_time for m in machines)
         _print_with_debug(f"Done!, makespan = {makespan}", debug)
         return makespan        
                 
 def test():
-    hdr_code = """
-def hdr(p, d, ct, tax, now_opr, wt):
-    return p + ct/2 + wt
-    """
     from model import CodeSegmentHDR
-    hdr = CodeSegmentHDR(code=hdr_code)
+    with open('template.txt', 'r') as f:
+        lines = f.readlines()
+        code = "".join(lines)
+    hdr = CodeSegmentHDR(code=code)
     import random
     random.seed(42)
     
@@ -162,8 +168,8 @@ def hdr(p, d, ct, tax, now_opr, wt):
     for job in problem.jobs:
         print(str(job))
         
-    simulator = Simulator(hdr=hdr, problem=problem)
-    simulator.simulate(top_k=2, debug=True)
+    simulator = Simulator(hdr=hdr, problem=problem, pool_size=2)
+    simulator.simulate(debug=True)
     
 test()
                 
