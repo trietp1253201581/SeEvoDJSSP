@@ -12,32 +12,34 @@ class Operator(ABC):
         self.problem = problem
         
     @abstractmethod
-    def operate(self):
+    def operate(self, **kwargs):
         pass
     
-    def __call__(self, *args, **kwds):
-        return self.operate()
+    def __call__(self, **kwargs):
+        return self.operate(**kwargs)
         
 class InitOperator(Operator):
-    def __init__(self, problem, terminals: List[Terminal], init_size: int):
+    def __init__(self, problem, terminals: List[Terminal]):
         super().__init__(problem)
         self.terminals = terminals
-        self.init_size = init_size
         
     @abstractmethod
-    def operate(self) -> List[HDR]:
+    def operate(self, init_size: int) -> List[HDR]:
         pass
         
-    def __call__(self):
-        return self.operate()
+    def __call__(self, init_size: int):
+        return self.operate(init_size)
     
 class SingleInitOperator(InitOperator):
     def __init__(self, problem, terminals):
-        super().__init__(problem, terminals, 1)
+        super().__init__(problem, terminals)
         
     @abstractmethod
     def operate(self) -> HDR:
         pass
+    
+    def __call__(self):
+        return self.operate()
 
 
 class Individual:
@@ -78,8 +80,7 @@ class Population:
     def _generate_all(self, init_func: InitOperator,
                       fitness_func: FITNESS_FUNC_TYPE):
         self.inds.clear()
-        init_func.init_size = self.size
-        hdrs = init_func()
+        hdrs = init_func(self.size)
         
         for hdr in range(hdrs):
             new_ind = Individual(self.problem)
@@ -93,6 +94,17 @@ class Population:
             self._generate_each(init_func, fitness_func)
         else:
             self._generate_all(init_func, fitness_func)
+            
+class CrossoverOperator(Operator):
+    def __init__(self, problem):
+        super().__init__(problem)
+        
+    @abstractmethod
+    def operate(self, p1: Individual, p2: Individual) -> tuple[Individual, Individual]:
+        pass
+    
+    def __call__(self, p1: Individual, p2: Individual):
+        return self.operate(p1, p2)
     
 def _get_random_subtree_ast(node):
     candidates = []
