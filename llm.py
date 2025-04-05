@@ -66,7 +66,7 @@ class OpenRouterLLM:
             return 'google/gemini-2.5-pro-exp-03-25:free'
         return self.model_url
     
-    def get_response(self, prompt: str, timeout: float|tuple[float] = 100.0):
+    def get_response(self, prompt: str, timeout: float|tuple[float, float] = 100.0):
         headers = {
             "Authorization": f"Bearer {self._key}",
             "Content-Type": "application/json"
@@ -108,4 +108,3 @@ class OpenRouterLLM:
         
     def close(self):
         self._delete_key()
-    

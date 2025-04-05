@@ -1,11 +1,13 @@
 # SeEvoDJSSP
 ## Cấu trúc mã nguồn
-* [model.py](./model.py): Chứa các mô hình đại diện cho các HDR và Terminal, hiện đang dùng CodeSegmentHDR.
-* [problem.py](./problem.py): Chứa các mô hình về bài toán lập lịch động, bao gồm Operation, Job, Machine.
+* [model.py](./model.py): Chứa các mô hình đại diện cho các HDR  hiện đang dùng CodeSegmentHDR.
+* [problem.py](./problem.py): Chứa các mô hình về bài toán lập lịch động, bao gồm Operation, Job, Machine và các Terminal được sử dụng.
 * [simulate.py](./simulate.py): Chứa Simulator để chạy mô phỏng với 1 HDR và 1 Problem.
 * [llm.py](./llm.py): Chứa các lớp và phương thức để gọi và lấy response từ LLM (đang dùng LLM trên OpenRouter, có các bản free)
-* [evolution.py](./evolution.py): Chứa các lớp cơ bản của tính toán tiến hóa như Individual, Population, chứa các interface của các Operator như khởi tạo, lai ghép, đột biến.
-* [se_evo.py](./se_evo.py): Triển khai các toán tử Se-Evo, phần chính.
+* [base_evo.py](./base_evo.py): Chứa các lớp cơ bản của tính toán tiến hóa như Individual, Population và định
+nghĩa interface Operator (các toán tử tiến hóa được sử dụng)
+* [se_evo.py](./se_evo.py): Triển khai các toán tử Se-Evo, phần chính, chứa các LLM-Base Operator và các Reflection Operator.
+* [prompt_template.py](./prompt_template.py): Chứa các string template của các prompt được sử dụng trong các LLM-Base Operator
 * [template.txt](./template.txt): Chứa template của 1 code segment nên được trả về từ LLM.
 ## Chạy chương trình
 Do mã nguồn chưa hoàn thiện, nên có thể thử chạy 1 vài module trước.

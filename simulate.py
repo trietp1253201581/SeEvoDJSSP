@@ -1,6 +1,6 @@
-from model import HDR, TerminalDictMaker
-import model
-from problem import Problem, Job, Machine
+from model import HDR
+import problem
+from problem import Problem, Job, Machine, TerminalDictMaker
 import copy
 from typing import List
 import time
@@ -41,18 +41,18 @@ class Simulator:
         for job in jobs:
             next_opr = job.oprs[job.next_opr]
             terminal_maker = TerminalDictMaker()
-            terminal_maker.add_terminal(model.JAT, job.time_arr)
-            terminal_maker.add_terminal(model.JCD, job.get_next_deadline())
-            terminal_maker.add_terminal(model.JD, job.get_job_deadline())
-            terminal_maker.add_terminal(model.JNPT, next_opr.get_avg_process_time())
-            terminal_maker.add_terminal(model.JRO, job.get_remain_opr())
-            terminal_maker.add_terminal(model.JRT, job.get_remain_process_time())
-            terminal_maker.add_terminal(model.JTPT, job.get_total_process_time())
-            terminal_maker.add_terminal(model.JS, job.get_slack_time(curr_time))
-            terminal_maker.add_terminal(model.JW, job.weight)
-            terminal_maker.add_terminal(model.JWT, job.wait_time)
-            terminal_maker.add_terminal(model.TNOW, curr_time)
-            terminal_maker.add_terminal(model.UTIL, sum(m.get_util(curr_time) for m in machines) / len(machines))
+            terminal_maker.add_terminal(problem.JAT, job.time_arr)
+            terminal_maker.add_terminal(problem.JCD, job.get_next_deadline())
+            terminal_maker.add_terminal(problem.JD, job.get_job_deadline())
+            terminal_maker.add_terminal(problem.JNPT, next_opr.get_avg_process_time())
+            terminal_maker.add_terminal(problem.JRO, job.get_remain_opr())
+            terminal_maker.add_terminal(problem.JRT, job.get_remain_process_time())
+            terminal_maker.add_terminal(problem.JTPT, job.get_total_process_time())
+            terminal_maker.add_terminal(problem.JS, job.get_slack_time(curr_time))
+            terminal_maker.add_terminal(problem.JW, job.weight)
+            terminal_maker.add_terminal(problem.JWT, job.wait_time)
+            terminal_maker.add_terminal(problem.TNOW, curr_time)
+            terminal_maker.add_terminal(problem.UTIL, sum(m.get_util(curr_time) for m in machines) / len(machines))
             job.prior = self.hdr.execute(**terminal_maker.var_dicts)
 
     def _update_job_pool(self):
