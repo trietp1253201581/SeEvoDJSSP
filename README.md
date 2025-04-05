@@ -13,3 +13,13 @@ Do mã nguồn chưa hoàn thiện, nên có thể thử chạy 1 vài module tr
 Hiện cũng đã cung cấp 1 vài hàm test:
 1. Hàm test_simulator() trong [simulate.py](./simulate.py) để test bộ mô phỏng
 2. Hàm test_llm_init() và test_co_evo() trong [se_evo.py](./se_evo.py) để test 2 toán tử khởi tạo LLM và Co-Evo Reflection.
+
+**Lưu ý**:
+Khi chạy thử, cần lấy Provision key từ OpenRouter, có thể đăng nhập và lấy từ link [Provision key Open Router](https://openrouter.ai/settings/provisioning-keys).
+
+Sau đó, hãy thêm key này vào file `config.json` (tạo trong thư mục gốc dự án), thêm trường như sau:
+```json
+{
+    "OPEN_ROUTER_PROVISION_KEY": "Provison key lấy được"
+}
+```
