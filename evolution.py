@@ -1,11 +1,44 @@
-from model import HDR, CodeSegmentHDR
+from model import HDR, CodeSegmentHDR, Terminal
 from problem import Problem
 from typing import Callable, List
 import ast
 import random
+from abc import ABC, abstractmethod
 
-INIT_FUNC_TYPE = Callable[[Problem], HDR]
 FITNESS_FUNC_TYPE = Callable[[HDR, Problem], float]
+
+class Operator(ABC):
+    def __init__(self, problem: Problem):
+        self.problem = problem
+        
+    @abstractmethod
+    def operate(self):
+        pass
+    
+    def __call__(self, *args, **kwds):
+        return self.operate()
+        
+class InitOperator(Operator):
+    def __init__(self, problem, terminals: List[Terminal], init_size: int):
+        super().__init__(problem)
+        self.terminals = terminals
+        self.init_size = init_size
+        
+    @abstractmethod
+    def operate(self) -> List[HDR]:
+        pass
+        
+    def __call__(self):
+        return self.operate()
+    
+class SingleInitOperator(InitOperator):
+    def __init__(self, problem, terminals):
+        super().__init__(problem, terminals, 1)
+        
+    @abstractmethod
+    def operate(self) -> HDR:
+        pass
+
 
 class Individual:
     DEFAULT_FITNESS: float = -1e8
@@ -14,8 +47,8 @@ class Individual:
         self.fitness = Individual.DEFAULT_FITNESS
         self.problem = problem
         
-    def generate(self, init_func: INIT_FUNC_TYPE):
-        self.chromosome = init_func(self.problem)
+    def generate(self, init_func: SingleInitOperator):
+        self.chromosome = init_func()
         
     def decode(self):
         return str(self.chromosome)
@@ -33,14 +66,33 @@ class Population:
         self.problem = problem
         self.inds: List[Individual] = []
         
-    def generate(self, init_func: INIT_FUNC_TYPE, 
-                 fitness_func: FITNESS_FUNC_TYPE):
+    def _generate_each(self, init_func: SingleInitOperator,
+                       fitness_func: FITNESS_FUNC_TYPE):
         self.inds.clear()
         for _ in range(self.size):
             new_ind = Individual(self.problem)
             new_ind.generate(init_func)
             new_ind.cal_fitness(fitness_func)
             self.inds.append(new_ind)
+            
+    def _generate_all(self, init_func: InitOperator,
+                      fitness_func: FITNESS_FUNC_TYPE):
+        self.inds.clear()
+        init_func.init_size = self.size
+        hdrs = init_func()
+        
+        for hdr in range(hdrs):
+            new_ind = Individual(self.problem)
+            new_ind.chromosome = hdr
+            new_ind.cal_fitness(fitness_func)
+            self.inds.append(new_ind)
+        
+    def generate(self, init_func: InitOperator, 
+                 fitness_func: FITNESS_FUNC_TYPE):
+        if isinstance(init_func, SingleInitOperator):
+            self._generate_each(init_func, fitness_func)
+        else:
+            self._generate_all(init_func, fitness_func)
     
 def _get_random_subtree_ast(node):
     candidates = []

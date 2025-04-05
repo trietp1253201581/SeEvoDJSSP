@@ -153,12 +153,12 @@ class Simulator:
         _print_with_debug(f"Done!, makespan = {makespan}", debug)
         return makespan        
                 
-def test():
+def test_simulator():
     from model import CodeSegmentHDR
-    with open('template.txt', 'r') as f:
-        lines = f.readlines()
-        code = "".join(lines)
-    hdr = CodeSegmentHDR(code=code)
+
+    hdr = CodeSegmentHDR()
+    hdr.load('temp_code/hdr_5.py')
+    print(hdr.code)
     import random
     random.seed(42)
     
@@ -171,7 +171,7 @@ def test():
     simulator = Simulator(hdr=hdr, problem=problem, pool_size=2)
     simulator.simulate(debug=True)
     
-test()
+test_simulator()
                 
             
                         

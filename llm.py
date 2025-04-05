@@ -14,9 +14,11 @@ class BadResponseException(Exception):
         self.msg = msg
 
 class OpenRouterLLM:
-    def __init__(self, model: str|Literal['deepseek-v3-0324', 'deepseek-r1-zero',
-                                          'gemini-2.5-pro-exp']):
+    def __init__(self, brand: str, model: str, free: bool=True):
+        self.brand = brand
         self.model = model
+        self.free = free
+        self.model_url = self._make_model_url()
         self.url = "https://openrouter.ai/api/v1/chat/completions"
         self.key_url = "https://openrouter.ai/api/v1/keys"
         with open('./config.json', 'r') as f:
@@ -28,6 +30,9 @@ class OpenRouterLLM:
         self._key_hash = None
         
         self._create_key()
+        
+    def _make_model_url(self) -> str:
+        return self.brand + "/" + self.model + (":free" if self.free else "")
         
     def _create_key(self):
         headers={
@@ -54,13 +59,13 @@ class OpenRouterLLM:
         )
         
     def get_model(self):
-        if self.model == 'deepseek-v3-0324':
+        if self.model_url == 'deepseek-v3-0324':
             return 'deepseek/deepseek-chat-v3-0324:free'
-        if self.model == 'deepseek-r1-zero':
+        if self.model_url == 'deepseek-r1-zero':
             return 'deepseek/deepseek-r1-zero:free'
-        if self.model == 'gemini-2.5-pro-exp':
+        if self.model_url == 'gemini-2.5-pro-exp':
             return 'google/gemini-2.5-pro-exp-03-25:free'
-        return self.model
+        return self.model_url
     
     def get_response(self, prompt: str, timeout: float|tuple[float] = 100.0):
         headers = {
@@ -76,21 +81,22 @@ class OpenRouterLLM:
                 }
             ]
         })
-        print(data)
         
         try:
-            print("Sending request...")
             response = requests.post(url=self.url, headers=headers, data=data, timeout=timeout)
             response.raise_for_status()  # Kiểm tra lỗi HTTP (4xx, 5xx)
-            print("Status code:", response.status_code)
+            
+            if 'choices' not in response.json():
+                raise BadResponseException()
+            if 'error' in response.json():
+                raise BadAPIException(msg=response.json()['error']['message'])
             return response.json()['choices'][0]['message']['content']
         except requests.Timeout:
             raise BadAPIException("Timeout Request!")
         except requests.RequestException as e:
             raise BadAPIException(str(e))
         
-    @staticmethod
-    def extract_repsonse(response: str) -> dict:
+    def extract_repsonse(self, response: str) -> dict:
         m = re.search(r'(json)?(?P<obj>[^\`]+)', response)
         if m is not None:
             json_str = m.group('obj')

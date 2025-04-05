@@ -73,6 +73,15 @@ class CodeSegmentHDR(HDR):
         self.code = code
         self._extract_func(code)
         
+    def save(self, file_path: str):
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(self.code.strip() + "\n")
+            
+    def load(self, file_path: str):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            self.code = f.read()
+            
+        
     def _extract_func(self, code: str|None):
         if code is None:
             self.func_name = None
