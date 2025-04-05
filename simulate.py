@@ -159,8 +159,6 @@ def test_simulator():
         
     simulator = Simulator(hdr=hdr, problem=problem, pool_size=2)
     simulator.simulate(debug=True)
-    
-test_simulator()
                 
             
                         

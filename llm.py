@@ -46,7 +46,6 @@ class OpenRouterLLM:
         }
         response = requests.post(url=f'{self.key_url}', headers=headers, json=json)
         self._key = response.json()['key']
-        print(self._key)
         self._key_hash = response.json()['data']['hash']
     
     def _delete_key(self):
