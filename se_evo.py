@@ -1,12 +1,12 @@
-from problem import Problem, Terminal, AVAIABLE_TERMINALS
 from model import CodeSegmentHDR
-from typing import List, Dict
+from typing import List
 from llm import OpenRouterLLM
-from basic_evo import Individual, Population, Operator
-import json
+from basic_evo import Individual, Population, Operator, validate
+from abc import abstractmethod
+import copy
+import random
+from problem import Problem
 from simulate import Simulator
-from abc import ABC, abstractmethod
-import prompt_template as pt
 
 class MissingTemplateException(Exception):
     def __init__(self, msg: str):
@@ -244,3 +244,145 @@ class LLMMutationOperator(LLMBaseOperator):
     
     def __call__(self, p: Individual, reflection: str) -> Individual:
         return super().__call__(p=p, reflection=reflection)
+    
+class RandomSelectOperator(Operator):
+    def __init__(self, problem, random_seed: int=0):
+        super().__init__(problem)
+        self.random_seed=random_seed
+        
+    def __call__(self, population: Population, sub_size: int) -> Population:
+        if sub_size > population.size:
+            return copy.deepcopy(population)
+        
+        random.seed(self.random_seed)
+        
+        sub_pop = Population(size=sub_size, problem=population.problem)
+        sub_pop.inds = random.sample(population.inds, k=sub_size)
+        return sub_pop
+    
+class TopKElitismReplaceOperator(Operator):
+    def __init__(self, problem, k: int):
+        super().__init__(problem)
+        self.k = k
+        
+    def __call__(self, old_pop: Population, new_pop: Population, max_size: int) -> Population:
+        sorted_inds = sorted(old_pop.inds, key=lambda x: x.fitness, reverse=True)
+        elites = sorted_inds[:self.k]
+        num_random = max_size - self.k
+        remaining_inds = sorted_inds[self.k:] + new_pop.inds
+        if num_random > 0:
+            choosen = random.choices(remaining_inds, k=num_random)
+        else:
+            choosen = []
+            
+        inds = elites + choosen
+        pop = Population(size=max_size, problem=old_pop.problem)
+        pop.inds = inds
+        return pop
+        
+def makespan_fitness_func(sol: CodeSegmentHDR, problem: Problem):
+    simulator = Simulator(hdr=sol, problem=problem, pool_size=3)
+    makespan = simulator.simulate(debug=False)
+    return -makespan
+
+def se_evo(
+    max_fe: int,
+    problem: Problem,
+    llm_init_func: LLMInitOperator,
+    co_evo_func: CoEvoOperator,
+    self_evo_func: SelfEvoOperator,
+    collective_func: CollectiveRefOperator,
+    llm_crossover_func: LLMCrossoverOperator,
+    llm_mutation_func: LLMMutationOperator,
+    subset_selector: RandomSelectOperator,
+    replace_func: TopKElitismReplaceOperator,
+    init_size: int,
+    pool_size: int,
+    pc: float = 0.8,
+    pm: float = 0.1,
+):
+    # 1. Khởi tạo quần thể ban đầu
+    P: Population = llm_init_func(init_size=init_size,
+                                  func_template=get_template("hdr_template.py"))
+    for ind in P.inds:
+        ind.cal_fitness(makespan_fitness_func)
+    fe = len(P.inds)
+
+    # Vòng lặp chính
+    while fe < max_fe:
+        P = validate(P)
+        # 2. Chọn tập con S_p
+        S_p: Population = subset_selector(P, pool_size)
+
+        # 3. Co‑Evolution: chọn 2 cá thể ngẫu nhiên, reflect toàn bộ S_p
+        ind1, ind2 = random.sample(S_p.inds, 2)
+        R, S_r_inds = co_evo_func(inds=S_p.inds, ind1=ind1, ind2=ind2)
+        S_r = Population(size=len(S_r_inds), problem=problem)
+        S_r.inds = S_r_inds
+
+        # 4. Crossover S_p với S_r → P_inter
+        P_inter = Population(size=len(S_p.inds), problem=problem)
+        inter_inds = []
+        for a, b in zip(S_p.inds, S_r.inds):
+            if random.random() < pc:
+                off1, off2 = llm_crossover_func(p1=a, p2=b)
+                inter_inds.extend([off1, off2])
+            else:
+                inter_inds.extend([copy.deepcopy(a), copy.deepcopy(b)])
+        inter_inds = inter_inds[:len(S_p.inds)]
+        P_inter.inds = inter_inds
+
+        # 5. Evaluate P_inter
+        for ind in P_inter.inds:
+            ind.cal_fitness(makespan_fitness_func)
+        fe += len(P_inter.inds)
+
+        # 6. Self‑Evolution → RM, I_rm
+        RM, I_rm_inds = self_evo_func(
+            inds_before=S_p.inds,
+            inds_after=P_inter.inds,
+            co_evo_reflection=R
+        )
+
+        # 7. Crossover I_rm với P_inter → P_self
+        P_self = Population(size=len(I_rm_inds), problem=problem)
+        self_inds = []
+        for a, b in zip(I_rm_inds, P_inter.inds):
+            if random.random() < pc:
+                off1, off2 = llm_crossover_func(p1=a, p2=b)
+                self_inds.extend([off1, off2])
+            else:
+                self_inds.extend([copy.deepcopy(a), copy.deepcopy(b)])
+        self_inds = self_inds[:len(I_rm_inds)]
+        P_self.inds = self_inds
+
+        # 8. Evaluate P_self
+        for ind in P_self.inds:
+            ind.cal_fitness(makespan_fitness_func)
+        fe += len(P_self.inds)
+
+        # 9. Collective Reflection → MR
+        MR = collective_func(reflections=[R] + RM)
+
+        # 10. Mutation guided by MR → P_new
+        P_new = Population(size=len(P_self.inds), problem=problem)
+        new_inds = []
+        for ind in P_self.inds:
+            if random.random() < pm:
+                mutated = llm_mutation_func(p=ind, reflection=MR)
+                new_inds.append(mutated)
+            else:
+                new_inds.append(copy.deepcopy(ind))
+        P_new.inds = new_inds
+
+        # 11. Evaluate P_new
+        for ind in P_new.inds:
+            ind.cal_fitness(makespan_fitness_func)
+        fe += len(P_new.inds)
+
+        # 12. Cập nhật quần thể với elitism + random replacement
+        P = replace_func(old_pop=P, new_pop=P_new, max_size=P.size)
+
+    # Kết thúc: trả về best individual
+    best = min(P.inds, key=lambda ind: ind.fitness)
+    return best

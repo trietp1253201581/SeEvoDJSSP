@@ -136,7 +136,7 @@ class Simulator:
 
             curr_time += 1
             if debug:
-                time.sleep(1 if sleep_time is None else sleep_time)
+                time.sleep(0.1 if sleep_time is None else sleep_time)
 
         makespan = max(m.finish_time for m in machines)
         _print_with_debug(f"Done!, makespan = {makespan}", debug)

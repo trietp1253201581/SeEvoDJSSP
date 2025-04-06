@@ -7,6 +7,14 @@ class HDR(ABC):
     def execute(self, **kwargs) -> any:
         pass
     
+    @abstractmethod
+    def is_valid(self) -> bool:
+        pass
+    
+    @abstractmethod
+    def is_evaluatable(self) -> bool:
+        pass
+    
 class InvalidHDRException(Exception):
     def __init__(self, msg: str):
         super().__init__()
@@ -29,6 +37,14 @@ class CodeSegmentHDR(HDR):
     def load(self, file_path: str):
         with open(file_path, 'r', encoding='utf-8') as f:
             self.code = f.read()
+            
+    def is_valid(self):
+        try:
+            self._extract_func(self.code)
+            return True
+        except InvalidHDRException as e:
+            print(e.msg) 
+            return False
             
         
     def _extract_func(self, code: str|None):
@@ -58,6 +74,16 @@ class CodeSegmentHDR(HDR):
     def from_ast(self, ast_rule: ast.AST):
         self.code = ast.unparse(ast_rule)
         self._extract_func(self.code)
+        
+    def is_evaluatable(self):
+        default_kwargs = {p['name']: 1.0 for p in self.params or []}
+        try:
+            _ = self.execute(**default_kwargs)
+            return True
+        except InvalidKwargsException as e:
+            # Nếu ném bất kỳ ngoại lệ nào, coi là invalid
+            print(e.msg)
+            return False
         
     def execute(self, **kwargs):
         local_vars = {}
