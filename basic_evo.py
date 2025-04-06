@@ -34,8 +34,3 @@ class Population:
         self.size = size
         self.problem = problem
         self.inds: List[Individual] = []
-
-        
-    
-
-    

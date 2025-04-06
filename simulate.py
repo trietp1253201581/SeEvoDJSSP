@@ -140,26 +140,4 @@ class Simulator:
 
         makespan = max(m.finish_time for m in machines)
         _print_with_debug(f"Done!, makespan = {makespan}", debug)
-        return makespan
-                
-def test_simulator():
-    from model import CodeSegmentHDR
-
-    hdr = CodeSegmentHDR()
-    hdr.load('co_reflected/hdr_1.py')
-    print(hdr.code)
-    import random
-    random.seed(42)
-    
-    problem = Problem()
-    problem.random_generate(num_jobs=5, max_oprs_each_job=3, num_machines=2, max_arr_time=16)
-    
-    for job in problem.jobs:
-        print(str(job))
-        
-    simulator = Simulator(hdr=hdr, problem=problem, pool_size=2)
-    simulator.simulate(debug=True)
-                
-            
-                        
-                        
+        return makespan 

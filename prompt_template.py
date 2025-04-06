@@ -158,3 +158,26 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
     "reflection": "<your summary reflection>"
 }}
 '''  
+
+MUTATION_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
+Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
+
+In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
+Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
+And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
+
+Now, we have a HDR and a reflection guide to improve these HDRs effectiveness.
+The reflection is: {reflection}.
+The HDR is 
+-----
+{hdr}
+-----
+
+We need to rephrase this HDR by adjusting that HDR part under the guidance of reflection.
+
+Your response MUST ONLY include the rephrased HDR in following JSON format with no additional text.
+HDR must be returned as a string with newline characters (\\n) properly escaped.
+{{
+    "rephrased_hdr": "<hdr>"
+}}
+'''  
