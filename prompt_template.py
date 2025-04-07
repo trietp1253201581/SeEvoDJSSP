@@ -5,7 +5,8 @@ In this problem, job (with its operation) is {job_str}, machine is {machine_str}
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
-We need to generate an init sets of {init_size} HDRs to sort incoming job. Each HDR is a code segment describe a python function with template:
+We need to generate an init sets of {init_size} HDRs to sort incoming job. 
+Each HDR is a code segment describe a python function with template:
 
 {func_template}
 
@@ -21,10 +22,14 @@ def hdr(...):
         return jw
     return jcd
 
-. Note that the return value should be not to large.
+
+Note that the return value should be not to large, and each HDR must return a float value.
+**PRIORITIZE HDR DIVERSITY**:
+Your HDR should be simple and diversity, random, so that other operators can improve more later (but still have some not so simple HDRs for diversity).
 
 Your response MUST ONLY include the init HDRs sets in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
+Each HDR should be diverse and try different logic or structure compared to others. Avoid generating HDRs that are too similar. Focus on creativity and variety in logic.
 {{
     "init_inds": [
         {{"code": "<hdr_1>"}},
@@ -61,6 +66,8 @@ Note that reflection should not contain information about comparing 2 HDRs, but 
 After that, we need to apply this reflection to each HDR in a set, to improve HDR effectiveness. The HDRs set is
 {hdr_set}
 
+When applying the reflection, try to change the logic in meaningful ways. Avoid copying or slightly modifying HDRs. The goal is to evolve and diversify HDRs while improving their effectiveness.
+
 Your response MUST ONLY include the reflection and the list of reflected HDR in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
@@ -94,6 +101,7 @@ HDR2
 -------
 
 We need to recombine 2 above parent HDRs to create 2 new children HDRs just use what is already in the 2 parent HDRs.
+When recombining, mix logic from both parents in creative ways. Do not just concatenate or randomly select. Make sure each new HDR is syntactically correct and brings new logic structure that still makes sense.
 
 Your response MUST ONLY include the 2 recombined HDRs in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
@@ -127,6 +135,8 @@ We need to compare each hdr_before[i] with hdr_after[i] to see the effect of app
 If the change is good (ie makespan of hdr_after[i] is smaller than makespan of hdr_before[i]), the reflection will highlight the change. 
 If the change is bad, the reflection will figure out why the change is bad and will be used to avoid similar mistakes.
 
+Reflections should be actionable and specific. Do not just state generic observations. Make clear what logic worked and what failed. Focus on patterns that lead to better makespan.
+
 Your response MUST ONLY include the reflected HDR with reflection in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
@@ -152,6 +162,8 @@ Now, we have the sets of reflections generated to improve effectiveness of HDRs.
 
 We need to summary these reflections into AN UNIQUE reflection to describe the suggestion to improve HDRs.
 
+Your summary reflection should be short but insightful. Combine common successful logic patterns, and avoid repeating similar ideas. Avoid general phrases like "improve efficiency"—be specific.
+
 Your response MUST ONLY include the summary reflection in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
@@ -174,6 +186,8 @@ The HDR is
 -----
 
 We need to rephrase this HDR by adjusting that HDR part under the guidance of reflection.
+
+Make a meaningful change to the HDR logic. Avoid minor token changes or renaming. Your mutated HDR should reflect a real logic improvement based on the reflection.
 
 Your response MUST ONLY include the rephrased HDR in following JSON format with no additional text.
 HDR must be returned as a string with newline characters (\\n) properly escaped.

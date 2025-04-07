@@ -3,14 +3,24 @@ import requests
 import json
 import re
 
-class BadAPIException(Exception):
+class LLMException(Exception):
     def __init__(self, msg: str):
         super().__init__()
         self.msg = msg
+
+class BadAPIException(LLMException):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+        self.msg = msg
         
-class BadResponseException(Exception):
+class BadResponseException(LLMException):
     def __init__(self, msg: str = "Bad response in invalid structure"):
-        super().__init__()
+        super().__init__(msg)
+        self.msg = msg
+        
+class MissingConfigException(LLMException):
+    def __init__(self, msg: str="Missing config file: config.json"):
+        super().__init__(msg)
         self.msg = msg
 
 class OpenRouterLLM:
@@ -21,15 +31,18 @@ class OpenRouterLLM:
         self.model_url = self._make_model_url()
         self.url = "https://openrouter.ai/api/v1/chat/completions"
         self.key_url = "https://openrouter.ai/api/v1/keys"
-        with open('./config.json', 'r') as f:
-            data = json.load(f)
-        
-        self.provision_key = data['OPEN_ROUTER_PROVISION_KEY']
+        try:
+            with open('./config.json', 'r') as f:
+                data = json.load(f)
+                            
+                self.provision_key = data['OPEN_ROUTER_PROVISION_KEY']
 
-        self._key = None
-        self._key_hash = None
-        
-        self._create_key()
+                self._key = None
+                self._key_hash = None
+                
+                self._create_key()
+        except Exception as e:
+            raise MissingConfigException()
         
     def _make_model_url(self) -> str:
         return self.brand + "/" + self.model + (":free" if self.free else "")
@@ -100,9 +113,14 @@ class OpenRouterLLM:
         if m is not None:
             json_str = m.group('obj')
             
-            json_obj = json.loads(json_str)
+            try:
+                json_obj = json.loads(json_str)
             
-            return json_obj
+                return json_obj
+            except json.decoder.JSONDecodeError as e:
+                raise BadResponseException(msg="Bad response:" + json_str[:10])
+            except TypeError as e:
+                raise BadResponseException(msg="Bad response:" + json_str[:10])
         else:
             raise BadResponseException()
         

@@ -10,23 +10,27 @@ from typing import List
 
 random.seed(42)
 
-problem = Problem(AVAIABLE_TERMINALS)
-problem.random_generate(num_jobs=5, max_oprs_each_job=3, num_machines=2, max_arr_time=16)
+problem = Problem(AVAIABLE_TERMINALS, pool_size=4)
+problem.random_generate(num_jobs=10, max_oprs_each_job=5, num_machines=4, max_arr_time=500)
 
-llm_model = OpenRouterLLM('openrouter', 'quasar-alpha', free=False)
+# llm_model = OpenRouterLLM('openrouter', 'quasar-alpha', free=False)
 
 def test_simulator():
     print("----- TEST SIMULATOR -----")
-    hdr = CodeSegmentHDR()
-    hdr.load('tmp/hdr_1.py')
+    code = """
+def hdr(jnpt=0.0, japt=0.0, jrt=0.0, jro=0.0, jwt=0.0, jat=0.0, jd=0.0, jcd=0.0, js=0.0, jw=0.0, ml=0.0, mr=0.0, mrel=0.0, mpr=0.0, mutil=0.0, tnow=0.0, util=0.0, avgwt=0.0):
+    return -jat
+    """
+    hdr = CodeSegmentHDR(code=code)
     print(hdr.code)
     global problem
     
     for job in problem.jobs:
         print(str(job))
         
-    simulator = Simulator(hdr=hdr, problem=problem, pool_size=2)
-    simulator.simulate(debug=True)
+    simulator = Simulator(hdr=hdr, problem=problem)
+    print(simulator.simulate(debug=False))
+test_simulator()
     
 def test_llm_init():
     print("----- TEST LLM INIT OPR -----")

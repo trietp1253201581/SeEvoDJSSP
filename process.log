@@ -1,0 +1,88 @@
+2025-04-07 14:34:23 - INFO - Start trial 2025-04-07 14:34:23.338553
+2025-04-07 14:35:18 - INFO - Init phase
+2025-04-07 14:35:18 - INFO - FE = 30, best HDR with fitness -2730.00
+2025-04-07 14:35:18 - INFO - Gen 1:
+2025-04-07 14:35:18 - INFO - Success select 10 inds from population with size 30
+2025-04-07 14:35:51 - INFO - Successfully co-evo with 10 inds
+2025-04-07 14:37:00 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:37:02 - INFO - FE = 40, best HDR with fitness -2730.00
+2025-04-07 14:37:40 - INFO - Successfully self-evo with 10 inds
+2025-04-07 14:38:56 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:38:58 - INFO - FE = 50, best HDR with fitness -2730.00
+2025-04-07 14:39:04 - INFO - Successfully collective reflections from 11 reflections
+2025-04-07 14:39:29 - ERROR - <class 'model.InvalidKwargsException'>:Invalid kwargs for hdr unexpected character after line continuation character (<string>, line 1)
+2025-04-07 14:39:44 - INFO - Successfully mutation with 10 inds
+2025-04-07 14:39:46 - INFO - FE = 60, best HDR with fitness -2730.00
+2025-04-07 14:39:46 - INFO - Save best HDR to best/best_1.py
+2025-04-07 14:39:46 - INFO - Gen 2:
+2025-04-07 14:39:46 - INFO - Success select 10 inds from population with size 30
+2025-04-07 14:40:18 - INFO - Successfully co-evo with 10 inds
+2025-04-07 14:42:02 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:42:04 - INFO - FE = 70, best HDR with fitness -2730.00
+2025-04-07 14:42:54 - INFO - Successfully self-evo with 10 inds
+2025-04-07 14:44:43 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:44:46 - INFO - FE = 80, best HDR with fitness -2730.00
+2025-04-07 14:44:52 - INFO - Successfully collective reflections from 11 reflections
+2025-04-07 14:45:50 - INFO - Successfully mutation with 10 inds
+2025-04-07 14:45:53 - INFO - FE = 90, best HDR with fitness -2730.00
+2025-04-07 14:45:53 - INFO - Save best HDR to best/best_2.py
+2025-04-07 14:45:53 - INFO - Gen 3:
+2025-04-07 14:45:53 - INFO - Success select 10 inds from population with size 30
+2025-04-07 14:46:39 - INFO - Successfully co-evo with 10 inds
+2025-04-07 14:49:13 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:49:17 - INFO - FE = 100, best HDR with fitness -2730.00
+2025-04-07 14:50:34 - INFO - Successfully self-evo with 10 inds
+2025-04-07 14:53:22 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:53:25 - INFO - FE = 110, best HDR with fitness -2730.00
+2025-04-07 14:53:31 - INFO - Successfully collective reflections from 11 reflections
+2025-04-07 14:54:01 - ERROR - <class 'model.InvalidKwargsException'>:Invalid kwargs for hdr unexpected character after line continuation character (<string>, line 1)
+2025-04-07 14:54:19 - INFO - Successfully mutation with 10 inds
+2025-04-07 14:54:22 - INFO - FE = 120, best HDR with fitness -2730.00
+2025-04-07 14:54:22 - INFO - Save best HDR to best/best_3.py
+2025-04-07 14:54:22 - INFO - Gen 4:
+2025-04-07 14:54:22 - INFO - Success select 10 inds from population with size 30
+2025-04-07 14:55:17 - ERROR - <class 'model.InvalidKwargsException'>Invalid kwargs for hdr invalid syntax (<string>, line 4)
+2025-04-07 14:55:17 - INFO - Successfully co-evo with 9 inds
+2025-04-07 14:57:38 - INFO - Successfully crossover with 10 inds
+2025-04-07 14:57:42 - INFO - FE = 130, best HDR with fitness -2730.00
+2025-04-07 14:58:58 - INFO - Successfully self-evo with 10 inds
+2025-04-07 15:01:24 - INFO - Successfully crossover with 10 inds
+2025-04-07 15:01:29 - INFO - FE = 140, best HDR with fitness -2730.00
+2025-04-07 15:01:34 - INFO - Successfully collective reflections from 11 reflections
+2025-04-07 15:02:24 - INFO - Successfully mutation with 10 inds
+2025-04-07 15:02:27 - INFO - FE = 150, best HDR with fitness -2730.00
+2025-04-07 15:02:27 - INFO - Save best HDR to best/best_4.py
+2025-04-07 15:02:27 - INFO - Gen 5:
+2025-04-07 15:02:27 - INFO - Success select 10 inds from population with size 30
+2025-04-07 15:03:02 - INFO - Successfully co-evo with 10 inds
+2025-04-07 15:04:49 - INFO - Successfully crossover with 10 inds
+2025-04-07 15:04:50 - INFO - FE = 160, best HDR with fitness -2730.00
+2025-04-07 15:05:37 - INFO - Successfully self-evo with 10 inds
+2025-04-07 15:06:39 - ERROR - :Not support return type
+2025-04-07 15:07:37 - INFO - Successfully crossover with 10 inds
+2025-04-07 15:07:38 - INFO - FE = 170, best HDR with fitness -2730.00
+2025-04-07 15:07:42 - INFO - Successfully collective reflections from 11 reflections
+2025-04-07 15:08:22 - INFO - Successfully mutation with 10 inds
+2025-04-07 15:08:23 - INFO - FE = 180, best HDR with fitness -2730.00
+2025-04-07 15:08:23 - INFO - Save best HDR to best/best_5.py
+2025-04-07 15:08:23 - INFO - Gen 6:
+2025-04-07 15:08:23 - INFO - Success select 10 inds from population with size 30
+2025-04-07 15:09:05 - INFO - Successfully co-evo with 10 inds
+2025-04-07 15:11:43 - INFO - Successfully crossover with 10 inds
+2025-04-07 15:11:44 - INFO - FE = 190, best HDR with fitness -2730.00
+2025-04-07 15:12:58 - ERROR - <class 'llm.BadResponseException'>:Bad response:{
+    "ref
+2025-04-07 15:12:58 - INFO - Gen 7:
+2025-04-07 15:12:58 - INFO - Success select 10 inds from population with size 30
+2025-04-07 15:13:38 - INFO - Successfully co-evo with 10 inds
+2025-04-07 15:15:58 - INFO - Successfully crossover with 10 inds
+2025-04-07 15:16:02 - INFO - FE = 200, best HDR with fitness -2730.00
+2025-04-07 15:17:08 - INFO - Successfully self-evo with 10 inds
+2025-04-07 15:19:26 - INFO - Successfully crossover with 10 inds
+2025-04-07 15:19:28 - INFO - FE = 210, best HDR with fitness -2730.00
+2025-04-07 15:19:34 - INFO - Successfully collective reflections from 11 reflections
+2025-04-07 15:20:15 - INFO - Successfully mutation with 10 inds
+2025-04-07 15:20:17 - INFO - FE = 220, best HDR with fitness -2730.00
+2025-04-07 15:20:17 - INFO - Save best HDR to best/best_7.py
+2025-04-07 15:20:17 - INFO - Best HDR with fitness -2730.00
+2025-04-07 15:20:17 - INFO - Done!!!

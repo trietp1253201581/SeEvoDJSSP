@@ -10,12 +10,12 @@ def _print_with_debug(msg: str, debug: bool=False):
         print(msg)
         
 class Simulator:
-    def __init__(self, hdr: HDR, problem: Problem, pool_size: int):
+    def __init__(self, hdr: HDR, problem: Problem):
         self.hdr = hdr
         self.problem = problem
         self.waiting_pool: List[Job] = []
         self.job_pool: List[Job] = []
-        self.pool_size = pool_size
+        self.pool_size = self.problem.pool_size
 
     def _reset(self, jobs: List[Job], machines: List[Machine]):
         for machine in machines:
@@ -136,7 +136,7 @@ class Simulator:
 
             curr_time += 1
             if debug:
-                time.sleep(0.1 if sleep_time is None else sleep_time)
+                time.sleep(0.02 if sleep_time is None else sleep_time)
 
         makespan = max(m.finish_time for m in machines)
         _print_with_debug(f"Done!, makespan = {makespan}", debug)

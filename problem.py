@@ -177,10 +177,11 @@ class Machine:
         return hash(self.id)
 
 class Problem:
-    def __init__(self, terminals: List[Terminal]):
+    def __init__(self, terminals: List[Terminal], pool_size: int):
         self.jobs: List[Job] = []
         self.machines: List[Machine] = []
         self.terminals = terminals
+        self.pool_size = pool_size
         
     def random_generate(self, num_jobs: int, max_oprs_each_job: int, num_machines: int, max_arr_time = 1000):
         self.jobs = []

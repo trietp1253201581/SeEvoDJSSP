@@ -7,46 +7,45 @@ class HDR(ABC):
     def execute(self, **kwargs) -> any:
         pass
     
-    @abstractmethod
-    def is_valid(self) -> bool:
-        pass
-    
-    @abstractmethod
-    def is_evaluatable(self) -> bool:
-        pass
-    
-class InvalidHDRException(Exception):
+class HDRException(Exception):
     def __init__(self, msg: str):
         super().__init__()
         self.msg = msg
+    
+class InvalidHDRException(HDRException):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+        self.msg = msg
         
-class InvalidKwargsException(Exception):
+class InvalidKwargsException(HDRException):
     def __init__(self, msg: str = "Invalid kwargs for function!"):
-        super().__init__()
+        super().__init__(msg)
         self.msg = msg
     
 class CodeSegmentHDR(HDR):
     def __init__(self, code: str|None = None):
         self.code = code
+        
+    @property
+    def code(self):
+        return self._code
+    
+    @code.setter
+    def code(self, code: str):
+        self._code = code
         self._extract_func(code)
+        res = self.execute(jnpt=1.0, japt=2.5, jrt=3.6, jro=4.1, jwt=6.7, jat=6.0, jd=8.0, jcd=3.0, js=2.0, jw=1.0, ml=89.0, mr=20.0, mrel=20.0, mpr=20.1, mutil=3.9, tnow=15, util=60, avgwt=20.0)
+        if not isinstance(res, (int, float)):
+            raise HDRException('Not support return type')
         
     def save(self, file_path: str):
         with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(self.code.strip() + "\n")
+            f.write(self._code.strip() + "\n")
             
     def load(self, file_path: str):
         with open(file_path, 'r', encoding='utf-8') as f:
             self.code = f.read()
-            
-    def is_valid(self):
-        try:
-            self._extract_func(self.code)
-            return True
-        except InvalidHDRException as e:
-            print(e.msg) 
-            return False
-            
-        
+                 
     def _extract_func(self, code: str|None):
         if code is None:
             self.func_name = None
@@ -54,7 +53,7 @@ class CodeSegmentHDR(HDR):
             return
         m = re.search(r'def (?P<func_name>[a-zA-Z0-9_]+)\((?P<params>.*)\)\:', code)
         if m is None:
-            raise InvalidHDRException('Missed function name')
+            raise InvalidHDRException('Invalid function')
         self.func_name = m.group('func_name')
         params_extracted = m.group('params').replace(' ', '').split(',')
         self.params = []
@@ -66,31 +65,29 @@ class CodeSegmentHDR(HDR):
                                 'type': m.group('type') if m.group('type') is not None else 'any'})
         
     def __str__(self):
-        return str(self.code)
+        return str(self._code)
         
     def to_ast(self):
-        return ast.parse(source=self.code)
+        return ast.parse(source=self._code)
     
     def from_ast(self, ast_rule: ast.AST):
         self.code = ast.unparse(ast_rule)
-        self._extract_func(self.code)
-        
-    def is_evaluatable(self):
-        default_kwargs = {p['name']: 1.0 for p in self.params or []}
-        try:
-            _ = self.execute(**default_kwargs)
-            return True
-        except InvalidKwargsException as e:
-            # Nếu ném bất kỳ ngoại lệ nào, coi là invalid
-            print(e.msg)
-            return False
         
     def execute(self, **kwargs):
-        local_vars = {}
-        exec(self.code, globals(), local_vars)
-        func = local_vars['hdr']
+        local_vars = {}     
         try:
+            exec(self.code, globals(), local_vars)
+            func = local_vars['hdr']
             return func(**kwargs)
         except TypeError as e:
             raise InvalidKwargsException(f"Invalid kwargs for {self.func_name} " + str(e))
+        except SyntaxError as e:
+            raise InvalidKwargsException(f"Invalid kwargs for {self.func_name} " + str(e))
+        except NameError as e:
+            raise InvalidKwargsException(f"Invalid kwargs for {self.func_name} " + str(e))
+        except ArithmeticError as e:
+            raise HDRException(str(e))
+        except ValueError as e:
+            raise HDRException(str(e))
+        
     
