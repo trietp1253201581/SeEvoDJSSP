@@ -31,8 +31,10 @@ class CodeSegmentHDR(HDR):
         return self._code
     
     @code.setter
-    def code(self, code: str):
+    def code(self, code: str|None):
         self._code = code
+        if code is None: 
+            return
         self._extract_func(code)
         res = self.execute(jnpt=1.0, japt=2.5, jrt=3.6, jro=4.1, jwt=6.7, jat=6.0, jd=8.0, jcd=3.0, js=2.0, jw=1.0, ml=89.0, mr=20.0, mrel=20.0, mpr=20.1, mutil=3.9, tnow=15, util=60, avgwt=20.0)
         if not isinstance(res, (int, float)):
@@ -76,18 +78,20 @@ class CodeSegmentHDR(HDR):
     def execute(self, **kwargs):
         local_vars = {}     
         try:
-            exec(self.code, globals(), local_vars)
+            exec(self._code, globals(), local_vars)
             func = local_vars['hdr']
             return func(**kwargs)
         except TypeError as e:
-            raise InvalidKwargsException(f"Invalid kwargs for {self.func_name} " + str(e))
+            raise InvalidKwargsException(f"Invalid kwargs " + str(e))
         except SyntaxError as e:
-            raise InvalidKwargsException(f"Invalid kwargs for {self.func_name} " + str(e))
+            raise InvalidKwargsException(f"Invalid kwargs " + str(e))
         except NameError as e:
-            raise InvalidKwargsException(f"Invalid kwargs for {self.func_name} " + str(e))
+            raise InvalidKwargsException(f"Invalid kwargs " + str(e))
         except ArithmeticError as e:
             raise HDRException(str(e))
         except ValueError as e:
+            raise HDRException(str(e))
+        except UnboundLocalError as e:
             raise HDRException(str(e))
         
     

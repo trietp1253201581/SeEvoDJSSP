@@ -1,5 +1,5 @@
 from model import CodeSegmentHDR, HDRException
-from typing import List
+from typing import List, Tuple
 from llm import OpenRouterLLM, LLMException
 from basic_evo import Individual, Population, Operator, validate, FITNESS_FUNC_TYPE
 from abc import abstractmethod
@@ -14,6 +14,8 @@ import logging
 logging.basicConfig(filename='process.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
+
+random.seed(42)
 
 class MissingTemplateException(Exception):
     def __init__(self, msg: str):
@@ -86,52 +88,58 @@ class LLMInitOperator(LLMBaseOperator):
         return super().__call__(init_size=init_size, func_template=func_template)
   
 class CoEvoOperator(LLMBaseOperator):
-        
-    def _make_hdrs_set_str(self, inds: List[Individual]):
-        hdr_set_str = ""
-        for i in range(len(inds)):
-            hdr_set_str += f"HDR {i + 1}:\n"
-            hdr_set_str += "----\n"
-            hdr_set_str += inds[i].chromosome.code
-            hdr_set_str += "----\n"
-        return hdr_set_str        
+    
+    def _build_pairs(self, inds: List[Individual]):
+        inds_copy = copy.deepcopy(inds)
+        pairs = []
+        while len(inds_copy) >= 2:
+            ind1_idx = random.randint(0, len(inds_copy) - 1)
+            ind1 = inds_copy.pop(ind1_idx)  # Xoá và lấy ra ind1
+
+            ind2_idx = random.randint(0, len(inds_copy) - 1)
+            ind2 = inds_copy.pop(ind2_idx)  # Xoá và lấy ra ind2
+
+            pairs.append((ind1, ind2))
+            
+        pair_str = "--------------\n"
+        for i in range(len(pairs)):
+            pair_str += f"Pair {i}:\n"
+            ind1, ind2 = pairs[i]
+            pair_str += f"HDR 1 with makespan {-ind1.fitness}: \n"
+            pair_str += str(ind1.chromosome.code)
+            pair_str += "\n"
+            pair_str += f"HDR 2 with makespan {-ind2.fitness}: \n"
+            pair_str += str(ind2.chromosome.code)
+            pair_str += "--------------\n"
+            
+        return pair_str 
     
     def _build_config(self, **kwargs):
         inds: List[Individual] = kwargs.get('inds')
-        ind1: Individual = kwargs.get('ind1')
-        ind2: Individual = kwargs.get('ind2')
         return {
             'job_str': self._build_str_from_lst(self.problem.jobs),
             'machine_str': self._build_str_from_lst(self.problem.machines),
             'terminal_set': self._build_str_from_lst(self.problem.terminals),
-            'hdr1': ind1.chromosome.code,
-            'hdr1_makespan': -ind1.fitness,
-            'hdr2': ind2.chromosome.code,
-            'hdr2_makespan': -ind2.fitness,
-            'hdr_set': self._make_hdrs_set_str(inds)
+            'pairs': self._build_pairs(inds)
         }
         
     def _process_json_response(self, data):
-        reflection = data['reflection']
-        reflected_code = data['reflected_hdr']
+        results = data['results']
         inds: List[Individual] = []
-        i = 0
-        for code_json in reflected_code:
-            i += 1
+        for json_obj in results:
             try:
-                new_hdr = CodeSegmentHDR(code=code_json['code'])
+                new_hdr = CodeSegmentHDR(code=json_obj['code'])
                 new_ind = Individual(self.problem)
                 new_ind.chromosome = new_hdr
+                new_ind.reflection = json_obj['reflection']
                 inds.append(new_ind)
             except HDRException as e:
                 logging.error(str(type(e)) + e.msg)
                 continue
-        return reflection, inds
+        return inds
     
-    def __call__(self, inds: List[Individual],
-                 ind1: Individual,
-                 ind2: Individual) -> tuple[str, list[Individual]]:
-        return super().__call__(inds=inds, ind1=ind1, ind2=ind2)
+    def __call__(self, inds: List[Individual]) -> List[Individual]:
+        return super().__call__(inds=inds)
     
 class LLMCrossoverOperator(LLMBaseOperator):
     def _build_config(self, **kwargs):
@@ -142,7 +150,9 @@ class LLMCrossoverOperator(LLMBaseOperator):
             'machine_str': self._build_str_from_lst(self.problem.machines),
             'terminal_set': self._build_str_from_lst(self.problem.terminals),
             'hdr1': p1.chromosome.code,
-            'hdr2': p2.chromosome.code
+            'hdr2': p2.chromosome.code,
+            'ref1': p1.reflection,
+            'ref2': p2.reflection
         }
         
     def _process_json_response(self, data):
@@ -150,69 +160,65 @@ class LLMCrossoverOperator(LLMBaseOperator):
         inds: List[Individual] = []
         i = 0
         for code_json in recombined_code:
-            i += 1
-            new_hdr = CodeSegmentHDR(code=code_json['code'])
-            new_ind = Individual(self.problem)
-            new_ind.chromosome = new_hdr
-            inds.append(new_ind)
+            try:
+                i += 1
+                new_hdr = CodeSegmentHDR(code=code_json['code'])
+                new_ind = Individual(self.problem)
+                new_ind.chromosome = new_hdr
+                inds.append(new_ind)
+            except HDRException as e:
+                logging.error(str(e) + ":" + e.msg)
+                return None, None
 
         return inds[0], inds[1]
         
     def __call__(self, p1: Individual, p2: Individual) -> tuple[Individual, Individual]:
-        try:
-            return super().__call__(p1=p1, p2=p2)
-        except HDRException as e:
-            logging.error(str(e) + ":" + e.msg)
-            return p1, p2
+        return super().__call__(p1=p1, p2=p2)
 
 class SelfEvoOperator(LLMBaseOperator):
-    def _make_hdrs_set_str(self, inds:List[Individual]):
-        hdr_set_str = ""
-        for i in range(len(inds)):
-            hdr_set_str += f"HDR {i + 1}:\n"
-            hdr_set_str += "----\n"
-            hdr_set_str += inds[i].chromosome.code
-            hdr_set_str += "----\n"
-        return hdr_set_str 
+    def _build_pairs(self, compare_hdrs: List[Tuple[Individual, Individual, str]]):
+        pair_str = ""
+        for i in range(len(compare_hdrs)):
+            pair_str += f"Pair {i+1}:\n"
+            ind1, ind2, co_ref = compare_hdrs[i]
+            pair_str += f"Co-Evo Reflection have used: {co_ref}. \n"
+            pair_str += f"HDR before apply reflection with makespan {-ind1.fitness}: \n"
+            pair_str += str(ind1.chromosome.code)
+            pair_str += "\n"
+            pair_str += f"HDR after apply reflection with makespan {-ind2.fitness}: \n"
+            pair_str += str(ind2.chromosome.code)
+            pair_str += "--------------\n"
+            
+        return pair_str 
     
     def _build_config(self, **kwargs):
-        inds_before: List[Individual] = kwargs.get('inds_before')
-        inds_after: List[Individual] = kwargs.get('inds_after')
-        co_evo_reflection: str = kwargs.get('co_evo_reflection')
+        compare_hdrs = kwargs.get('compare_hdrs')
         return {
             'job_str': self._build_str_from_lst(self.problem.jobs),
             'machine_str': self._build_str_from_lst(self.problem.machines),
             'terminal_set': self._build_str_from_lst(self.problem.terminals),
-            'co_evo_reflection': co_evo_reflection,
-            'hdr_before': self._make_hdrs_set_str(inds_before),
-            'hdr_after': self._make_hdrs_set_str(inds_after)
+            'pairs': self._build_pairs(compare_hdrs)
         }
         
     def _process_json_response(self, data):
         reflected = data['reflected_hdr']
         inds: List[Individual] = []
-        reflections: List[str] = []
         i = 0
         for json_obj in reflected:
             i += 1
-            reflections.append(json_obj['reflection'])
             try:
                 new_hdr = CodeSegmentHDR(code=json_obj['code'])
                 new_ind = Individual(self.problem)
                 new_ind.chromosome = new_hdr
+                new_ind.reflection = json_obj['reflection']
                 inds.append(new_ind)
             except HDRException as e:
                 logging.error(str(type(e)) + e.msg)
                 continue
-            
-        return reflections, inds
+        return inds
     
-    def __call__(self, inds_before: List[Individual],
-                 inds_after: List[Individual],
-                 co_evo_reflection: str) -> tuple[List[str], List[Individual]]:
-        return super().__call__(inds_before=inds_before,
-                                inds_after=inds_after,
-                                co_evo_reflection=co_evo_reflection)
+    def __call__(self, compare_hdrs: List[Tuple[Individual, Individual, str]]) -> List[Individual]:
+        return super().__call__(compare_hdrs=compare_hdrs)
     
 class CollectiveRefOperator(LLMBaseOperator):
         
@@ -239,18 +245,9 @@ class CollectiveRefOperator(LLMBaseOperator):
     
 class LLMMutationOperator(LLMBaseOperator):
     
-    def _make_hdrs_set_str(self, inds:List[Individual]):
-        hdr_set_str = ""
-        for i in range(len(inds)):
-            hdr_set_str += f"HDR {i + 1}:\n"
-            hdr_set_str += "----\n"
-            hdr_set_str += inds[i].chromosome.code
-            hdr_set_str += "----\n"
-        return hdr_set_str 
-    
     def _build_config(self, **kwargs):
-        reflection = kwargs.get('reflection')
         p: Individual = kwargs.get('p')
+        reflection = kwargs.get('reflection')
         return {
             'job_str': self._build_str_from_lst(self.problem.jobs),
             'machine_str': self._build_str_from_lst(self.problem.machines),
@@ -260,29 +257,27 @@ class LLMMutationOperator(LLMBaseOperator):
         }
         
     def _process_json_response(self, data):
-        code = data['rephrased_hdr']
-        new_hdr = CodeSegmentHDR(code)
-        new_ind = Individual(self.problem)
-        new_ind.chromosome = new_hdr
+        try:
+            code = data['rephrased_hdr']
+            new_hdr = CodeSegmentHDR(code)
+            new_ind = Individual(self.problem)
+            new_ind.chromosome = new_hdr
+        except HDRException as e:
+            logging.error(str(type(e)) + ":" + e.msg)
+            return None
         return new_ind
     
     def __call__(self, p: Individual, reflection: str) -> Individual:
-        try:
-            return super().__call__(p=p, reflection=reflection)
-        except HDRException as e:
-            logging.error(str(type(e)) + ":" + e.msg)
-            return p
+        return super().__call__(p=p, reflection=reflection)
+        
     
 class RandomSelectOperator(Operator):
-    def __init__(self, problem, random_seed: int=0):
+    def __init__(self, problem):
         super().__init__(problem)
-        self.random_seed=random_seed
         
     def __call__(self, population: Population, sub_size: int) -> Population:
         if sub_size > population.size:
             return copy.deepcopy(population)
-        
-        random.seed(self.random_seed)
         
         sub_pop = Population(size=sub_size, problem=population.problem)
         sub_pop.inds = random.sample(population.inds, k=sub_size)
@@ -333,6 +328,8 @@ def se_evo(
 ):
     
     logging.info(f"Start trial {datetime.datetime.now()}")
+    
+    logging.info("Init phase")
     # 1. Khởi tạo quần thể ban đầu
     try:
         P: Population = llm_init_func(init_size=init_size,
@@ -341,10 +338,13 @@ def se_evo(
         logging.error(str(type(e)) + ":" + e.msg)
         return None
     for ind in P.inds:
-        ind.cal_fitness(makespan_fitness_func)
+        try:
+            ind.cal_fitness(makespan_fitness_func)
+        except:
+            ind.fitness = Individual.DEFAULT_FITNESS
+            logging.error(f"Failed to cal fitness.")
     fe = len(P.inds)
     best = max(P.inds, key=lambda ind: ind.fitness)
-    logging.info("Init phase")
     logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
     # Vòng lặp chính
     num_gen = 1
@@ -358,25 +358,38 @@ def se_evo(
             S_p: Population = subset_selector(P, subset_size)
             logging.info(f'Success select {S_p.size} inds from population with size {P.size}')
 
-            # 3. Co‑Evolution: chọn 2 cá thể ngẫu nhiên, reflect toàn bộ S_p
-            ind1, ind2 = random.sample(S_p.inds, 2)
-            R, S_r_inds = co_evo_func(inds=S_p.inds, ind1=ind1, ind2=ind2)
-            S_r = Population(size=len(S_r_inds), problem=problem)
-            S_r.inds = S_r_inds
-            logging.info(f'Successfully co-evo with {S_r.size} inds')
+            # 3. Co‑Evolution: 
+            S_r_inds = co_evo_func(S_p.inds)
+            S_p.inds = S_r_inds
+            logging.info(f'Successfully co-evo with {S_p.size} inds')
 
-            # 4. Crossover S_p với S_r → P_inter
+            # Tạo compare HDR dùng sau
+            compare_hdrs: List[Tuple[Individual, Individual, str]] = []
+
+            # 4. Crossover S_p → P_inter
             P_inter = Population(size=len(S_p.inds), problem=problem)
             inter_inds = []
-            for a, b in zip(S_p.inds, S_r.inds):
+            while len(inter_inds) < S_p.size:
                 if random.random() < pc:
-                    off1, off2 = llm_crossover_func(p1=a, p2=b)
+                    selected = subset_selector(S_p, 2)
+                    p1, p2 = selected.inds[0], selected.inds[1]
+                    off1, off2 = llm_crossover_func(p1=p1, p2=p2)
+                    if off1 is None:
+                        continue
+                    
                     inter_inds.extend([off1, off2])
-                else:
-                    inter_inds.extend([copy.deepcopy(a), copy.deepcopy(b)])
+                    
+                    if random.random() < 0.5:
+                        compare_hdrs.append((p1, off1, p1.reflection))
+                        compare_hdrs.append((p2, off2, p2.reflection))
+                    else:
+                        compare_hdrs.append((p1, off2, p1.reflection))
+                        compare_hdrs.append((p2, off1, p2.reflection))
             inter_inds = inter_inds[:len(S_p.inds)]
             P_inter.inds = inter_inds
             logging.info(f'Successfully crossover with {P_inter.size} inds')
+            
+            compare_hdrs = compare_hdrs[:len(S_p.inds)]
 
             # 5. Evaluate P_inter
             for ind in P_inter.inds:
@@ -386,23 +399,23 @@ def se_evo(
             logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
             
             # 6. Self‑Evolution → RM, I_rm
-            RM, I_rm_inds = self_evo_func(
-                inds_before=S_p.inds,
-                inds_after=P_inter.inds,
-                co_evo_reflection=R
-            )
+            I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
+            P_inter.inds = I_rm_inds
             logging.info(f'Successfully self-evo with {len(I_rm_inds)} inds')
 
-            # 7. Crossover I_rm với P_inter → P_self
+            # 7. Crossover 
+            # Crossover P_inter với chỉ dẫn từ IRm → P_self
             P_self = Population(size=len(I_rm_inds), problem=problem)
             self_inds = []
-            for a, b in zip(I_rm_inds, P_inter.inds):
+            while len(self_inds) < P_inter.size:
                 if random.random() < pc:
-                    off1, off2 = llm_crossover_func(p1=a, p2=b)
+                    selected = subset_selector(P_inter, 2)
+                    p1, p2 = selected.inds[0], selected.inds[1]
+                    off1, off2 = llm_crossover_func(p1=p1, p2=p2)
+                    if off1 is None:
+                        continue
                     self_inds.extend([off1, off2])
-                else:
-                    self_inds.extend([copy.deepcopy(a), copy.deepcopy(b)])
-            self_inds = self_inds[:len(I_rm_inds)]
+            self_inds = self_inds[:P_inter.size]
             P_self.inds = self_inds
             logging.info(f'Successfully crossover with {P_self.size} inds')
 
@@ -414,20 +427,27 @@ def se_evo(
             logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
 
             # 9. Collective Reflection → MR
-            MR = collective_func(reflections=[R] + RM)
-            logging.info(f'Successfully collective reflections from {len(RM) + 1} reflections')
+            co_refs = [ind.reflection for ind in S_r_inds if ind.reflection is not None]
+            self_refs = [ind.reflection for ind in I_rm_inds if ind.reflection is not None]
+            MR = collective_func(reflections=co_refs + self_refs)
+            logging.info(f'Successfully collective reflections from {len(co_refs) + len(self_refs)} reflections')
 
             # 10. Mutation guided by MR → P_new
             P_new = Population(size=len(P_self.inds), problem=problem)
             new_inds = []
+            muts = 0
             for ind in P_self.inds:
                 if random.random() < pm:
                     mutated = llm_mutation_func(p=ind, reflection=MR)
+                    if mutated is None:
+                        new_inds.append(copy.deepcopy(ind))
+                        continue
+                    muts += 1
                     new_inds.append(mutated)
                 else:
                     new_inds.append(copy.deepcopy(ind))
             P_new.inds = new_inds
-            logging.info(f'Successfully mutation with {P_new.size} inds')
+            logging.info(f'Successfully mutation {muts} inds of {P_new.size} inds')
 
             # 11. Evaluate P_new
             for ind in P_new.inds:
@@ -438,7 +458,7 @@ def se_evo(
             P = replace_func(old_pop=P, new_pop=P_new, max_size=P.size)
             
             best = max(P.inds, key=lambda ind: ind.fitness)
-            best.chromosome.save(f'best/best_{num_gen}.py')
+            best.chromosome.save(f'tmp/best_{num_gen}.py')
             logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
             logging.info(f"Save best HDR to best/best_{num_gen-1}.py")
         
@@ -448,6 +468,8 @@ def se_evo(
         except TypeError as e:
             logging.error(str(type(e)) + ":" + str(e))
             continue
+        except HDRException as e:
+            logging.error(str(type(e)) + ":" + e.msg)
 
     # Kết thúc: trả về best individual
     best = max(P.inds, key=lambda ind: ind.fitness)

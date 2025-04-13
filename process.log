@@ -86,3 +86,159 @@
 2025-04-07 15:20:17 - INFO - Save best HDR to best/best_7.py
 2025-04-07 15:20:17 - INFO - Best HDR with fitness -2730.00
 2025-04-07 15:20:17 - INFO - Done!!!
+2025-04-13 13:05:40 - INFO - Start trial 2025-04-13 13:05:40.801302
+2025-04-13 13:10:52 - INFO - Start trial 2025-04-13 13:10:52.690138
+2025-04-13 13:14:06 - INFO - Start trial 2025-04-13 13:14:06.907545
+2025-04-13 13:18:16 - INFO - Start trial 2025-04-13 13:18:16.173950
+2025-04-13 13:20:21 - INFO - Init phase
+2025-04-13 13:20:21 - INFO - FE = 21, best HDR with fitness -2730.00
+2025-04-13 13:20:21 - INFO - Gen 1:
+2025-04-13 13:20:21 - INFO - Success select 8 inds from population with size 21
+2025-04-13 13:21:26 - INFO - Successfully co-evo with 8 inds
+2025-04-13 13:23:08 - INFO - Successfully crossover with 8 inds
+2025-04-13 13:23:14 - INFO - FE = 29, best HDR with fitness -3248.00
+2025-04-13 13:24:48 - INFO - Successfully self-evo with 8 inds
+2025-04-13 13:26:48 - INFO - Successfully crossover with 8 inds
+2025-04-13 13:26:50 - INFO - FE = 37, best HDR with fitness -3248.00
+2025-04-13 13:27:01 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 13:27:01 - ERROR - <class 'TypeError'>:LLMMutationOperator.__call__() got an unexpected keyword argument 'reflection'
+2025-04-13 13:27:01 - INFO - Gen 2:
+2025-04-13 13:27:01 - INFO - Success select 8 inds from population with size 21
+2025-04-13 13:28:11 - INFO - Successfully co-evo with 8 inds
+2025-04-13 13:30:50 - INFO - Start trial 2025-04-13 13:30:50.768305
+2025-04-13 13:33:12 - INFO - Start trial 2025-04-13 13:33:12.285548
+2025-04-13 13:33:12 - INFO - Init phase
+2025-04-13 13:34:57 - INFO - FE = 21, best HDR with fitness -3045.00
+2025-04-13 13:34:57 - INFO - Gen 1:
+2025-04-13 13:34:57 - INFO - Success select 8 inds from population with size 21
+2025-04-13 13:35:51 - INFO - Successfully co-evo with 8 inds
+2025-04-13 13:36:59 - INFO - Successfully crossover with 8 inds
+2025-04-13 13:37:03 - INFO - FE = 29, best HDR with fitness -3248.00
+2025-04-13 13:38:39 - INFO - Successfully self-evo with 8 inds
+2025-04-13 13:40:09 - INFO - Successfully crossover with 8 inds
+2025-04-13 13:40:14 - INFO - FE = 37, best HDR with fitness -3045.00
+2025-04-13 13:40:23 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 13:41:34 - INFO - Successfully mutation with 8 inds
+2025-04-13 14:04:33 - INFO - Start trial 2025-04-13 14:04:33.645531
+2025-04-13 14:04:33 - INFO - Init phase
+2025-04-13 14:06:20 - INFO - FE = 21, best HDR with fitness -2730.00
+2025-04-13 14:06:20 - INFO - Gen 1:
+2025-04-13 14:06:20 - INFO - Success select 8 inds from population with size 21
+2025-04-13 14:07:12 - INFO - Successfully co-evo with 8 inds
+2025-04-13 14:09:06 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:09:08 - INFO - FE = 29, best HDR with fitness -2730.00
+2025-04-13 14:10:33 - INFO - Successfully self-evo with 8 inds
+2025-04-13 14:11:35 - ERROR - :Invalid kwargs cannot access local variable 'urgency' where it is not associated with a value
+2025-04-13 14:13:18 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:13:20 - INFO - FE = 37, best HDR with fitness -2730.00
+2025-04-13 14:13:29 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 14:15:05 - INFO - Successfully mutation 4 inds of 8 inds
+2025-04-13 14:15:07 - INFO - FE = 45, best HDR with fitness -2730.00
+2025-04-13 14:15:07 - INFO - Save best HDR to best/best_1.py
+2025-04-13 14:15:07 - INFO - Gen 2:
+2025-04-13 14:15:07 - INFO - Success select 8 inds from population with size 21
+2025-04-13 14:16:24 - INFO - Successfully co-evo with 8 inds
+2025-04-13 14:19:15 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 14:19:40 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:19:41 - INFO - FE = 53, best HDR with fitness -3248.00
+2025-04-13 14:21:13 - INFO - Successfully self-evo with 8 inds
+2025-04-13 14:23:10 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:27:51 - INFO - Start trial 2025-04-13 14:27:51.825791
+2025-04-13 14:27:51 - INFO - Init phase
+2025-04-13 14:29:31 - ERROR - <class 'model.InvalidKwargsException'>Invalid kwargs invalid syntax. Perhaps you forgot a comma? (<string>, line 2)
+2025-04-13 14:29:33 - INFO - FE = 20, best HDR with fitness -1176.00
+2025-04-13 14:29:33 - INFO - Gen 1:
+2025-04-13 14:29:33 - INFO - Success select 8 inds from population with size 21
+2025-04-13 14:30:51 - INFO - Successfully co-evo with 8 inds
+2025-04-13 14:31:57 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:31:58 - INFO - FE = 28, best HDR with fitness -1221.00
+2025-04-13 14:33:25 - INFO - Successfully self-evo with 8 inds
+2025-04-13 14:34:12 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 14:35:08 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 14:35:32 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 14:35:49 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:35:50 - INFO - FE = 36, best HDR with fitness -1221.00
+2025-04-13 14:36:00 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 14:37:07 - INFO - Successfully mutation 4 inds of 8 inds
+2025-04-13 14:37:07 - INFO - FE = 44, best HDR with fitness -1176.00
+2025-04-13 14:37:07 - INFO - Save best HDR to best/best_1.py
+2025-04-13 14:37:07 - INFO - Gen 2:
+2025-04-13 14:37:07 - INFO - Success select 8 inds from population with size 21
+2025-04-13 14:38:52 - INFO - Start trial 2025-04-13 14:38:52.321460
+2025-04-13 14:38:52 - INFO - Init phase
+2025-04-13 14:47:40 - INFO - Start trial 2025-04-13 14:47:40.782467
+2025-04-13 14:47:40 - INFO - Init phase
+2025-04-13 14:49:26 - INFO - FE = 21, best HDR with fitness -1176.00
+2025-04-13 14:49:26 - INFO - Gen 1:
+2025-04-13 14:49:26 - INFO - Success select 8 inds from population with size 21
+2025-04-13 14:50:39 - INFO - Successfully co-evo with 8 inds
+2025-04-13 14:51:58 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:51:59 - INFO - FE = 29, best HDR with fitness -1232.00
+2025-04-13 14:53:18 - INFO - Successfully self-evo with 8 inds
+2025-04-13 14:54:00 - ERROR - :Invalid kwargs name 'timing_term' is not defined
+2025-04-13 14:55:55 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 14:56:19 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 14:56:55 - INFO - Successfully crossover with 8 inds
+2025-04-13 14:56:56 - INFO - FE = 37, best HDR with fitness -1185.00
+2025-04-13 14:57:05 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 14:57:38 - INFO - Successfully mutation 1 inds of 8 inds
+2025-04-13 14:57:38 - INFO - FE = 45, best HDR with fitness -1176.00
+2025-04-13 14:57:38 - INFO - Save best HDR to best/best_1.py
+2025-04-13 14:57:38 - INFO - Gen 2:
+2025-04-13 14:57:38 - INFO - Success select 8 inds from population with size 21
+2025-04-13 14:59:31 - INFO - Successfully co-evo with 8 inds
+2025-04-13 15:01:20 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:01:21 - INFO - FE = 53, best HDR with fitness -1176.00
+2025-04-13 15:03:15 - INFO - Successfully self-evo with 8 inds
+2025-04-13 15:05:50 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:05:51 - ERROR - <class 'model.InvalidKwargsException'>:Invalid kwargs cannot access local variable 'urgency' where it is not associated with a value
+2025-04-13 15:05:51 - INFO - Gen 3:
+2025-04-13 15:05:51 - INFO - Success select 8 inds from population with size 21
+2025-04-13 15:06:53 - INFO - Successfully co-evo with 8 inds
+2025-04-13 15:08:56 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:08:57 - INFO - FE = 61, best HDR with fitness -1227.00
+2025-04-13 15:10:38 - INFO - Successfully self-evo with 8 inds
+2025-04-13 15:12:30 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 15:14:01 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:14:02 - INFO - FE = 69, best HDR with fitness -1176.00
+2025-04-13 15:14:12 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 15:15:49 - INFO - Successfully mutation 3 inds of 8 inds
+2025-04-13 15:15:50 - INFO - FE = 77, best HDR with fitness -1176.00
+2025-04-13 15:15:50 - INFO - Save best HDR to best/best_3.py
+2025-04-13 15:15:50 - INFO - Gen 4:
+2025-04-13 15:15:50 - INFO - Success select 8 inds from population with size 21
+2025-04-13 15:18:50 - ERROR - <class 'llm.BadAPIException'>:Expecting value: line 853 column 1 (char 4686)
+2025-04-13 15:18:50 - INFO - Gen 5:
+2025-04-13 15:18:50 - INFO - Success select 8 inds from population with size 21
+2025-04-13 15:21:23 - INFO - Successfully co-evo with 8 inds
+2025-04-13 15:22:55 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 15:26:16 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:26:17 - INFO - FE = 85, best HDR with fitness -1232.00
+2025-04-13 15:29:19 - INFO - Successfully self-evo with 8 inds
+2025-04-13 15:35:51 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:35:52 - INFO - FE = 93, best HDR with fitness -1176.00
+2025-04-13 15:36:05 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 15:38:36 - INFO - Successfully mutation 2 inds of 8 inds
+2025-04-13 15:38:38 - INFO - FE = 101, best HDR with fitness -1176.00
+2025-04-13 15:38:38 - INFO - Save best HDR to best/best_5.py
+2025-04-13 15:38:38 - INFO - Gen 6:
+2025-04-13 15:38:38 - INFO - Success select 8 inds from population with size 21
+2025-04-13 15:44:20 - INFO - Successfully co-evo with 8 inds
+2025-04-13 15:49:58 - INFO - Successfully crossover with 8 inds
+2025-04-13 15:49:59 - INFO - FE = 109, best HDR with fitness -1176.00
+2025-04-13 15:53:07 - ERROR - <class 'llm.BadAPIException'>:Expecting value: line 885 column 1 (char 4862)
+2025-04-13 15:53:07 - INFO - Gen 7:
+2025-04-13 15:53:07 - INFO - Success select 8 inds from population with size 21
+2025-04-13 15:58:17 - INFO - Successfully co-evo with 8 inds
+2025-04-13 15:59:06 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
+2025-04-13 16:03:15 - INFO - Successfully crossover with 8 inds
+2025-04-13 16:03:17 - INFO - FE = 117, best HDR with fitness -1176.00
+2025-04-13 16:06:08 - INFO - Successfully self-evo with 8 inds
+2025-04-13 16:11:16 - INFO - Successfully crossover with 8 inds
+2025-04-13 16:11:18 - INFO - FE = 125, best HDR with fitness -1240.00
+2025-04-13 16:11:26 - INFO - Successfully collective reflections from 16 reflections
+2025-04-13 16:12:36 - INFO - Successfully mutation 2 inds of 8 inds
+2025-04-13 16:12:40 - INFO - FE = 133, best HDR with fitness -1176.00
+2025-04-13 16:12:40 - INFO - Save best HDR to best/best_7.py
+2025-04-13 16:12:40 - INFO - Best HDR with fitness -1176.00
+2025-04-13 16:12:40 - INFO - Done!!!

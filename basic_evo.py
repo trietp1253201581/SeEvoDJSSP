@@ -18,6 +18,7 @@ class Individual:
         self.chromosome: HDR = None
         self.fitness = Individual.DEFAULT_FITNESS
         self.problem = problem
+        self.reflection = None
         
     def decode(self):
         return self.chromosome

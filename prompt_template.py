@@ -48,38 +48,25 @@ In this problem, job (with its operation) is {job_str}, machine is {machine_str}
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
-Now, we have 2 HDRs describe by a python function (with its makespan) are:
-HDR1 with makespan {hdr1_makespan}
--------
-{hdr1}
--------
+Now, we have some pairs of HDRs, with their makespan:
+{pairs}
 
-HDR2 with makespan {hdr2_makespan}
--------
-{hdr2}
--------
+For each pair, we need to compare the 2 HDRs of that pair and give the corresponding reflections (a text) to increase the performance of those 2 HDRs.
+Each pair needs to return the 2 original HDRs of the corresponding reflections, for example, with the input HDR1, HDR2, we need to return (HDR1, reflection1), (HDR2, reflection2).
 
-We need to compare these 2 examples and create a reflection to improve the other HDRs to make them more effective.
-Reflection is a text created from the 2 examples above, when comparing their effectiveness.
-Note that reflection should not contain information about comparing 2 HDRs, but only information about how to improve. That means you will still do the comparison but not add it to the reflection.
+Then, we need to synthesize all the pairs to create a single result which is a list of the original HDRs and corresponding reflections.
 
-After that, we need to apply this reflection to each HDR in a set, to improve HDR effectiveness. The HDRs set is
-{hdr_set}
-
-When applying the reflection, try to change the logic in meaningful ways. Avoid copying or slightly modifying HDRs. The goal is to evolve and diversify HDRs while improving their effectiveness.
-
-Your response MUST ONLY include the reflection and the list of reflected HDR in following JSON format with no additional text.
+Your response MUST ONLY include the list of reflected HDR and their new reflection text in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
-    "reflection": "<your_reflection_text>",
-    "reflected_hdr": [
-        {{"code": "<hdr_1>"}},
-        {{"code": "<hdr_2>"}},
+    "results": [
+        {{"code": "<hdr_1>", "reflection": "<reflection_1>"}},
+        {{"code": "<hdr_2>", "reflection": "<reflection_2>"}},
         ...,
-        {{"code": "<hdr_n>"}}
+        {{"code": "<hdr_n>", "reflection": "<reflection_n>"}}
     ]
 }}
-where n equals to the size of hdr set and where hdr_i is the i-th element in the hdr set after apply your reflection.
+where n is the total HDR from pairs (2 x num of pair).
 '''  
 
 CROSSOVER_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -90,17 +77,17 @@ Incoming job will be assign into a waiting pool, then a HDR will be used to sort
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
 Now, we have 2 HDRs describe by a python function are:
-HDR1
+HDR1 with reflection guide: {ref1}
 -------
 {hdr1}
 -------
 
-HDR2
+HDR2 with reflection guide: {ref2}
 -------
 {hdr2}
 -------
 
-We need to recombine 2 above parent HDRs to create 2 new children HDRs just use what is already in the 2 parent HDRs.
+We need to recombine 2 above parent HDRs to create 2 new children HDRs just use what is already in the 2 parent HDRs and 2 reflection evolutionary guide from 2 parents.
 When recombining, mix logic from both parents in creative ways. Do not just concatenate or randomly select. Make sure each new HDR is syntactically correct and brings new logic structure that still makes sense.
 
 Your response MUST ONLY include the 2 recombined HDRs in following JSON format with no additional text.
@@ -121,18 +108,11 @@ In this problem, job (with its operation) is {job_str}, machine is {machine_str}
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
-Now, we have 2 set of HDRs, one is the HDRs before apply co-evolution reflection, one is after apply this reflection:
-The co evo reflection: {co_evo_reflection}.
-*****
-hdr_before:
-{hdr_before}
+Now, we have some of pairs of HDRs, one is the HDRs before apply co-evolution reflection, one is after apply this reflection:
+{pairs}
 
-*****
-hdr_after
-{hdr_after}
-
-We need to compare each hdr_before[i] with hdr_after[i] to see the effect of applying co_evo reflection on the hdrs, then for each pair of hdr_before[i] and hdr_after[i], create a reflection to reflect that change.
-If the change is good (ie makespan of hdr_after[i] is smaller than makespan of hdr_before[i]), the reflection will highlight the change. 
+We need to compare 2 HDR in each pair to see the effect of applying co_evo reflection on the hdrs, then for each pair create a reflection to reflect that change.
+If the change is good (ie makespan of after is smaller than makespan of before), the reflection will highlight the change. 
 If the change is bad, the reflection will figure out why the change is bad and will be used to avoid similar mistakes.
 
 Reflections should be actionable and specific. Do not just state generic observations. Make clear what logic worked and what failed. Focus on patterns that lead to better makespan.
@@ -147,7 +127,7 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
         {{"code": "<hdr_n>", "reflection": "<ref_n>"}}
     ]
 }}
-where ref_i is the reflection corresponding to pair(hdr_before[i],hdr_after[i]) and hdr_i is the better hdr (with lower makespan) between hdr_before[i] and hdr_after[i]
+where n is the num of pairs and ref_i is the reflection corresponding to i-th pair and hdr_i is the better hdr (with lower makespan) between before and after HDR in each pair
 '''  
 
 COLLECTIVE_REF_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
