@@ -93,7 +93,7 @@ class Job:
         self.weight = 1.0
         self.oprs: List[Operation] = []
         self.status = Job.Status.ARRIVED
-        self.prior = float('-inf')
+        self.prior = 0
         
     def get_remain_opr(self):
         return len(self.oprs) - self.next_opr
@@ -189,6 +189,7 @@ class Problem:
         for i in range(num_jobs):
             new_job = Job(id=i)
             new_job.time_arr = random.randint(0, max_arr_time)
+            new_job.prior = random.randint(1, 5)
             num_opr = random.randint(1, max_oprs_each_job)
             for pos in range(num_opr):
                 last_d = new_job.oprs[-1].deadline if len(new_job.oprs) > 0 else 0

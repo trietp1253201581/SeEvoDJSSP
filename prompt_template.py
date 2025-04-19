@@ -175,3 +175,30 @@ HDR must be returned as a string with newline characters (\\n) properly escaped.
     "rephrased_hdr": "<hdr>"
 }}
 '''  
+
+SURROGATE_PROMPT_TEMPLATE = """
+You are an expert in evaluating dynamic job scheduling (DJSSP), heuristics dispatching rules (HDR).
+
+Problem context:
+{context}
+
+Some of evaluated examples:
+{examples}
+
+Now, given the follonwing HDRs:
+{hdrs}
+
+Estimate a fitness score (0-100) for each HDR on the given problem.
+
+Your response MUST ONLY include the HDRs with your evaluating fitness in following JSON format with no additional text.
+HDR must be returned as a string with newline characters (\\n) properly escaped.
+{{
+    "evaluated_hdrs": [
+        {{"code": "hdr_1", "fitness": "f1"}},
+        {{"code": "hdr_2", "fitness": "f2"}},
+        ....
+        {{"code": "hdr_n", "fitness": "fn"}},
+    ] 
+}}
+where hdr_i is i-th HDR (copy from request) need to evaluate and fi is your fitness evaluation of i-th HDR base on given problem.
+"""

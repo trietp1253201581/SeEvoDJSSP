@@ -18,7 +18,7 @@ for job in problem.jobs:
     print(str(job))
 
 # Build llm
-llm_model = OpenRouterLLM('openrouter', 'optimus-alpha', free=False)
+llm_model = OpenRouterLLM('openrouter', 'optimus-alpha', free=False, timeout=(30, 400))
 
 # Create Operator
 llm_init_func = LLMInitOperator(problem, llm_model, prompt_template=pt.INIT_IND_PROMPT_TEMPLATE)

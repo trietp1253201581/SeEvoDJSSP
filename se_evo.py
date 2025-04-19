@@ -29,12 +29,10 @@ def get_template(template_file: str):
     raise MissingTemplateException("Can't not load template function")
 
 class LLMBaseOperator(Operator):
-    def __init__(self, problem, llm_model: OpenRouterLLM, prompt_template: str, 
-                 timeout: float|tuple[float, float]=(30, 200)):
+    def __init__(self, problem, llm_model: OpenRouterLLM, prompt_template: str):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
-        self.timeout = timeout
         
     def _build_prompt(self, **config):
         return self.prompt_template.format(**config)
@@ -53,8 +51,8 @@ class LLMBaseOperator(Operator):
     def __call__(self, **kwargs):
         config = self._build_config(**kwargs)
         prompt = self._build_prompt(**config)
-        response = self.llm_model.get_response(prompt, self.timeout)
-        json_repsonse = self.llm_model.extract_repsonse(response)
+        response = self.llm_model.get_response(prompt)
+        json_repsonse = self.llm_model.extract_response(response)
         return self._process_json_response(json_repsonse)
 
 class LLMInitOperator(LLMBaseOperator):
