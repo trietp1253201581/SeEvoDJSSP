@@ -1,24 +1,36 @@
-from llm import OpenRouterLLM
+from llm import OpenRouterLLM, GoogleAIStudioLLM
 from model import CodeSegmentHDR
 from problem import Problem, AVAIABLE_TERMINALS
 import random
 from se_evo import LLMInitOperator, LLMCrossoverOperator, LLMMutationOperator, \
     CoEvoOperator, SelfEvoOperator, CollectiveRefOperator, RandomSelectOperator, \
-        TopKElitismReplaceOperator, makespan_fitness_func, se_evo
+        TopKElitismReplaceOperator, se_evo
+        
+from evaluate import SimulationBaseEvaluator, LLMSurogateEvaluator
 
 import prompt_template as pt
+
+# Set logging
+import logging
+logging.basicConfig(
+    filename='process.log',
+    level=logging.INFO,
+    format='[%(asctime)s] %(levelname)s in %(name)s (%(filename)s:%(lineno)d): %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
         
 # Create problem 
 random.seed(42)
 
 problem = Problem(AVAIABLE_TERMINALS, pool_size=6)
-problem.random_generate(num_jobs=15, max_oprs_each_job=6, num_machines=6, max_arr_time=200)
+problem.random_generate(num_jobs=50, max_oprs_each_job=10, num_machines=15, max_arr_time=300)
 
-for job in problem.jobs:
-    print(str(job))
+#for job in problem.jobs:
+   # print(str(job))
 
 # Build llm
-llm_model = OpenRouterLLM('openrouter', 'optimus-alpha', free=False, timeout=(30, 400))
+#llm_model = OpenRouterLLM('deepseek', 'deepseek-r1-zero', free=True, timeout=(60, 600))
+llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600))
 
 # Create Operator
 llm_init_func = LLMInitOperator(problem, llm_model, prompt_template=pt.INIT_IND_PROMPT_TEMPLATE)
@@ -29,15 +41,17 @@ self_evo_func = SelfEvoOperator(problem, llm_model, prompt_template=pt.SELF_EVO_
 collective_evo_func = CollectiveRefOperator(problem, llm_model, prompt_template=pt.COLLECTIVE_REF_PROMPT_TEMPLATE)
 selector = RandomSelectOperator(problem)
 replace_opr = TopKElitismReplaceOperator(problem, k=2)
+evaluator = LLMSurogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE)
+
 
 # Main Se-Evo process
 best = se_evo(120, problem, llm_init_func,
               co_evo_func, self_evo_func, collective_evo_func,
               llm_crossover_func, llm_mutation_func,
-              selector, replace_opr, makespan_fitness_func,
+              selector, replace_opr, evaluator,
               init_size=20, subset_size=8,
               template_file_path='template.txt',
-              pc=0.9, pm=0.3)
+              pc=0.9, pm=0.2)
 
 if best is None:
     print("Not found sol!")

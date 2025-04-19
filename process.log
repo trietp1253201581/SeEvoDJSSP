@@ -1,244 +1,747 @@
-2025-04-07 14:34:23 - INFO - Start trial 2025-04-07 14:34:23.338553
-2025-04-07 14:35:18 - INFO - Init phase
-2025-04-07 14:35:18 - INFO - FE = 30, best HDR with fitness -2730.00
-2025-04-07 14:35:18 - INFO - Gen 1:
-2025-04-07 14:35:18 - INFO - Success select 10 inds from population with size 30
-2025-04-07 14:35:51 - INFO - Successfully co-evo with 10 inds
-2025-04-07 14:37:00 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:37:02 - INFO - FE = 40, best HDR with fitness -2730.00
-2025-04-07 14:37:40 - INFO - Successfully self-evo with 10 inds
-2025-04-07 14:38:56 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:38:58 - INFO - FE = 50, best HDR with fitness -2730.00
-2025-04-07 14:39:04 - INFO - Successfully collective reflections from 11 reflections
-2025-04-07 14:39:29 - ERROR - <class 'model.InvalidKwargsException'>:Invalid kwargs for hdr unexpected character after line continuation character (<string>, line 1)
-2025-04-07 14:39:44 - INFO - Successfully mutation with 10 inds
-2025-04-07 14:39:46 - INFO - FE = 60, best HDR with fitness -2730.00
-2025-04-07 14:39:46 - INFO - Save best HDR to best/best_1.py
-2025-04-07 14:39:46 - INFO - Gen 2:
-2025-04-07 14:39:46 - INFO - Success select 10 inds from population with size 30
-2025-04-07 14:40:18 - INFO - Successfully co-evo with 10 inds
-2025-04-07 14:42:02 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:42:04 - INFO - FE = 70, best HDR with fitness -2730.00
-2025-04-07 14:42:54 - INFO - Successfully self-evo with 10 inds
-2025-04-07 14:44:43 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:44:46 - INFO - FE = 80, best HDR with fitness -2730.00
-2025-04-07 14:44:52 - INFO - Successfully collective reflections from 11 reflections
-2025-04-07 14:45:50 - INFO - Successfully mutation with 10 inds
-2025-04-07 14:45:53 - INFO - FE = 90, best HDR with fitness -2730.00
-2025-04-07 14:45:53 - INFO - Save best HDR to best/best_2.py
-2025-04-07 14:45:53 - INFO - Gen 3:
-2025-04-07 14:45:53 - INFO - Success select 10 inds from population with size 30
-2025-04-07 14:46:39 - INFO - Successfully co-evo with 10 inds
-2025-04-07 14:49:13 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:49:17 - INFO - FE = 100, best HDR with fitness -2730.00
-2025-04-07 14:50:34 - INFO - Successfully self-evo with 10 inds
-2025-04-07 14:53:22 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:53:25 - INFO - FE = 110, best HDR with fitness -2730.00
-2025-04-07 14:53:31 - INFO - Successfully collective reflections from 11 reflections
-2025-04-07 14:54:01 - ERROR - <class 'model.InvalidKwargsException'>:Invalid kwargs for hdr unexpected character after line continuation character (<string>, line 1)
-2025-04-07 14:54:19 - INFO - Successfully mutation with 10 inds
-2025-04-07 14:54:22 - INFO - FE = 120, best HDR with fitness -2730.00
-2025-04-07 14:54:22 - INFO - Save best HDR to best/best_3.py
-2025-04-07 14:54:22 - INFO - Gen 4:
-2025-04-07 14:54:22 - INFO - Success select 10 inds from population with size 30
-2025-04-07 14:55:17 - ERROR - <class 'model.InvalidKwargsException'>Invalid kwargs for hdr invalid syntax (<string>, line 4)
-2025-04-07 14:55:17 - INFO - Successfully co-evo with 9 inds
-2025-04-07 14:57:38 - INFO - Successfully crossover with 10 inds
-2025-04-07 14:57:42 - INFO - FE = 130, best HDR with fitness -2730.00
-2025-04-07 14:58:58 - INFO - Successfully self-evo with 10 inds
-2025-04-07 15:01:24 - INFO - Successfully crossover with 10 inds
-2025-04-07 15:01:29 - INFO - FE = 140, best HDR with fitness -2730.00
-2025-04-07 15:01:34 - INFO - Successfully collective reflections from 11 reflections
-2025-04-07 15:02:24 - INFO - Successfully mutation with 10 inds
-2025-04-07 15:02:27 - INFO - FE = 150, best HDR with fitness -2730.00
-2025-04-07 15:02:27 - INFO - Save best HDR to best/best_4.py
-2025-04-07 15:02:27 - INFO - Gen 5:
-2025-04-07 15:02:27 - INFO - Success select 10 inds from population with size 30
-2025-04-07 15:03:02 - INFO - Successfully co-evo with 10 inds
-2025-04-07 15:04:49 - INFO - Successfully crossover with 10 inds
-2025-04-07 15:04:50 - INFO - FE = 160, best HDR with fitness -2730.00
-2025-04-07 15:05:37 - INFO - Successfully self-evo with 10 inds
-2025-04-07 15:06:39 - ERROR - :Not support return type
-2025-04-07 15:07:37 - INFO - Successfully crossover with 10 inds
-2025-04-07 15:07:38 - INFO - FE = 170, best HDR with fitness -2730.00
-2025-04-07 15:07:42 - INFO - Successfully collective reflections from 11 reflections
-2025-04-07 15:08:22 - INFO - Successfully mutation with 10 inds
-2025-04-07 15:08:23 - INFO - FE = 180, best HDR with fitness -2730.00
-2025-04-07 15:08:23 - INFO - Save best HDR to best/best_5.py
-2025-04-07 15:08:23 - INFO - Gen 6:
-2025-04-07 15:08:23 - INFO - Success select 10 inds from population with size 30
-2025-04-07 15:09:05 - INFO - Successfully co-evo with 10 inds
-2025-04-07 15:11:43 - INFO - Successfully crossover with 10 inds
-2025-04-07 15:11:44 - INFO - FE = 190, best HDR with fitness -2730.00
-2025-04-07 15:12:58 - ERROR - <class 'llm.BadResponseException'>:Bad response:{
-    "ref
-2025-04-07 15:12:58 - INFO - Gen 7:
-2025-04-07 15:12:58 - INFO - Success select 10 inds from population with size 30
-2025-04-07 15:13:38 - INFO - Successfully co-evo with 10 inds
-2025-04-07 15:15:58 - INFO - Successfully crossover with 10 inds
-2025-04-07 15:16:02 - INFO - FE = 200, best HDR with fitness -2730.00
-2025-04-07 15:17:08 - INFO - Successfully self-evo with 10 inds
-2025-04-07 15:19:26 - INFO - Successfully crossover with 10 inds
-2025-04-07 15:19:28 - INFO - FE = 210, best HDR with fitness -2730.00
-2025-04-07 15:19:34 - INFO - Successfully collective reflections from 11 reflections
-2025-04-07 15:20:15 - INFO - Successfully mutation with 10 inds
-2025-04-07 15:20:17 - INFO - FE = 220, best HDR with fitness -2730.00
-2025-04-07 15:20:17 - INFO - Save best HDR to best/best_7.py
-2025-04-07 15:20:17 - INFO - Best HDR with fitness -2730.00
-2025-04-07 15:20:17 - INFO - Done!!!
-2025-04-13 13:05:40 - INFO - Start trial 2025-04-13 13:05:40.801302
-2025-04-13 13:10:52 - INFO - Start trial 2025-04-13 13:10:52.690138
-2025-04-13 13:14:06 - INFO - Start trial 2025-04-13 13:14:06.907545
-2025-04-13 13:18:16 - INFO - Start trial 2025-04-13 13:18:16.173950
-2025-04-13 13:20:21 - INFO - Init phase
-2025-04-13 13:20:21 - INFO - FE = 21, best HDR with fitness -2730.00
-2025-04-13 13:20:21 - INFO - Gen 1:
-2025-04-13 13:20:21 - INFO - Success select 8 inds from population with size 21
-2025-04-13 13:21:26 - INFO - Successfully co-evo with 8 inds
-2025-04-13 13:23:08 - INFO - Successfully crossover with 8 inds
-2025-04-13 13:23:14 - INFO - FE = 29, best HDR with fitness -3248.00
-2025-04-13 13:24:48 - INFO - Successfully self-evo with 8 inds
-2025-04-13 13:26:48 - INFO - Successfully crossover with 8 inds
-2025-04-13 13:26:50 - INFO - FE = 37, best HDR with fitness -3248.00
-2025-04-13 13:27:01 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 13:27:01 - ERROR - <class 'TypeError'>:LLMMutationOperator.__call__() got an unexpected keyword argument 'reflection'
-2025-04-13 13:27:01 - INFO - Gen 2:
-2025-04-13 13:27:01 - INFO - Success select 8 inds from population with size 21
-2025-04-13 13:28:11 - INFO - Successfully co-evo with 8 inds
-2025-04-13 13:30:50 - INFO - Start trial 2025-04-13 13:30:50.768305
-2025-04-13 13:33:12 - INFO - Start trial 2025-04-13 13:33:12.285548
-2025-04-13 13:33:12 - INFO - Init phase
-2025-04-13 13:34:57 - INFO - FE = 21, best HDR with fitness -3045.00
-2025-04-13 13:34:57 - INFO - Gen 1:
-2025-04-13 13:34:57 - INFO - Success select 8 inds from population with size 21
-2025-04-13 13:35:51 - INFO - Successfully co-evo with 8 inds
-2025-04-13 13:36:59 - INFO - Successfully crossover with 8 inds
-2025-04-13 13:37:03 - INFO - FE = 29, best HDR with fitness -3248.00
-2025-04-13 13:38:39 - INFO - Successfully self-evo with 8 inds
-2025-04-13 13:40:09 - INFO - Successfully crossover with 8 inds
-2025-04-13 13:40:14 - INFO - FE = 37, best HDR with fitness -3045.00
-2025-04-13 13:40:23 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 13:41:34 - INFO - Successfully mutation with 8 inds
-2025-04-13 14:04:33 - INFO - Start trial 2025-04-13 14:04:33.645531
-2025-04-13 14:04:33 - INFO - Init phase
-2025-04-13 14:06:20 - INFO - FE = 21, best HDR with fitness -2730.00
-2025-04-13 14:06:20 - INFO - Gen 1:
-2025-04-13 14:06:20 - INFO - Success select 8 inds from population with size 21
-2025-04-13 14:07:12 - INFO - Successfully co-evo with 8 inds
-2025-04-13 14:09:06 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:09:08 - INFO - FE = 29, best HDR with fitness -2730.00
-2025-04-13 14:10:33 - INFO - Successfully self-evo with 8 inds
-2025-04-13 14:11:35 - ERROR - :Invalid kwargs cannot access local variable 'urgency' where it is not associated with a value
-2025-04-13 14:13:18 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:13:20 - INFO - FE = 37, best HDR with fitness -2730.00
-2025-04-13 14:13:29 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 14:15:05 - INFO - Successfully mutation 4 inds of 8 inds
-2025-04-13 14:15:07 - INFO - FE = 45, best HDR with fitness -2730.00
-2025-04-13 14:15:07 - INFO - Save best HDR to best/best_1.py
-2025-04-13 14:15:07 - INFO - Gen 2:
-2025-04-13 14:15:07 - INFO - Success select 8 inds from population with size 21
-2025-04-13 14:16:24 - INFO - Successfully co-evo with 8 inds
-2025-04-13 14:19:15 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 14:19:40 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:19:41 - INFO - FE = 53, best HDR with fitness -3248.00
-2025-04-13 14:21:13 - INFO - Successfully self-evo with 8 inds
-2025-04-13 14:23:10 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:27:51 - INFO - Start trial 2025-04-13 14:27:51.825791
-2025-04-13 14:27:51 - INFO - Init phase
-2025-04-13 14:29:31 - ERROR - <class 'model.InvalidKwargsException'>Invalid kwargs invalid syntax. Perhaps you forgot a comma? (<string>, line 2)
-2025-04-13 14:29:33 - INFO - FE = 20, best HDR with fitness -1176.00
-2025-04-13 14:29:33 - INFO - Gen 1:
-2025-04-13 14:29:33 - INFO - Success select 8 inds from population with size 21
-2025-04-13 14:30:51 - INFO - Successfully co-evo with 8 inds
-2025-04-13 14:31:57 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:31:58 - INFO - FE = 28, best HDR with fitness -1221.00
-2025-04-13 14:33:25 - INFO - Successfully self-evo with 8 inds
-2025-04-13 14:34:12 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 14:35:08 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 14:35:32 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 14:35:49 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:35:50 - INFO - FE = 36, best HDR with fitness -1221.00
-2025-04-13 14:36:00 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 14:37:07 - INFO - Successfully mutation 4 inds of 8 inds
-2025-04-13 14:37:07 - INFO - FE = 44, best HDR with fitness -1176.00
-2025-04-13 14:37:07 - INFO - Save best HDR to best/best_1.py
-2025-04-13 14:37:07 - INFO - Gen 2:
-2025-04-13 14:37:07 - INFO - Success select 8 inds from population with size 21
-2025-04-13 14:38:52 - INFO - Start trial 2025-04-13 14:38:52.321460
-2025-04-13 14:38:52 - INFO - Init phase
-2025-04-13 14:47:40 - INFO - Start trial 2025-04-13 14:47:40.782467
-2025-04-13 14:47:40 - INFO - Init phase
-2025-04-13 14:49:26 - INFO - FE = 21, best HDR with fitness -1176.00
-2025-04-13 14:49:26 - INFO - Gen 1:
-2025-04-13 14:49:26 - INFO - Success select 8 inds from population with size 21
-2025-04-13 14:50:39 - INFO - Successfully co-evo with 8 inds
-2025-04-13 14:51:58 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:51:59 - INFO - FE = 29, best HDR with fitness -1232.00
-2025-04-13 14:53:18 - INFO - Successfully self-evo with 8 inds
-2025-04-13 14:54:00 - ERROR - :Invalid kwargs name 'timing_term' is not defined
-2025-04-13 14:55:55 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 14:56:19 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 14:56:55 - INFO - Successfully crossover with 8 inds
-2025-04-13 14:56:56 - INFO - FE = 37, best HDR with fitness -1185.00
-2025-04-13 14:57:05 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 14:57:38 - INFO - Successfully mutation 1 inds of 8 inds
-2025-04-13 14:57:38 - INFO - FE = 45, best HDR with fitness -1176.00
-2025-04-13 14:57:38 - INFO - Save best HDR to best/best_1.py
-2025-04-13 14:57:38 - INFO - Gen 2:
-2025-04-13 14:57:38 - INFO - Success select 8 inds from population with size 21
-2025-04-13 14:59:31 - INFO - Successfully co-evo with 8 inds
-2025-04-13 15:01:20 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:01:21 - INFO - FE = 53, best HDR with fitness -1176.00
-2025-04-13 15:03:15 - INFO - Successfully self-evo with 8 inds
-2025-04-13 15:05:50 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:05:51 - ERROR - <class 'model.InvalidKwargsException'>:Invalid kwargs cannot access local variable 'urgency' where it is not associated with a value
-2025-04-13 15:05:51 - INFO - Gen 3:
-2025-04-13 15:05:51 - INFO - Success select 8 inds from population with size 21
-2025-04-13 15:06:53 - INFO - Successfully co-evo with 8 inds
-2025-04-13 15:08:56 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:08:57 - INFO - FE = 61, best HDR with fitness -1227.00
-2025-04-13 15:10:38 - INFO - Successfully self-evo with 8 inds
-2025-04-13 15:12:30 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 15:14:01 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:14:02 - INFO - FE = 69, best HDR with fitness -1176.00
-2025-04-13 15:14:12 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 15:15:49 - INFO - Successfully mutation 3 inds of 8 inds
-2025-04-13 15:15:50 - INFO - FE = 77, best HDR with fitness -1176.00
-2025-04-13 15:15:50 - INFO - Save best HDR to best/best_3.py
-2025-04-13 15:15:50 - INFO - Gen 4:
-2025-04-13 15:15:50 - INFO - Success select 8 inds from population with size 21
-2025-04-13 15:18:50 - ERROR - <class 'llm.BadAPIException'>:Expecting value: line 853 column 1 (char 4686)
-2025-04-13 15:18:50 - INFO - Gen 5:
-2025-04-13 15:18:50 - INFO - Success select 8 inds from population with size 21
-2025-04-13 15:21:23 - INFO - Successfully co-evo with 8 inds
-2025-04-13 15:22:55 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 15:26:16 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:26:17 - INFO - FE = 85, best HDR with fitness -1232.00
-2025-04-13 15:29:19 - INFO - Successfully self-evo with 8 inds
-2025-04-13 15:35:51 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:35:52 - INFO - FE = 93, best HDR with fitness -1176.00
-2025-04-13 15:36:05 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 15:38:36 - INFO - Successfully mutation 2 inds of 8 inds
-2025-04-13 15:38:38 - INFO - FE = 101, best HDR with fitness -1176.00
-2025-04-13 15:38:38 - INFO - Save best HDR to best/best_5.py
-2025-04-13 15:38:38 - INFO - Gen 6:
-2025-04-13 15:38:38 - INFO - Success select 8 inds from population with size 21
-2025-04-13 15:44:20 - INFO - Successfully co-evo with 8 inds
-2025-04-13 15:49:58 - INFO - Successfully crossover with 8 inds
-2025-04-13 15:49:59 - INFO - FE = 109, best HDR with fitness -1176.00
-2025-04-13 15:53:07 - ERROR - <class 'llm.BadAPIException'>:Expecting value: line 885 column 1 (char 4862)
-2025-04-13 15:53:07 - INFO - Gen 7:
-2025-04-13 15:53:07 - INFO - Success select 8 inds from population with size 21
-2025-04-13 15:58:17 - INFO - Successfully co-evo with 8 inds
-2025-04-13 15:59:06 - ERROR - :Invalid kwargs unexpected character after line continuation character (<string>, line 1)
-2025-04-13 16:03:15 - INFO - Successfully crossover with 8 inds
-2025-04-13 16:03:17 - INFO - FE = 117, best HDR with fitness -1176.00
-2025-04-13 16:06:08 - INFO - Successfully self-evo with 8 inds
-2025-04-13 16:11:16 - INFO - Successfully crossover with 8 inds
-2025-04-13 16:11:18 - INFO - FE = 125, best HDR with fitness -1240.00
-2025-04-13 16:11:26 - INFO - Successfully collective reflections from 16 reflections
-2025-04-13 16:12:36 - INFO - Successfully mutation 2 inds of 8 inds
-2025-04-13 16:12:40 - INFO - FE = 133, best HDR with fitness -1176.00
-2025-04-13 16:12:40 - INFO - Save best HDR to best/best_7.py
-2025-04-13 16:12:40 - INFO - Best HDR with fitness -1176.00
-2025-04-13 16:12:40 - INFO - Done!!!
+[2025-04-19 23:01:49] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:01:49.420595
+[2025-04-19 23:01:49] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:01:51] ERROR in se_evo (se_evo.py:329): <class 'llm.BadAPIException'>:Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 325, in se_evo
+    P: Population = llm_init_func(init_size=init_size,
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+                              func_template=get_template(template_file_path))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 83, in __call__
+    return super().__call__(init_size=init_size, func_template=func_template)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 51, in __call__
+    response = self.llm_model.get_response(prompt)
+  File "F:\SeEvoDJSSP\llm.py", line 164, in get_response
+    raise BadAPIException(msg=response.json()['error']['message'])
+llm.BadAPIException
+[2025-04-19 23:11:55] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:11:55.379338
+[2025-04-19 23:11:55] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:11:55] ERROR in se_evo (se_evo.py:329): <class 'llm.BadAPIException'>:400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta2/models/gemini-2.0-flash-lite:generateText?key=AIzaSyBkPvOFY0OnNAKthnQQb2Tqs6PVR3kKI6A
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 223, in get_response
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta2/models/gemini-2.0-flash-lite:generateText?key=AIzaSyBkPvOFY0OnNAKthnQQb2Tqs6PVR3kKI6A
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 325, in se_evo
+    P: Population = llm_init_func(init_size=init_size,
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+                              func_template=get_template(template_file_path))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 83, in __call__
+    return super().__call__(init_size=init_size, func_template=func_template)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 51, in __call__
+    response = self.llm_model.get_response(prompt)
+  File "F:\SeEvoDJSSP\llm.py", line 233, in get_response
+    raise BadAPIException(str(e))
+llm.BadAPIException
+[2025-04-19 23:12:17] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:12:17.478110
+[2025-04-19 23:12:17] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:12:18] ERROR in se_evo (se_evo.py:329): <class 'llm.BadAPIException'>:400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta2/models/gemini-2.0-flash:generateText?key=AIzaSyBkPvOFY0OnNAKthnQQb2Tqs6PVR3kKI6A
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 223, in get_response
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta2/models/gemini-2.0-flash:generateText?key=AIzaSyBkPvOFY0OnNAKthnQQb2Tqs6PVR3kKI6A
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 325, in se_evo
+    P: Population = llm_init_func(init_size=init_size,
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+                              func_template=get_template(template_file_path))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 83, in __call__
+    return super().__call__(init_size=init_size, func_template=func_template)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 51, in __call__
+    response = self.llm_model.get_response(prompt)
+  File "F:\SeEvoDJSSP\llm.py", line 233, in get_response
+    raise BadAPIException(str(e))
+llm.BadAPIException
+[2025-04-19 23:13:17] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:13:17.135027
+[2025-04-19 23:13:17] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:13:18] ERROR in se_evo (se_evo.py:329): <class 'llm.BadAPIException'>:400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBkPvOFY0OnNAKthnQQb2Tqs6PVR3kKI6A
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 223, in get_response
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBkPvOFY0OnNAKthnQQb2Tqs6PVR3kKI6A
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 325, in se_evo
+    P: Population = llm_init_func(init_size=init_size,
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+                              func_template=get_template(template_file_path))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 83, in __call__
+    return super().__call__(init_size=init_size, func_template=func_template)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 51, in __call__
+    response = self.llm_model.get_response(prompt)
+  File "F:\SeEvoDJSSP\llm.py", line 233, in get_response
+    raise BadAPIException(str(e))
+llm.BadAPIException
+[2025-04-19 23:18:31] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:18:31.779289
+[2025-04-19 23:18:31] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:18:44] ERROR in se_evo (se_evo.py:329): <class 'llm.BadResponseException'>:Failed to parse JSON: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 245, in extract_response
+    return json.loads(response)
+           ~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 325, in se_evo
+    P: Population = llm_init_func(init_size=init_size,
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+                              func_template=get_template(template_file_path))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 83, in __call__
+    return super().__call__(init_size=init_size, func_template=func_template)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 247, in extract_response
+    raise BadResponseException(f"Failed to parse JSON: {e}")
+llm.BadResponseException
+[2025-04-19 23:19:37] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:19:37.619043
+[2025-04-19 23:19:37] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:19:51] ERROR in se_evo (se_evo.py:329): <class 'llm.BadResponseException'>:Failed to parse JSON: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 246, in extract_response
+    return json.loads(response)
+           ~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 325, in se_evo
+    P: Population = llm_init_func(init_size=init_size,
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+                              func_template=get_template(template_file_path))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 83, in __call__
+    return super().__call__(init_size=init_size, func_template=func_template)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 248, in extract_response
+    raise BadResponseException(f"Failed to parse JSON: {e}")
+llm.BadResponseException
+[2025-04-19 23:20:44] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:20:44.542768
+[2025-04-19 23:20:44] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:20:57] INFO in evaluate (evaluate.py:329): Start evaluate 20 HDR.
+[2025-04-19 23:21:11] INFO in evaluate (evaluate.py:342): Successfully evaluate 20/20 HDR.
+[2025-04-19 23:21:11] INFO in se_evo (se_evo.py:334): FE = 20, best HDR with fitness 95.00
+[2025-04-19 23:21:11] INFO in se_evo (se_evo.py:338): Gen 1:
+[2025-04-19 23:21:11] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:21:21] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+l contribution from 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 10 column 27 (char 1018)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:21:21] WARNING in se_evo (se_evo.py:449): Num gen still 1
+[2025-04-19 23:21:21] INFO in se_evo (se_evo.py:338): Gen 1:
+[2025-04-19 23:21:21] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:21:30] INFO in se_evo (se_evo.py:349): Successfully co-evo with 8 inds
+[2025-04-19 23:21:41] INFO in se_evo (se_evo.py:375): Successfully crossover with 8 inds
+[2025-04-19 23:21:41] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:21:49] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:21:49] INFO in se_evo (se_evo.py:383): FE = 28, best HDR with fitness 90.00
+[2025-04-19 23:21:57] INFO in se_evo (se_evo.py:388): Successfully self-evo with 8 inds
+[2025-04-19 23:22:00] ERROR in se_evo (se_evo.py:165): :Invalid kwargs duplicate argument 'jwt' in function definition (<string>, line 1)
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\model.py", line 81, in execute
+    exec(self._code, globals(), local_vars)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1
+SyntaxError: duplicate argument 'jwt' in function definition
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 160, in _process_json_response
+    new_hdr = CodeSegmentHDR(code=code_json['code'])
+  File "F:\SeEvoDJSSP\model.py", line 27, in __init__
+    self.code = code
+    ^^^^^^^^^
+  File "F:\SeEvoDJSSP\model.py", line 39, in code
+    res = self.execute(jnpt=1.0, japt=2.5, jrt=3.6, jro=4.1, jwt=6.7, jat=6.0, jd=8.0, jcd=3.0, js=2.0, jw=1.0, ml=89.0, mr=20.0, mrel=20.0, mpr=20.1, mutil=3.9, tnow=15, util=60, avgwt=20.0)
+  File "F:\SeEvoDJSSP\model.py", line 87, in execute
+    raise InvalidKwargsException(f"Invalid kwargs " + str(e))
+model.InvalidKwargsException
+[2025-04-19 23:22:10] INFO in se_evo (se_evo.py:404): Successfully crossover with 8 inds
+[2025-04-19 23:22:10] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:22:16] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:22:16] INFO in se_evo (se_evo.py:410): FE = 36, best HDR with fitness 85.00
+[2025-04-19 23:22:17] INFO in se_evo (se_evo.py:416): Successfully collective reflections from 16 reflections
+[2025-04-19 23:22:17] INFO in se_evo (se_evo.py:433): Successfully mutation 0 inds of 8 inds
+[2025-04-19 23:22:17] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:22:24] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:22:24] INFO in se_evo (se_evo.py:444): FE = 44, best HDR with fitness 95.00
+[2025-04-19 23:22:24] INFO in se_evo (se_evo.py:445): Save best HDR to best/best_0.py
+[2025-04-19 23:22:24] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:22:24] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:22:33] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+ible reflection is: 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 6 column 27 (char 286)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:22:33] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:22:33] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:22:33] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:22:43] INFO in se_evo (se_evo.py:349): Successfully co-evo with 8 inds
+[2025-04-19 23:22:57] INFO in se_evo (se_evo.py:375): Successfully crossover with 8 inds
+[2025-04-19 23:22:57] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:23:05] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:23:05] INFO in se_evo (se_evo.py:383): FE = 52, best HDR with fitness 90.00
+[2025-04-19 23:23:17] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "reflected_hd
+ce the influence of 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 18 column 27 (char 3236)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 386, in se_evo
+    I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
+  File "F:\SeEvoDJSSP\se_evo.py", line 216, in __call__
+    return super().__call__(compare_hdrs=compare_hdrs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:23:17] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:23:17] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:23:17] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:23:26] INFO in se_evo (se_evo.py:349): Successfully co-evo with 8 inds
+[2025-04-19 23:23:36] INFO in se_evo (se_evo.py:375): Successfully crossover with 8 inds
+[2025-04-19 23:23:36] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:23:44] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:23:44] INFO in se_evo (se_evo.py:383): FE = 60, best HDR with fitness 92.00
+[2025-04-19 23:23:55] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "reflected_hd
+al, merely dividing 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 10 column 27 (char 1201)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 386, in se_evo
+    I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
+  File "F:\SeEvoDJSSP\se_evo.py", line 216, in __call__
+    return super().__call__(compare_hdrs=compare_hdrs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:23:55] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:23:55] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:23:55] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:24:02] INFO in se_evo (se_evo.py:349): Successfully co-evo with 8 inds
+[2025-04-19 23:24:15] INFO in se_evo (se_evo.py:375): Successfully crossover with 8 inds
+[2025-04-19 23:24:15] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:24:23] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:24:23] INFO in se_evo (se_evo.py:383): FE = 68, best HDR with fitness 90.00
+[2025-04-19 23:24:34] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "reflected_hd
+zation. Introducing 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 5 column 240 (char 981)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 386, in se_evo
+    I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
+  File "F:\SeEvoDJSSP\se_evo.py", line 216, in __call__
+    return super().__call__(compare_hdrs=compare_hdrs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:24:34] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:24:34] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:24:34] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:28:17] INFO in se_evo (se_evo.py:320): Start trial 2025-04-19 23:28:17.280149
+[2025-04-19 23:28:17] INFO in se_evo (se_evo.py:322): Init phase
+[2025-04-19 23:28:31] INFO in evaluate (evaluate.py:329): Start evaluate 20 HDR.
+[2025-04-19 23:28:45] INFO in evaluate (evaluate.py:342): Successfully evaluate 20/20 HDR.
+[2025-04-19 23:28:45] INFO in se_evo (se_evo.py:334): FE = 20, best HDR with fitness 85.00
+[2025-04-19 23:28:45] INFO in se_evo (se_evo.py:338): Gen 1:
+[2025-04-19 23:28:45] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:28:53] INFO in se_evo (se_evo.py:349): Successfully co-evo with 8 inds
+[2025-04-19 23:29:05] INFO in se_evo (se_evo.py:375): Successfully crossover with 8 inds
+[2025-04-19 23:29:05] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:29:12] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:29:12] INFO in se_evo (se_evo.py:383): FE = 28, best HDR with fitness 85.00
+[2025-04-19 23:29:21] INFO in se_evo (se_evo.py:388): Successfully self-evo with 8 inds
+[2025-04-19 23:29:34] INFO in se_evo (se_evo.py:404): Successfully crossover with 8 inds
+[2025-04-19 23:29:34] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:29:41] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:29:41] INFO in se_evo (se_evo.py:410): FE = 36, best HDR with fitness 85.00
+[2025-04-19 23:29:44] INFO in se_evo (se_evo.py:416): Successfully collective reflections from 16 reflections
+[2025-04-19 23:29:50] INFO in se_evo (se_evo.py:433): Successfully mutation 2 inds of 8 inds
+[2025-04-19 23:29:50] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:29:59] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:29:59] INFO in se_evo (se_evo.py:444): FE = 44, best HDR with fitness 85.00
+[2025-04-19 23:29:59] INFO in se_evo (se_evo.py:445): Save best HDR to best/best_0.py
+[2025-04-19 23:29:59] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:29:59] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:30:14] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+eighted difference: 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 6 column 27 (char 277)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:30:14] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:30:14] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:30:14] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:30:26] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+elated factors like 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 30 column 27 (char 6203)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:30:26] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:30:26] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:30:26] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:30:39] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+a quantity (perhaps 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 6 column 27 (char 1187)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:30:39] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:30:39] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:30:39] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:30:50] INFO in se_evo (se_evo.py:349): Successfully co-evo with 8 inds
+[2025-04-19 23:31:04] INFO in se_evo (se_evo.py:375): Successfully crossover with 8 inds
+[2025-04-19 23:31:04] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:31:13] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:31:13] INFO in se_evo (se_evo.py:383): FE = 52, best HDR with fitness 90.00
+[2025-04-19 23:31:23] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "reflected_hd
+kespan. Introducing 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 10 column 27 (char 900)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 386, in se_evo
+    I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
+  File "F:\SeEvoDJSSP\se_evo.py", line 216, in __call__
+    return super().__call__(compare_hdrs=compare_hdrs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:31:23] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:31:23] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:31:23] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:31:36] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+rity, even if their 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 14 column 27 (char 2565)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:31:36] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:31:36] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:31:36] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:31:47] ERROR in se_evo (se_evo.py:448): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+aling factor to the 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 10 column 1143 (char 4982)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 347, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 137, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 52, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:31:47] WARNING in se_evo (se_evo.py:449): Num gen still 2
+[2025-04-19 23:31:47] INFO in se_evo (se_evo.py:338): Gen 2:
+[2025-04-19 23:31:47] INFO in se_evo (se_evo.py:344): Success select 8 inds from population with size 20
+[2025-04-19 23:36:12] INFO in se_evo (se_evo.py:321): Start trial 2025-04-19 23:36:12.970959
+[2025-04-19 23:36:12] INFO in se_evo (se_evo.py:323): Init phase
+[2025-04-19 23:36:25] INFO in evaluate (evaluate.py:329): Start evaluate 20 HDR.
+[2025-04-19 23:36:39] INFO in evaluate (evaluate.py:342): Successfully evaluate 20/20 HDR.
+[2025-04-19 23:36:39] INFO in se_evo (se_evo.py:335): FE = 20, best HDR with fitness 85.00
+[2025-04-19 23:36:39] INFO in se_evo (se_evo.py:339): Gen 1:
+[2025-04-19 23:36:39] INFO in se_evo (se_evo.py:345): Success select 8 inds from population with size 20
+[2025-04-19 23:36:47] ERROR in se_evo (se_evo.py:449): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+e, consider scaling 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 6 column 27 (char 271)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 348, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 138, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 53, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:36:47] WARNING in se_evo (se_evo.py:450): Num gen still 1
+[2025-04-19 23:37:17] INFO in se_evo (se_evo.py:339): Gen 1:
+[2025-04-19 23:37:17] INFO in se_evo (se_evo.py:345): Success select 8 inds from population with size 20
+[2025-04-19 23:37:26] INFO in se_evo (se_evo.py:350): Successfully co-evo with 8 inds
+[2025-04-19 23:37:35] INFO in se_evo (se_evo.py:376): Successfully crossover with 8 inds
+[2025-04-19 23:37:35] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:37:42] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:37:42] INFO in se_evo (se_evo.py:384): FE = 28, best HDR with fitness 90.00
+[2025-04-19 23:37:51] INFO in se_evo (se_evo.py:389): Successfully self-evo with 8 inds
+[2025-04-19 23:38:01] INFO in se_evo (se_evo.py:405): Successfully crossover with 8 inds
+[2025-04-19 23:38:01] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:38:08] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:38:08] INFO in se_evo (se_evo.py:411): FE = 36, best HDR with fitness 90.00
+[2025-04-19 23:38:09] INFO in se_evo (se_evo.py:417): Successfully collective reflections from 16 reflections
+[2025-04-19 23:38:11] INFO in se_evo (se_evo.py:434): Successfully mutation 1 inds of 8 inds
+[2025-04-19 23:38:11] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:38:19] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:38:19] INFO in se_evo (se_evo.py:445): FE = 44, best HDR with fitness 85.00
+[2025-04-19 23:38:19] INFO in se_evo (se_evo.py:446): Save best HDR to best/best_0.py
+[2025-04-19 23:38:19] INFO in se_evo (se_evo.py:339): Gen 2:
+[2025-04-19 23:38:19] INFO in se_evo (se_evo.py:345): Success select 8 inds from population with size 20
+[2025-04-19 23:38:27] INFO in se_evo (se_evo.py:350): Successfully co-evo with 8 inds
+[2025-04-19 23:38:39] INFO in se_evo (se_evo.py:376): Successfully crossover with 8 inds
+[2025-04-19 23:38:39] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:38:45] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:38:45] INFO in se_evo (se_evo.py:384): FE = 52, best HDR with fitness 85.00
+[2025-04-19 23:38:53] INFO in se_evo (se_evo.py:389): Successfully self-evo with 8 inds
+[2025-04-19 23:39:01] INFO in se_evo (se_evo.py:405): Successfully crossover with 8 inds
+[2025-04-19 23:39:01] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:39:06] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:39:06] INFO in se_evo (se_evo.py:411): FE = 60, best HDR with fitness 90.00
+[2025-04-19 23:39:08] INFO in se_evo (se_evo.py:417): Successfully collective reflections from 16 reflections
+[2025-04-19 23:39:10] INFO in se_evo (se_evo.py:434): Successfully mutation 1 inds of 8 inds
+[2025-04-19 23:39:10] INFO in evaluate (evaluate.py:329): Start evaluate 8 HDR.
+[2025-04-19 23:39:16] INFO in evaluate (evaluate.py:342): Successfully evaluate 8/8 HDR.
+[2025-04-19 23:39:16] INFO in se_evo (se_evo.py:445): FE = 68, best HDR with fitness 85.00
+[2025-04-19 23:39:16] INFO in se_evo (se_evo.py:446): Save best HDR to best/best_1.py
+[2025-04-19 23:39:16] INFO in se_evo (se_evo.py:339): Gen 3:
+[2025-04-19 23:39:16] INFO in se_evo (se_evo.py:345): Success select 8 inds from population with size 20
+[2025-04-19 23:39:25] ERROR in se_evo (se_evo.py:449): <class 'llm.BadResponseException'>:Bad response:
+{
+    "results": [
+
+ailability, such as 
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\llm.py", line 249, in extract_response
+    json_obj = json.loads(json_str)
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\admin\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 26 column 27 (char 4225)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\SeEvoDJSSP\se_evo.py", line 348, in se_evo
+    S_r_inds = co_evo_func(S_p.inds)
+  File "F:\SeEvoDJSSP\se_evo.py", line 138, in __call__
+    return super().__call__(inds=inds)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "F:\SeEvoDJSSP\se_evo.py", line 53, in __call__
+    json_repsonse = self.llm_model.extract_response(response)
+  File "F:\SeEvoDJSSP\llm.py", line 253, in extract_response
+    raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+llm.BadResponseException
+[2025-04-19 23:39:25] WARNING in se_evo (se_evo.py:450): Num gen still 3

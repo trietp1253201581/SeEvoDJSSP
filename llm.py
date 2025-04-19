@@ -1,4 +1,3 @@
-from typing import Literal
 import requests
 import json
 import os
@@ -161,11 +160,10 @@ class OpenRouterLLM:
         try:
             response = requests.post(url=self.url, headers=headers, data=data, timeout=self.timeout)
             response.raise_for_status()  # Kiểm tra lỗi HTTP (4xx, 5xx)
-            print(response.text)
-            if 'choices' not in response.json():
-                raise BadResponseException()
-            elif 'error' in response.json():
+            if 'error' in response.json():
                 raise BadAPIException(msg=response.json()['error']['message'])
+            if 'choices' not in response.json():
+                raise BadResponseException(msg=response.json())
             return response.json()['choices'][0]['message']['content']
         except requests.Timeout:
             raise BadAPIException("Timeout Request!")
@@ -176,18 +174,84 @@ class OpenRouterLLM:
         m = re.search(r'(json)?(?P<obj>[^\`]+)', response)
         if m is not None:
             json_str = m.group('obj')
-            
+            print(json_str)
             try:
                 json_obj = json.loads(json_str)
             
                 return json_obj
             except json.decoder.JSONDecodeError as e:
-                raise BadResponseException(msg="Bad response:" + json_str[:10])
+                raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
             except TypeError as e:
-                raise BadResponseException(msg="Bad response:" + json_str[:10])
+                raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
         else:
             raise BadResponseException()
         
         
     def close(self):
         self._delete_key()
+        
+class GoogleAIStudioLLM:
+    """
+    Client for Google AI Studio Generative Language API.
+    Requires 'GOOGLE_API_KEY' in config.json under key 'GOOGLE_AI_API_KEY'.
+    """
+    def __init__(self, model: str, timeout: tuple[float, float]=(30, 200)):
+        self.model = model
+        self.timeout = timeout
+        self.url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        self.api_key = self._load_api_key()
+
+    def _load_api_key(self) -> str:
+        try:
+            with open('./config.json', 'r') as f:
+                data = json.load(f)
+                return data['GOOGLE_AI_API_KEY']
+        except Exception:
+            raise MissingConfigException("Missing 'GOOGLE_AI_API_KEY' in config.json")
+
+    def get_response(self, prompt: str) -> str:
+        headers = {"Content-Type": "application/json"}
+        params = {"key": self.api_key}
+        body = {
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": prompt}]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 1.2,
+                "maxOutputTokens": 2**15
+            }
+        }
+        try:
+            resp = requests.post(self.url, headers=headers, params=params,
+                                json=body, timeout=self.timeout)
+            resp.raise_for_status()
+            data = resp.json()
+            if 'candidates' in data and data['candidates']:
+                candidate = data['candidates'][0]
+                if 'content' in candidate and 'parts' in candidate['content']:
+                    return candidate['content']['parts'][0].get('text', '')
+            raise BadResponseException(f"Unexpected response format: {data}")
+        except requests.Timeout:
+            raise BadAPIException("Google AI Studio request timed out")
+        except requests.RequestException as e:
+            raise BadAPIException(str(e))
+
+
+    def extract_response(self, response: str) -> dict:
+        m = re.search(r'(json)?(?P<obj>[^\`]+)', response)
+        if m is not None:
+            json_str = m.group('obj')
+            print(json_str)
+            try:
+                json_obj = json.loads(json_str)
+            
+                return json_obj
+            except json.decoder.JSONDecodeError as e:
+                raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+            except TypeError as e:
+                raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
+        else:
+            raise BadResponseException()

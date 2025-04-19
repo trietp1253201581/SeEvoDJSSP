@@ -1,19 +1,16 @@
 from model import CodeSegmentHDR, HDRException
 from typing import List, Tuple
 from llm import OpenRouterLLM, LLMException
-from basic_evo import Individual, Population, Operator, validate, FITNESS_FUNC_TYPE
+from basic_evo import Individual, Population, Operator
 from abc import abstractmethod
 import copy
 import random
 from problem import Problem
-from simulate import Simulator
+from evaluate import Evaluator
 import datetime
-
-import time
 import logging
-logging.basicConfig(filename='process.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+import time
+
 
 random.seed(42)
 
@@ -33,6 +30,7 @@ class LLMBaseOperator(Operator):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
+        self._logger = logging.getLogger(__name__)
         
     def _build_prompt(self, **config):
         return self.prompt_template.format(**config)
@@ -78,7 +76,7 @@ class LLMInitOperator(LLMBaseOperator):
                 new_ind.chromosome = new_hdr
                 pop.inds.append(new_ind)
             except HDRException as e:
-                logging.error(str(type(e)) + e.msg)
+                self._logger.error(str(type(e)) + e.msg, exc_info=True)
                 continue
         return pop
     
@@ -132,7 +130,7 @@ class CoEvoOperator(LLMBaseOperator):
                 new_ind.reflection = json_obj['reflection']
                 inds.append(new_ind)
             except HDRException as e:
-                logging.error(str(type(e)) + e.msg)
+                self._logger.error(str(type(e)) + e.msg, exc_info=True)
                 continue
         return inds
     
@@ -165,7 +163,7 @@ class LLMCrossoverOperator(LLMBaseOperator):
                 new_ind.chromosome = new_hdr
                 inds.append(new_ind)
             except HDRException as e:
-                logging.error(str(e) + ":" + e.msg)
+                self._logger.error(str(e) + ":" + e.msg, exc_info=True)
                 return None, None
 
         return inds[0], inds[1]
@@ -211,7 +209,7 @@ class SelfEvoOperator(LLMBaseOperator):
                 new_ind.reflection = json_obj['reflection']
                 inds.append(new_ind)
             except HDRException as e:
-                logging.error(str(type(e)) + e.msg)
+                self._logger.error(str(type(e)) + e.msg, exc_info=True)
                 continue
         return inds
     
@@ -261,7 +259,7 @@ class LLMMutationOperator(LLMBaseOperator):
             new_ind = Individual(self.problem)
             new_ind.chromosome = new_hdr
         except HDRException as e:
-            logging.error(str(type(e)) + ":" + e.msg)
+            self._logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
             return None
         return new_ind
     
@@ -300,11 +298,6 @@ class TopKElitismReplaceOperator(Operator):
         pop = Population(size=max_size, problem=old_pop.problem)
         pop.inds = inds
         return pop
-        
-def makespan_fitness_func(sol: CodeSegmentHDR, problem: Problem):
-    simulator = Simulator(hdr=sol, problem=problem)
-    makespan = simulator.simulate(debug=False)
-    return -makespan
 
 def se_evo(
     max_fe: int,
@@ -317,49 +310,44 @@ def se_evo(
     llm_mutation_func: LLMMutationOperator,
     subset_selector: RandomSelectOperator,
     replace_func: TopKElitismReplaceOperator,
-    fitness_func: FITNESS_FUNC_TYPE,
+    fitness_evaluator: Evaluator,
     init_size: int,
     subset_size: int,
     template_file_path: str,
     pc: float = 0.8,
     pm: float = 0.1,
 ):
+    _logger = logging.getLogger(__name__)  
+    _logger.info(f"Start trial {datetime.datetime.now()}")
     
-    logging.info(f"Start trial {datetime.datetime.now()}")
-    
-    logging.info("Init phase")
+    _logger.info("Init phase")
     # 1. Khởi tạo quần thể ban đầu
     try:
         P: Population = llm_init_func(init_size=init_size,
                                   func_template=get_template(template_file_path))
+        P.cal_fitness(fitness_evaluator)
     except LLMException as e:
-        logging.error(str(type(e)) + ":" + e.msg)
+        _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
         return None
-    for ind in P.inds:
-        try:
-            ind.cal_fitness(makespan_fitness_func)
-        except:
-            ind.fitness = Individual.DEFAULT_FITNESS
-            logging.error(f"Failed to cal fitness.")
+    
     fe = len(P.inds)
     best = max(P.inds, key=lambda ind: ind.fitness)
-    logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
+    _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
     # Vòng lặp chính
     num_gen = 1
     while fe < max_fe:
-        logging.info(f"Gen {num_gen}:")
-        num_gen += 1
+        _logger.info(f"Gen {num_gen}:")
         if len(P.inds) == 0:
             return None
         try:
             # 2. Chọn tập con S_p
             S_p: Population = subset_selector(P, subset_size)
-            logging.info(f'Success select {S_p.size} inds from population with size {P.size}')
+            _logger.info(f'Success select {S_p.size} inds from population with size {P.size}')
 
             # 3. Co‑Evolution: 
             S_r_inds = co_evo_func(S_p.inds)
             S_p.inds = S_r_inds
-            logging.info(f'Successfully co-evo with {S_p.size} inds')
+            _logger.info(f'Successfully co-evo with {S_p.size} inds')
 
             # Tạo compare HDR dùng sau
             compare_hdrs: List[Tuple[Individual, Individual, str]] = []
@@ -385,21 +373,20 @@ def se_evo(
                         compare_hdrs.append((p2, off1, p2.reflection))
             inter_inds = inter_inds[:len(S_p.inds)]
             P_inter.inds = inter_inds
-            logging.info(f'Successfully crossover with {P_inter.size} inds')
+            _logger.info(f'Successfully crossover with {P_inter.size} inds')
             
             compare_hdrs = compare_hdrs[:len(S_p.inds)]
 
             # 5. Evaluate P_inter
-            for ind in P_inter.inds:
-                ind.cal_fitness(fitness_func)
+            P_inter.cal_fitness(fitness_evaluator)
             fe += len(P_inter.inds)
             best = max(P_inter.inds, key=lambda ind: ind.fitness)
-            logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
+            _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
             
             # 6. Self‑Evolution → RM, I_rm
             I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
             P_inter.inds = I_rm_inds
-            logging.info(f'Successfully self-evo with {len(I_rm_inds)} inds')
+            _logger.info(f'Successfully self-evo with {len(I_rm_inds)} inds')
 
             # 7. Crossover 
             # Crossover P_inter với chỉ dẫn từ IRm → P_self
@@ -415,20 +402,19 @@ def se_evo(
                     self_inds.extend([off1, off2])
             self_inds = self_inds[:P_inter.size]
             P_self.inds = self_inds
-            logging.info(f'Successfully crossover with {P_self.size} inds')
+            _logger.info(f'Successfully crossover with {P_self.size} inds')
 
             # 8. Evaluate P_self
-            for ind in P_self.inds:
-                ind.cal_fitness(makespan_fitness_func)
+            P_self.cal_fitness(fitness_evaluator)
             fe += len(P_self.inds)
             best = max(P_self.inds, key=lambda ind: ind.fitness)
-            logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
+            _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
 
             # 9. Collective Reflection → MR
             co_refs = [ind.reflection for ind in S_r_inds if ind.reflection is not None]
             self_refs = [ind.reflection for ind in I_rm_inds if ind.reflection is not None]
             MR = collective_func(reflections=co_refs + self_refs)
-            logging.info(f'Successfully collective reflections from {len(co_refs) + len(self_refs)} reflections')
+            _logger.info(f'Successfully collective reflections from {len(co_refs) + len(self_refs)} reflections')
 
             # 10. Mutation guided by MR → P_new
             P_new = Population(size=len(P_self.inds), problem=problem)
@@ -445,11 +431,10 @@ def se_evo(
                 else:
                     new_inds.append(copy.deepcopy(ind))
             P_new.inds = new_inds
-            logging.info(f'Successfully mutation {muts} inds of {P_new.size} inds')
+            _logger.info(f'Successfully mutation {muts} inds of {P_new.size} inds')
 
             # 11. Evaluate P_new
-            for ind in P_new.inds:
-                ind.cal_fitness(makespan_fitness_func)
+            P_new.cal_fitness(fitness_evaluator)
             fe += len(P_new.inds)
 
             # 12. Cập nhật quần thể với elitism + random replacement
@@ -457,21 +442,23 @@ def se_evo(
             
             best = max(P.inds, key=lambda ind: ind.fitness)
             best.chromosome.save(f'tmp/best_{num_gen}.py')
-            logging.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
-            logging.info(f"Save best HDR to best/best_{num_gen-1}.py")
-        
+            _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
+            _logger.info(f"Save best HDR to best/best_{num_gen-1}.py")
+            num_gen += 1
         except LLMException as e:
-            logging.error(str(type(e)) + ":" + e.msg)
-            continue
-        except TypeError as e:
-            logging.error(str(type(e)) + ":" + str(e))
+            _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
+            _logger.warning(f'Num gen still {num_gen}')
+            time.sleep(30)
             continue
         except HDRException as e:
-            logging.error(str(type(e)) + ":" + e.msg)
+            _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
+            _logger.warning(f'Num gen still {num_gen}')
+            time.sleep(30)
+            continue
 
     # Kết thúc: trả về best individual
     best = max(P.inds, key=lambda ind: ind.fitness)
     
-    logging.info(f"Best HDR with fitness {best.fitness:.2f}")
-    logging.info("Done!!!")
+    _logger.info(f"Best HDR with fitness {best.fitness:.2f}")
+    _logger.info("Done!!!")
     return best

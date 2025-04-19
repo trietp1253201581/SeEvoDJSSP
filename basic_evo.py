@@ -1,9 +1,8 @@
-from model import HDR, InvalidKwargsException
+from model import HDR
 from problem import Problem
-from typing import Callable, List
+from typing import List
 from abc import ABC
-
-FITNESS_FUNC_TYPE = Callable[[HDR, Problem], float]
+from evaluate import Evaluator
 
 class Operator(ABC):
     def __init__(self, problem: Problem):
@@ -23,12 +22,12 @@ class Individual:
     def decode(self):
         return self.chromosome
         
-    def cal_fitness(self, fitness_func: FITNESS_FUNC_TYPE):
+    def cal_fitness(self, fitness_evaluator: Evaluator):
         sol = self.decode()
         if sol is None:
             self.fitness = Individual.DEFAULT_FITNESS
         else:
-            self.fitness = fitness_func(sol, self.problem)
+            self.fitness = fitness_evaluator([sol])[0][1]
             
             
 class Population:
@@ -37,20 +36,14 @@ class Population:
         self.problem = problem
         self.inds: List[Individual] = []
         
-def validate(pop: Population) -> Population:
-    valid_inds = []
-    for ind in pop.inds:
-        hdr = ind.chromosome
-        
-        if hdr is None:
-            continue
-        if not hdr.is_valid():
-            continue
-        if not hdr.is_evaluatable():
-            continue
-        
-        valid_inds.append(ind)
-        
-    new_pop = Population(size=len(valid_inds), problem=pop.problem)
-    new_pop.inds = valid_inds
-    return new_pop
+    def cal_fitness(self, fitness_evaluator: Evaluator):
+        hdrs = [ind.decode() for ind in self.inds]
+        results = fitness_evaluator(hdrs)
+        self.inds.clear()
+        self.size = len(results)
+        for i in range(self.size):
+            new_ind = Individual(self.problem)
+            new_ind.chromosome = results[i][0]
+            new_ind.fitness = results[i][1]
+            self.inds.append(new_ind)
+            

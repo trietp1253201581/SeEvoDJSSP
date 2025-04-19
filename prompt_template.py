@@ -1,7 +1,6 @@
 INIT_IND_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
 Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
 
-In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
@@ -9,19 +8,6 @@ We need to generate an init sets of {init_size} HDRs to sort incoming job.
 Each HDR is a code segment describe a python function with template:
 
 {func_template}
-
-You can use a single return expression like:
-
-def hdr(...):
-    return ...
-
-Or, use any control structrue like if-then-else or for loop like:
-
-def hdr(...):
-    if js > 5:
-        return jw
-    return jcd
-
 
 Note that the return value should be not to large, and each HDR must return a float value.
 **PRIORITIZE HDR DIVERSITY**:
@@ -44,15 +30,16 @@ where n equals to {init_size}.
 CO_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
 Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
 
-In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
 Now, we have some pairs of HDRs, with their makespan:
 {pairs}
 
-For each pair, we need to compare the 2 HDRs of that pair and give the corresponding reflections (a text) to increase the performance of those 2 HDRs.
+For each pair, we need to compare the 2 HDRs of that pair and give the corresponding reflections (a short paragraph) to increase the performance of those 2 HDRs.
 Each pair needs to return the 2 original HDRs of the corresponding reflections, for example, with the input HDR1, HDR2, we need to return (HDR1, reflection1), (HDR2, reflection2).
+
+**Notes**: A reflection should be a short paragraph of 1-3 sentences.
 
 Then, we need to synthesize all the pairs to create a single result which is a list of the original HDRs and corresponding reflections.
 
@@ -66,13 +53,12 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
         {{"code": "<hdr_n>", "reflection": "<reflection_n>"}}
     ]
 }}
-where n is the total HDR from pairs (2 x num of pair).
+where n is the total HDR from pairs (2 x num of pair) and hdr_i is i-th HDR code.
 '''  
 
 CROSSOVER_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
 Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
 
-In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
@@ -98,13 +84,12 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
         {{"code": "<hdr_2>"}},
     ]
 }}
-where hdr_1, hdr_2 are 2 new recombined hdr.
+where hdr_1, hdr_2 are 2 new recombined hdr code.
 '''  
     
 SELF_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
 Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
 
-In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
@@ -116,7 +101,7 @@ If the change is good (ie makespan of after is smaller than makespan of before),
 If the change is bad, the reflection will figure out why the change is bad and will be used to avoid similar mistakes.
 
 Reflections should be actionable and specific. Do not just state generic observations. Make clear what logic worked and what failed. Focus on patterns that lead to better makespan.
-
+**Notes**: A reflection should be a short paragraph of 1-3 sentences.
 Your response MUST ONLY include the reflected HDR with reflection in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
@@ -127,13 +112,12 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
         {{"code": "<hdr_n>", "reflection": "<ref_n>"}}
     ]
 }}
-where n is the num of pairs and ref_i is the reflection corresponding to i-th pair and hdr_i is the better hdr (with lower makespan) between before and after HDR in each pair
+where n is the num of pairs and ref_i is the reflection corresponding to i-th pair and hdr_i is the better hdr code (with lower makespan) between before and after HDR in each pair
 '''  
 
 COLLECTIVE_REF_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
 Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
 
-In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
@@ -143,7 +127,7 @@ Now, we have the sets of reflections generated to improve effectiveness of HDRs.
 We need to summary these reflections into AN UNIQUE reflection to describe the suggestion to improve HDRs.
 
 Your summary reflection should be short but insightful. Combine common successful logic patterns, and avoid repeating similar ideas. Avoid general phrases like "improve efficiency"—be specific.
-
+**Notes**: A reflection should be a short paragraph of 1-3 sentences.
 Your response MUST ONLY include the summary reflection in following JSON format with no additional text.
 Each HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
@@ -154,7 +138,6 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
 MUTATION_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
 Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan.
 
-In this problem, job (with its operation) is {job_str}, machine is {machine_str}. 
 Incoming job will be assign into a waiting pool, then a HDR will be used to sort top k job to move into job pool, where those job are immediately assigned to avaiable machine.
 And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
 
@@ -194,11 +177,11 @@ Your response MUST ONLY include the HDRs with your evaluating fitness in followi
 HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
     "evaluated_hdrs": [
-        {{"code": "hdr_1", "fitness": "f1"}},
-        {{"code": "hdr_2", "fitness": "f2"}},
+        {{"code": "<hdr_1>", "fitness": "f1"}},
+        {{"code": "<hdr_2>", "fitness": "f2"}},
         ....
-        {{"code": "hdr_n", "fitness": "fn"}},
+        {{"code": "<hdr_n>", "fitness": "fn"}},
     ] 
 }}
-where hdr_i is i-th HDR (copy from request) need to evaluate and fi is your fitness evaluation of i-th HDR base on given problem.
+where hdr_i is i-th HDR code (copy code from request) need to evaluate and fi is your fitness evaluation of i-th HDR (a float value) base on given problem.
 """

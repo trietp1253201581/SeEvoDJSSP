@@ -1,7 +1,7 @@
 import random
 from model import CodeSegmentHDR
 from problem import Problem, AVAIABLE_TERMINALS
-from simulate import Simulator
+from evaluate import Simulator
 from se_evo import get_template, LLMInitOperator, LLMCrossoverOperator, LLMMutationOperator, CoEvoOperator, SelfEvoOperator, CollectiveRefOperator
 from llm import OpenRouterLLM
 import prompt_template as pt
