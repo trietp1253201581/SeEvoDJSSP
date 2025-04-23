@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import re
-
+import time
 class LLMException(Exception):
     def __init__(self, msg: str):
         super().__init__()
@@ -220,11 +220,13 @@ class GoogleAIStudioLLM:
                 }
             ],
             "generationConfig": {
-                "temperature": 1.2,
-                "maxOutputTokens": 2**15
+                "temperature": 0.8,
+                "maxOutputTokens": 2**14
             }
         }
+        print(len(prompt.split(None)))
         try:
+            time.sleep(5.5)
             resp = requests.post(self.url, headers=headers, params=params,
                                 json=body, timeout=self.timeout)
             resp.raise_for_status()

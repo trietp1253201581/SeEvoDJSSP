@@ -448,12 +448,10 @@ def se_evo(
         except LLMException as e:
             _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
             _logger.warning(f'Num gen still {num_gen}')
-            time.sleep(30)
             continue
         except HDRException as e:
             _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
             _logger.warning(f'Num gen still {num_gen}')
-            time.sleep(30)
             continue
 
     # Kết thúc: trả về best individual

@@ -6,14 +6,14 @@ from se_evo import LLMInitOperator, LLMCrossoverOperator, LLMMutationOperator, \
     CoEvoOperator, SelfEvoOperator, CollectiveRefOperator, RandomSelectOperator, \
         TopKElitismReplaceOperator, se_evo
         
-from evaluate import SimulationBaseEvaluator, LLMSurogateEvaluator
-
+from evaluate import SimulationBaseEvaluator, StaticLLMSurrogateEvaluator
+from datetime import datetime
 import prompt_template as pt
 
 # Set logging
 import logging
 logging.basicConfig(
-    filename='process.log',
+    filename=f'process_{datetime.now().strftime('%Y_%m_%d')}.log',
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s in %(name)s (%(filename)s:%(lineno)d): %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
@@ -41,15 +41,37 @@ self_evo_func = SelfEvoOperator(problem, llm_model, prompt_template=pt.SELF_EVO_
 collective_evo_func = CollectiveRefOperator(problem, llm_model, prompt_template=pt.COLLECTIVE_REF_PROMPT_TEMPLATE)
 selector = RandomSelectOperator(problem)
 replace_opr = TopKElitismReplaceOperator(problem, k=2)
-evaluator = LLMSurogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE)
+evaluator = StaticLLMSurrogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE)
 
+def load_examples():
+    
+    hdrs = []
+    simulator_evaluate = SimulationBaseEvaluator(problem)
+    for i in range(1, 6):
+        new_hdr = CodeSegmentHDR()
+        new_hdr.load(f'examples/hdr_{i}.py')
+        hdrs.append(new_hdr)
+        
+    evaluated = simulator_evaluate(hdrs)
+    for e in evaluated:
+        print(e[0])
+        print(e[1])
+    examples = []
+    evaluated.sort(key=lambda x: x[1])
+    for i in range(len(evaluated)):
+        examples.append((evaluated[0], 50.0 + 50.0 / len(evaluated) * i))
+    
+    return examples
+    
+for example in load_examples():
+    evaluator.add_example(example[0], example[1])
 
 # Main Se-Evo process
-best = se_evo(120, problem, llm_init_func,
+best = se_evo(50, problem, llm_init_func,
               co_evo_func, self_evo_func, collective_evo_func,
               llm_crossover_func, llm_mutation_func,
               selector, replace_opr, evaluator,
-              init_size=20, subset_size=8,
+              init_size=26, subset_size=10,
               template_file_path='template.txt',
               pc=0.9, pm=0.2)
 

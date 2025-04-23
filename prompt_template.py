@@ -9,6 +9,8 @@ Each HDR is a code segment describe a python function with template:
 
 {func_template}
 
+You can use any mathematical expresion, any structure like if-then-else or for-while loop to describe you HDR.
+
 Note that the return value should be not to large, and each HDR must return a float value.
 **PRIORITIZE HDR DIVERSITY**:
 Your HDR should be simple and diversity, random, so that other operators can improve more later (but still have some not so simple HDRs for diversity).
@@ -162,26 +164,56 @@ HDR must be returned as a string with newline characters (\\n) properly escaped.
 SURROGATE_PROMPT_TEMPLATE = """
 You are an expert in evaluating dynamic job scheduling (DJSSP), heuristics dispatching rules (HDR).
 
-Problem context:
-{context}
+Problem info:
+{problem_info}
 
-Some of evaluated examples:
-{examples}
+Current system time: {current_time}
 
-Now, given the follonwing HDRs:
-{hdrs}
+Events at current time:
+{events}
 
-Estimate a fitness score (0-100) for each HDR on the given problem.
+Summary of system before this time:
+{summary}
 
-Your response MUST ONLY include the HDRs with your evaluating fitness in following JSON format with no additional text.
+Now, given the follonwing HDRs with their historical performance:
+{hdrs_with_history}
+
+INSTRUCTION: For each HDR:
+1. Predict what jobs will be completed when current time is {current_time}.
+2. Predict the time system will be finished all uncompleted jobs.
+3. Predict the remaining jobs and their current operation index at this time.
+4. Estimate a scalar fitness score (0-1000)  on the problem until this time (0 is worst, 1000 is best).
+
+Your response MUST ONLY in following JSON format with no additional text.
 HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
-    "evaluated_hdrs": [
+    "predicted": [
+        {{
+        "code": "<hdr_1>",
+        "makespan": "<your result of instruction 2 - a float value>",
+        "completed_jobs": "<your result of instruction 1 - a list of job ids, a list of int, like '[1,2,3]'>",
+        "remaining_jobs": "<your result of instruction 3 - a list of job ids and their current operation index, a JSON list, like [{"job":1,"op":1}, ...]>",
+        }},
+        {{
+        "code": "<hdr_2>",
+        "makespan": "<your result of instruction 2 - a float value>",
+        "completed_jobs": "<your result of instruction 1 - a list of job ids, a list of int, like '[1,2,3]'>",
+        "remaining_jobs": "<your result of instruction 3 - a list of job ids and their current operation index, a JSON list, like '[{"job":1,"op":8}, ...]'>",
+        }},
+        ...
+        {{
+        "code": "<hdr_n>",
+        "makespan": "<your result of instruction 2 - a float value>",
+        "completed_jobs": "<your result of instruction 1 - a list of job ids, a list of int, like '[1,2,3]'>",
+        "remaining_jobs": "<your result of instruction 3 - a list of job ids and their current operation index, a JSON list, like '[{"job":2,"op":6}, ...]'>",
+        }},
+    ], 
+    "evaluated": [ 
         {{"code": "<hdr_1>", "fitness": "f1"}},
         {{"code": "<hdr_2>", "fitness": "f2"}},
         ....
         {{"code": "<hdr_n>", "fitness": "fn"}},
     ] 
 }}
-where hdr_i is i-th HDR code (copy code from request) need to evaluate and fi is your fitness evaluation of i-th HDR (a float value) base on given problem.
+where n is the num of HDRs, predicted is your result of instruction 1, 2, 3 and evaluated is your result of instruction 4 for each HDR.
 """

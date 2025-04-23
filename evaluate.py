@@ -9,6 +9,7 @@ from typing import List, Tuple
 import time
 from abc import ABC, abstractmethod
 import logging
+import collections
         
 class Simulator:
     DEFAULT_PRIOR: int = -1e9
@@ -177,7 +178,7 @@ class SimulationBaseEvaluator(Evaluator):
         self._logger.info(f'Successfully evaluate {len(results)}/{len(hdrs)} HDR.')
         return results
     
-class LLMSurogateEvaluator(Evaluator):
+class StaticLLMSurrogateEvaluator(Evaluator):
     def __init__(self, llm_model: OpenRouterLLM, problem: Problem, prompt_template: str):
         super().__init__(problem)
         self.llm_model = llm_model
@@ -207,7 +208,8 @@ class LLMSurogateEvaluator(Evaluator):
         general_chunk = "Dynamic Job Shop Scheduling Problem\n"
         general_chunk += "Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan\n"
         general_chunk += f"Each machine have not a specific queue. All machine use a share job pool with size {self.problem.pool_size}.\n"
-        general_chunk += f"We use a HDR to sort unordere job in waiting pool (infinity) and put them orderly into job pool, where these job is immediately match to corresponding machine to process if these machine is available.\n"
+        general_chunk += f"We use a HDR to sort unorder job in waiting pool (infinity) and put them orderly into job pool, where these job is immediately match to corresponding machine to process if these machine is available.\n"
+        general_chunk += f"**Note**: The value of HDR function is the priority (The higher the priority, the earlier it is assigned.)"
         return general_chunk
             
     def chunks_descript(self, problem: Problem) -> List[str]:
@@ -216,8 +218,8 @@ class LLMSurogateEvaluator(Evaluator):
         # Chunk 1: General description
         # chunks.append(self.get_general_chunk())
 
-        # Chunk 2-n: Job info grouped in batches of 20
-        job_batch_size = 15
+        # Chunk 2-n: Job info grouped in batches of 12
+        job_batch_size = 12
         summary = {
             "num_oprs": [None, None],
             "arrival_time": [None, None],
@@ -342,4 +344,169 @@ class LLMSurogateEvaluator(Evaluator):
         self._logger.info(f'Successfully evaluate {len(results)}/{len(hdrs)} HDR.')
         return results
 
+class EventDrivenLLMSurrogateEvaluator(Evaluator):
+    def __init__(self, llm_model: OpenRouterLLM, problem: Problem, 
+                 prompt_template: str, num_segments: int):
+        super().__init__(problem)
+        self.llm_model = llm_model
+        self.prompt_template = prompt_template
+        self._logger = logging.getLogger(__name__)
+        self.event_store = collections.defaultdict(list)
+        self.history_store = []
+        self.job_map = {j.id: j for j in self.problem.jobs}
+        
+        self._build_event_map()
+        self.times = self._build_times(list(self.event_store.keys()), num_segments)
+        
+    def _build_times(self, times: List[int], num_segments: int):
+        # Chia theo time density
+        # Tính trọng số bằng số sự kiện tại mỗi time
+        weights = {t: len(self.event_store.get(t, [])) for t in times}
+        total_weight = sum(weights.values())
+        target_weight = total_weight / num_segments
+        
+        segments = []
+        curr_sum = 0
+        curr_bucket = []
+        for t in sorted(times):
+            curr_bucket.append(t)
+            curr_sum += weights[t]
+            if curr_sum >= target_weight:
+                segments.append(curr_bucket[-1])
+                curr_bucket = []
+                curr_sum = 0
+                
+        if curr_bucket:
+            segments.append(curr_bucket[-1])
+            
+        return segments
+        
+    def _build_event_map(self):
+        for job in self.problem.jobs:
+            t_arr = job.time_arr
+            deadline = job.get_job_deadline()
+            self.event_store[t_arr].append({'type': 'arrival', 'job': job.id})
+            self.event_store[deadline].append({'type': 'deadline', 'job': job.id})
+            
+    def _format_event_chunk(self, now_time: int):
+        evs = self.event_store.get(now_time, [])
+        lines = [f'### Event at time {now_time}']
+        arr_evs = [e for e in evs if e['type'] == 'arrival']
+        dl_evs = [e for e in evs if e['type'] == 'deadline']
+        
+        lines.append(f'- Arrival job: {", ".join(str(e["job"]) for e in arr_evs)}')
+        lines.append(f'- Meet deadline jobs: {", ".join(str(e["job"]) for e in dl_evs)}')
+        
+        return '\n'.join(lines)
     
+    def _get_general_chunk(self):
+        general_chunk = "# Dynamic Job Shop Scheduling Problem\n"
+        general_chunk += "- Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan\n"
+        general_chunk += f"- Each machine have not a specific queue. All machine use a share job pool with size {self.problem.pool_size}.\n"
+        general_chunk += f"- We use a HDR to sort unorder job in waiting pool (infinity) and put them orderly into job pool, where these job is immediately match to corresponding machine to process if these machine is available.\n"
+        general_chunk += f"- **Note**: The value of HDR function is the priority (The higher the priority, the earlier it is assigned.)"
+        return general_chunk
+    
+    def _build_hdr_with_history(self, seg_idx: int):
+        hdrs_str = ""
+        for i in range(len(self.history_store)):
+            lines = [f'--- HDR {i + 1} ---']
+            lines.append('**Code**')
+            lines.append(self.history_store[i]['code'])
+            if seg_idx == 0: # start, not have history
+                hdrs_str += '\n'.join(lines)
+                continue
+            
+            lines.append('**Historical Performance**')
+        
+            completed_jobs = self.history_store[i].get('completed_jobs', [])
+            lines.append(f'- Completed jobs: {", ".join(str(j) for j in completed_jobs) if completed_jobs else "None"}')
+            
+            predicted_makespan = self.history_store[i].get('predicted_makespan', None)
+            lines.append(f'- Predicted makespan: {predicted_makespan if predicted_makespan is not None else "None"}')
+            
+            remaining_jobs = self.history_store[i].get('remaining_jobs', [])
+            # Remaining jobs: {j_id: completed_opr_id}
+            total_remain_oprs = 0
+            min_remain_oprs = float('inf')
+            max_remain_oprs = 0
+            
+            total_remain_process_time = 0
+            min_remain_process_time = float('inf')
+            max_remain_process_time = 0
+            for j_dict in remaining_jobs:
+                next_opr = j_dict['op'] + 1
+                j_id = int(j_dict['job'])
+                self.job_map[j_id].next_opr = next_opr
+                
+                remain_opr = self.job_map[j_id].get_remain_opr()
+                remain_process_time = self.job_map[j_id].get_remain_process_time()
+                
+                total_remain_oprs += remain_opr
+                total_remain_process_time += remain_process_time
+                
+                min_remain_oprs = min(min_remain_oprs, remain_opr)
+                max_remain_oprs = max(max_remain_oprs, remain_opr)
+                
+                min_remain_process_time = min(min_remain_process_time, remain_process_time)
+                max_remain_process_time = max(max_remain_process_time, remain_process_time)
+                
+            lines.append(f'- Remaining jobs: {", ".join(str(j_dict['job']) for j_dict in remaining_jobs)}')
+            lines.append(f'- Remaining operations: min={min_remain_oprs}, max={max_remain_oprs}, avg={total_remain_oprs / len(remaining_jobs):.2f}')
+            lines.append(f'- Remaining process time: min={min_remain_process_time:.2f}, max={max_remain_process_time:.2f}, avg={total_remain_process_time / len(remaining_jobs):.2f}')
+
+            hdrs_str += '\n'.join(lines)
+        return hdrs_str
+    
+    def _process_json_response(self, data: dict):
+        predicted = data['predicted']
+        evaluated = data['evaluated']
+        
+        self.history_store.clear()
+        for i in range(len(predicted)):
+            self.history_store.append({
+                'code': predicted[i]['code'],
+                'completed_jobs': predicted[i]['completed_jobs'],
+                'predicted_makespan': predicted[i]['makespan'],
+                'remaining_jobs': predicted[i]['remaining_jobs']
+            })
+            
+        self._logger.info(f'Successfully update history store with {len(predicted)} HDRs.')
+        
+        evaluated_hdrs: List[Tuple[HDR, float]] = []
+        for json_obj in evaluated:
+            try:
+                new_hdr = CodeSegmentHDR(code=json_obj['code'])
+                fitness = float(json_obj['fitness'])
+                evaluated_hdrs.append((new_hdr, fitness))
+            except HDRException as e:
+                self._logger.error(f'HDR Exception: {e.msg} when process response from LLM', exc_info=True)
+                continue
+        return evaluated_hdrs
+    
+    def __call__(self, hdrs: List[HDR]):
+        self._logger.info(f'Start evaluate {len(hdrs)} HDR.')
+        for t in self.times:
+            event_chunk = self._format_event_chunk(t)
+            history_chunk = self._build_hdr_with_history()
+            
+            prompt = self.prompt_template.format(
+                problem_info=self._get_general_chunk(),
+                current_time=t,
+                events=event_chunk,
+                summary=history_chunk,
+                hdrs_with_history=history_chunk
+            )
+            
+            response = self.llm_model.get_response(prompt)
+            json_repsonse = self.llm_model.extract_response(response)
+            results = self._process_json_response(json_repsonse)
+        
+        return results
+        
+        
+        
+        
+        
+    
+        
