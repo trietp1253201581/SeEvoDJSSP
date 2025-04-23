@@ -6,7 +6,7 @@ from se_evo import LLMInitOperator, LLMCrossoverOperator, LLMMutationOperator, \
     CoEvoOperator, SelfEvoOperator, CollectiveRefOperator, RandomSelectOperator, \
         TopKElitismReplaceOperator, se_evo
         
-from evaluate import SimulationBaseEvaluator, StaticLLMSurrogateEvaluator
+from evaluate import SimulationBaseEvaluator, StaticLLMSurrogateEvaluator, EventDrivenLLMSurrogateEvaluator
 from datetime import datetime
 import prompt_template as pt
 

@@ -3,6 +3,7 @@ import json
 import os
 import re
 import time
+import tiktoken
 class LLMException(Exception):
     def __init__(self, msg: str):
         super().__init__()
@@ -164,6 +165,7 @@ class OpenRouterLLM:
                 raise BadAPIException(msg=response.json()['error']['message'])
             if 'choices' not in response.json():
                 raise BadResponseException(msg=response.json())
+            print(response.text)
             return response.json()['choices'][0]['message']['content']
         except requests.Timeout:
             raise BadAPIException("Timeout Request!")
@@ -221,12 +223,12 @@ class GoogleAIStudioLLM:
             ],
             "generationConfig": {
                 "temperature": 0.8,
-                "maxOutputTokens": 2**14
+                "maxOutputTokens": 6000
             }
         }
-        print(len(prompt.split(None)))
+        print(len(tiktoken.encoding_for_model('gpt-4o').encode(prompt)))
         try:
-            time.sleep(5.5)
+            time.sleep(3.5)
             resp = requests.post(self.url, headers=headers, params=params,
                                 json=body, timeout=self.timeout)
             resp.raise_for_status()
@@ -234,6 +236,8 @@ class GoogleAIStudioLLM:
             if 'candidates' in data and data['candidates']:
                 candidate = data['candidates'][0]
                 if 'content' in candidate and 'parts' in candidate['content']:
+                    print(len(tiktoken.encoding_for_model('gpt-4o').encode(candidate['content']['parts'][0].get('text', ''))))
+                    print(candidate.get('finishReason', 'Unknown'))
                     return candidate['content']['parts'][0].get('text', '')
             raise BadResponseException(f"Unexpected response format: {data}")
         except requests.Timeout:
@@ -246,12 +250,12 @@ class GoogleAIStudioLLM:
         m = re.search(r'(json)?(?P<obj>[^\`]+)', response)
         if m is not None:
             json_str = m.group('obj')
-            print(json_str)
             try:
                 json_obj = json.loads(json_str)
             
                 return json_obj
             except json.decoder.JSONDecodeError as e:
+                print("Bad response:" + json_str[:20] + "\n" + json_str[-20:])
                 raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
             except TypeError as e:
                 raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])

@@ -27,6 +27,9 @@ Each HDR should be diverse and try different logic or structure compared to othe
     ]
 }}
 where n equals to {init_size}.
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
 '''
 
 CO_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -56,6 +59,9 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
     ]
 }}
 where n is the total HDR from pairs (2 x num of pair) and hdr_i is i-th HDR code.
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
 '''  
 
 CROSSOVER_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -87,6 +93,9 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
     ]
 }}
 where hdr_1, hdr_2 are 2 new recombined hdr code.
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
 '''  
     
 SELF_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -115,6 +124,9 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
     ]
 }}
 where n is the num of pairs and ref_i is the reflection corresponding to i-th pair and hdr_i is the better hdr code (with lower makespan) between before and after HDR in each pair
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
 '''  
 
 COLLECTIVE_REF_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -135,6 +147,9 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
 {{
     "reflection": "<your summary reflection>"
 }}
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
 '''  
 
 MUTATION_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -159,6 +174,9 @@ HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
     "rephrased_hdr": "<hdr>"
 }}
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
 '''  
 
 SURROGATE_PROMPT_TEMPLATE = """
@@ -169,51 +187,56 @@ Problem info:
 
 Current system time: {current_time}
 
-Events at current time:
+Events at current time: 
 {events}
 
-Summary of system before this time:
-{summary}
-
-Now, given the follonwing HDRs with their historical performance:
+Now, given the follonwing HDRs with their historical performance before this time:
 {hdrs_with_history}
 
 INSTRUCTION: For each HDR:
 1. Predict what jobs will be completed when current time is {current_time}.
 2. Predict the time system will be finished all uncompleted jobs.
-3. Predict the remaining jobs and their current operation index at this time.
+3. Predict the remaining jobs and their current operation index at next timestone {next_time} (next timestone may be less than the time expected to finish all uncompleted jobs).
 4. Estimate a scalar fitness score (0-1000)  on the problem until this time (0 is worst, 1000 is best).
+
+**Note**: 
+- The completed_jobs and remaining_jobs return in predicted field must be a job arrival in event at this time (above event), 
+or a job that uncompleted (remaining jobs) appear in any of HDRs with history performance.
+- There are several machines, so jobs can be assigned to different machines to reduce makespan. (num of machines is attached in problem info)
 
 Your response MUST ONLY in following JSON format with no additional text.
 HDR must be returned as a string with newline characters (\\n) properly escaped.
 {{
     "predicted": [
         {{
-        "code": "<hdr_1>",
-        "makespan": "<your result of instruction 2 - a float value>",
-        "completed_jobs": "<your result of instruction 1 - a list of job ids, a list of int, like '[1,2,3]'>",
-        "remaining_jobs": "<your result of instruction 3 - a list of job ids and their current operation index, a JSON list, like [{"job":1,"op":1}, ...]>",
+            "code": "<hdr_1>",
+            "makespan": "<your result of instruction 2 - a float value>",
+            "completed_jobs": [1, 2, 3], (list of job ids, answer for instruction 1)
+            "remaining_jobs": [{{"job":1, "op":1}}, {{"job":2, "op":6}}] (list of job ids and their current operation index, answer for instruction 3),
+            "fitness": "<your result of instruction 4 - a float value between 0 and 1000>"
         }},
         {{
-        "code": "<hdr_2>",
-        "makespan": "<your result of instruction 2 - a float value>",
-        "completed_jobs": "<your result of instruction 1 - a list of job ids, a list of int, like '[1,2,3]'>",
-        "remaining_jobs": "<your result of instruction 3 - a list of job ids and their current operation index, a JSON list, like '[{"job":1,"op":8}, ...]'>",
+            "code": "<hdr_2>",
+            "makespan": "<your result of instruction 2 - a float value>",
+            "completed_jobs": [1, 2, 3], (list of job ids, answer for instruction 1)
+            "remaining_jobs": [{{"job":1, "op":1}}, {{"job":2, "op":6}}], (list of job ids and their current operation index, answer for instruction 3)
+            "fitness": "<your result of instruction 4 - a float value between 0 and 1000>"
         }},
         ...
         {{
-        "code": "<hdr_n>",
-        "makespan": "<your result of instruction 2 - a float value>",
-        "completed_jobs": "<your result of instruction 1 - a list of job ids, a list of int, like '[1,2,3]'>",
-        "remaining_jobs": "<your result of instruction 3 - a list of job ids and their current operation index, a JSON list, like '[{"job":2,"op":6}, ...]'>",
+            "code": "<hdr_n>",
+            "makespan": "<your result of instruction 2 - a float value>",
+            "completed_jobs": [1, 2, 3], (list of job ids, answer for instruction 1)
+            "remaining_jobs": [{{"job":1, "op":1}}, {{"job":2, "op":6}}], (list of job ids and their current operation index, answer for instruction 3)
+            "fitness": "<your result of instruction 4 - a float value between 0 and 1000>"
         }},
-    ], 
-    "evaluated": [ 
-        {{"code": "<hdr_1>", "fitness": "f1"}},
-        {{"code": "<hdr_2>", "fitness": "f2"}},
-        ....
-        {{"code": "<hdr_n>", "fitness": "fn"}},
-    ] 
+    ]
 }}
-where n is the num of HDRs, predicted is your result of instruction 1, 2, 3 and evaluated is your result of instruction 4 for each HDR.
+where n is the num of HDRs.
+**Note**: 
+- The value of any code field must be a copy of the code in the HDRs with history.
+- The fitness value must be a float value between 0 and 1000, and it would be diversity. Do not only return the fitness like 100, 250, 350, etc.
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful (maximum is around 500-700 words or tokens).
 """
