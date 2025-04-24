@@ -30,6 +30,7 @@ where n equals to {init_size}.
 **Note**:
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''
 
 CO_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -62,6 +63,7 @@ where n is the total HDR from pairs (2 x num of pair) and hdr_i is i-th HDR code
 **Note**:
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''  
 
 CROSSOVER_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -96,6 +98,7 @@ where hdr_1, hdr_2 are 2 new recombined hdr code.
 **Note**:
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''  
     
 SELF_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -127,6 +130,7 @@ where n is the num of pairs and ref_i is the reflection corresponding to i-th pa
 **Note**:
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''  
 
 COLLECTIVE_REF_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -150,6 +154,7 @@ Each HDR must be returned as a string with newline characters (\\n) properly esc
 **Note**:
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''  
 
 MUTATION_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 
@@ -177,6 +182,7 @@ HDR must be returned as a string with newline characters (\\n) properly escaped.
 **Note**:
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''  
 
 SURROGATE_PROMPT_TEMPLATE = """
@@ -238,5 +244,5 @@ where n is the num of HDRs.
 - The fitness value must be a float value between 0 and 1000, and it would be diversity. Do not only return the fitness like 100, 250, 350, etc.
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
-- Response should be short and concise, but still include enough information to be useful (maximum is around 500-700 words or tokens).
+- Response should be short and concise, but still include enough information to be useful and IN CORRECT JSON FORMAT.
 """

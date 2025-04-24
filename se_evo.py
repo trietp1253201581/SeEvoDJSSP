@@ -1,6 +1,6 @@
 from model import CodeSegmentHDR, HDRException
 from typing import List, Tuple
-from llm import OpenRouterLLM, LLMException
+from llm import LLM, LLMException
 from basic_evo import Individual, Population, Operator
 from abc import abstractmethod
 import copy
@@ -9,7 +9,6 @@ from problem import Problem
 from evaluate import Evaluator
 import datetime
 import logging
-import time
 
 
 random.seed(42)
@@ -20,13 +19,15 @@ class MissingTemplateException(Exception):
         self.msg = msg
         
 def get_template(template_file: str):
-    with open(template_file, 'r') as f:
-        lines = f.readlines()
-        return "".join(lines)
-    raise MissingTemplateException("Can't not load template function")
+    try:
+        with open(template_file, 'r') as f:
+            lines = f.readlines()
+            return "".join(lines)
+    except FileNotFoundError:
+        raise MissingTemplateException("Can't not load template function")
 
 class LLMBaseOperator(Operator):
-    def __init__(self, problem, llm_model: OpenRouterLLM, prompt_template: str):
+    def __init__(self, problem, llm_model: LLM, prompt_template: str):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
@@ -299,164 +300,186 @@ class TopKElitismReplaceOperator(Operator):
         pop.inds = inds
         return pop
 
-def se_evo(
-    max_fe: int,
-    problem: Problem,
-    llm_init_func: LLMInitOperator,
-    co_evo_func: CoEvoOperator,
-    self_evo_func: SelfEvoOperator,
-    collective_func: CollectiveRefOperator,
-    llm_crossover_func: LLMCrossoverOperator,
-    llm_mutation_func: LLMMutationOperator,
-    subset_selector: RandomSelectOperator,
-    replace_func: TopKElitismReplaceOperator,
-    fitness_evaluator: Evaluator,
-    init_size: int,
-    subset_size: int,
-    template_file_path: str,
-    pc: float = 0.8,
-    pm: float = 0.1,
-):
-    _logger = logging.getLogger(__name__)  
-    _logger.info(f"Start trial {datetime.datetime.now()}")
+class SelfEvoEngine:
+    def __init__(
+        self,
+        problem,
+        llm_init: Operator,
+        co_evo: Operator,
+        self_evo: Operator,
+        collective: Operator,
+        crossover: Operator,
+        mutation: Operator,
+        selector: Operator,
+        replacer: Operator,
+        fitness_eval: Evaluator,
+        max_retries: int = 3
+    ):
+        self.problem = problem
+        self.llm_init = llm_init
+        self.co_evo = co_evo
+        self.self_evo = self_evo
+        self.collective = collective
+        self.crossover = crossover
+        self.mutation = mutation
+        self.selector = selector
+        self.replacer = replacer
+        self.fitness_eval = fitness_eval
+        self.max_retries = max_retries
+        self.log = logging.getLogger(__name__)
+
+    def initialize(self, init_size: int, template: str) -> Population:
+        return self._retry(self._do_init, init_size, template)
+
+    def _do_init(self, init_size, template):
+        self.log.info(f"Initializing population with {init_size} individuals")
+        pop: Population = self.llm_init(init_size=init_size, func_template=template)
+        self.log.info(f"Population initialized with {len(pop.inds)} individuals")
+        return pop
     
-    _logger.info("Init phase")
-    # 1. Khởi tạo quần thể ban đầu
-    try:
-        P: Population = llm_init_func(init_size=init_size,
-                                  func_template=get_template(template_file_path))
-        P.cal_fitness(fitness_evaluator)
-    except LLMException as e:
-        _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
-        return None
+    def evaluate_pop(self, pop: Population):
+        return self._retry(lambda: self._evaluate_pop(pop))
     
-    fe = len(P.inds)
-    best = max(P.inds, key=lambda ind: ind.fitness)
-    _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
-    # Vòng lặp chính
-    num_gen = 1
-    while fe < max_fe:
-        _logger.info(f"Gen {num_gen}:")
-        if len(P.inds) == 0:
-            return None
-        try:
-            # 2. Chọn tập con S_p
-            S_p: Population = subset_selector(P, subset_size)
-            _logger.info(f'Success select {S_p.size} inds from population with size {P.size}')
+    def _evaluate_pop(self, pop: Population):
+        pop.cal_fitness(self.fitness_eval)
+        return pop
 
-            # 3. Co‑Evolution: 
-            S_r_inds = co_evo_func(S_p.inds)
-            S_p.inds = S_r_inds
-            _logger.info(f'Successfully co-evo with {S_p.size} inds')
+    def coevolution(self, S_p: Population) -> List[Individual]:
+        return self._retry(lambda: self.co_evo(inds=S_p.inds), )
 
-            # Tạo compare HDR dùng sau
-            compare_hdrs: List[Tuple[Individual, Individual, str]] = []
-
-            # 4. Crossover S_p → P_inter
-            P_inter = Population(size=len(S_p.inds), problem=problem)
-            inter_inds = []
-            while len(inter_inds) < S_p.size:
+    def crossover_pop(self, parents: List[Individual], size: int, pc: float) -> List[Individual]:
+        def _step():
+            off = []
+            while len(off) < size:
                 if random.random() < pc:
-                    selected = subset_selector(S_p, 2)
-                    p1, p2 = selected.inds[0], selected.inds[1]
-                    off1, off2 = llm_crossover_func(p1=p1, p2=p2)
-                    if off1 is None:
-                        continue
-                    
-                    inter_inds.extend([off1, off2])
-                    
-                    if random.random() < 0.5:
-                        compare_hdrs.append((p1, off1, p1.reflection))
-                        compare_hdrs.append((p2, off2, p2.reflection))
-                    else:
-                        compare_hdrs.append((p1, off2, p1.reflection))
-                        compare_hdrs.append((p2, off1, p2.reflection))
-            inter_inds = inter_inds[:len(S_p.inds)]
-            P_inter.inds = inter_inds
-            _logger.info(f'Successfully crossover with {P_inter.size} inds')
-            
-            compare_hdrs = compare_hdrs[:len(S_p.inds)]
-
-            # 5. Evaluate P_inter
-            P_inter.cal_fitness(fitness_evaluator)
-            fe += len(P_inter.inds)
-            best = max(P_inter.inds, key=lambda ind: ind.fitness)
-            _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
-            
-            # 6. Self‑Evolution → RM, I_rm
-            I_rm_inds = self_evo_func(compare_hdrs=compare_hdrs)
-            P_inter.inds = I_rm_inds
-            _logger.info(f'Successfully self-evo with {len(I_rm_inds)} inds')
-
-            # 7. Crossover 
-            # Crossover P_inter với chỉ dẫn từ IRm → P_self
-            P_self = Population(size=len(I_rm_inds), problem=problem)
-            self_inds = []
-            while len(self_inds) < P_inter.size:
-                if random.random() < pc:
-                    selected = subset_selector(P_inter, 2)
-                    p1, p2 = selected.inds[0], selected.inds[1]
-                    off1, off2 = llm_crossover_func(p1=p1, p2=p2)
-                    if off1 is None:
-                        continue
-                    self_inds.extend([off1, off2])
-            self_inds = self_inds[:P_inter.size]
-            P_self.inds = self_inds
-            _logger.info(f'Successfully crossover with {P_self.size} inds')
-
-            # 8. Evaluate P_self
-            P_self.cal_fitness(fitness_evaluator)
-            fe += len(P_self.inds)
-            best = max(P_self.inds, key=lambda ind: ind.fitness)
-            _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
-
-            # 9. Collective Reflection → MR
-            co_refs = [ind.reflection for ind in S_r_inds if ind.reflection is not None]
-            self_refs = [ind.reflection for ind in I_rm_inds if ind.reflection is not None]
-            MR = collective_func(reflections=co_refs + self_refs)
-            _logger.info(f'Successfully collective reflections from {len(co_refs) + len(self_refs)} reflections')
-
-            # 10. Mutation guided by MR → P_new
-            P_new = Population(size=len(P_self.inds), problem=problem)
-            new_inds = []
-            muts = 0
-            for ind in P_self.inds:
-                if random.random() < pm:
-                    mutated = llm_mutation_func(p=ind, reflection=MR)
-                    if mutated is None:
-                        new_inds.append(copy.deepcopy(ind))
-                        continue
-                    muts += 1
-                    new_inds.append(mutated)
+                    p1, p2 = random.sample(parents, 2)
+                    c1, c2 = self.crossover(p1=p1, p2=p2)
+                    if c1 is None: continue
+                    off.extend([c1,c2])
                 else:
-                    new_inds.append(copy.deepcopy(ind))
-            P_new.inds = new_inds
-            _logger.info(f'Successfully mutation {muts} inds of {P_new.size} inds')
+                    off.extend(random.sample(parents, 2))
+            return off[:size]
+        return self._retry(_step)
 
-            # 11. Evaluate P_new
-            P_new.cal_fitness(fitness_evaluator)
-            fe += len(P_new.inds)
+    def selfevolution(self, compare: List[Tuple[Individual, Individual, str]]):
+        return self._retry(lambda: self.self_evo(compare_hdrs=compare))
 
-            # 12. Cập nhật quần thể với elitism + random replacement
-            P = replace_func(old_pop=P, new_pop=P_new, max_size=P.size)
-            
-            best = max(P.inds, key=lambda ind: ind.fitness)
-            best.chromosome.save(f'tmp/best_{num_gen}.py')
-            _logger.info(f"FE = {fe}, best HDR with fitness {best.fitness:.2f}")
-            _logger.info(f"Save best HDR to best/best_{num_gen-1}.py")
-            num_gen += 1
-        except LLMException as e:
-            _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
-            _logger.warning(f'Num gen still {num_gen}')
-            continue
-        except HDRException as e:
-            _logger.error(str(type(e)) + ":" + e.msg, exc_info=True)
-            _logger.warning(f'Num gen still {num_gen}')
-            continue
+    def collective_reflect(self, refs: List[str]):
+        return self._retry(lambda: self.collective(reflections=refs))
 
-    # Kết thúc: trả về best individual
-    best = max(P.inds, key=lambda ind: ind.fitness)
-    
-    _logger.info(f"Best HDR with fitness {best.fitness:.2f}")
-    _logger.info("Done!!!")
-    return best
+    def mutate(self, inds: List[Individual], MR: str, pm: float) -> List[Individual]:
+        def _step():
+            out=[]
+            for ind in inds:
+                if random.random() < pm:
+                    m = self.mutation(p=ind, reflection=MR)
+                    out.append(m or copy.deepcopy(ind))
+                else:
+                    out.append(copy.deepcopy(ind))
+            return out
+        return self._retry(_step)
+
+    def _retry(self, fn, *args, **kwargs):
+        for attempt in range(1, self.max_retries+1):
+            try:
+                return fn(*args, **kwargs)
+            except (LLMException, HDRException, Exception) as e:
+                self.log.warning(f"Attempt {attempt}/{self.max_retries} failed in {fn.__name__}: {e.msg}")
+        raise Exception(f"All {self.max_retries} retries failed for {fn.__name__}")
+
+    def run(
+        self,
+        max_fe: int,
+        init_size: int,
+        subset_size: int,
+        template_file: str,
+        pc: float = 0.8,
+        pm: float = 0.1
+    ) -> Individual:
+        self.log.info(f"Start se_evo at {datetime.datetime.now()}")
+        template = open(template_file).read()
+
+        # 1. Initialize
+        try:
+            P = self.initialize(init_size, template)
+            P = self.evaluate_pop(P)
+        except Exception as e:
+            self.log.error(f"Error in initialize: {e}")
+            return None
+        fe = len(P.inds)
+        best = max(P.inds, key=lambda i: i.fitness)
+        self.log.info(f"Init FE={fe}, best={best.fitness:.2f}")
+
+        gen = 1
+        while fe < max_fe:
+            try:
+                self.log.info(f"Gen {gen}")
+                # 2. Selection
+                S_p = self.selector(P, subset_size)
+
+                # 3. Co-evolution
+                S_r = self.coevolution(S_p)
+
+                # 4. Crossover → P_inter
+                inter = self.crossover_pop(S_r, S_p.size, pc)
+                P_inter = Population(size=len(inter), problem=self.problem)
+                P_inter.inds = inter
+
+                # 5. Evaluate P_inter
+                P_inter = self.evaluate_pop(P_inter)
+                fe += len(P_inter.inds)
+                self.log.info(f"After P_inter FE={fe}")
+                if fe > max_fe:
+                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{fe}.py")
+                    return best
+
+                # Update best so far
+                best = max(P_inter.inds, key=lambda i: i.fitness)
+                best.chromosome.save(f"tmp/best_{fe}.py")
+
+                # 6. Self-evolution
+                # You must build compare list beforehand
+                compare_list = [(p, c, p.reflection) for p,c in zip(S_p.inds, P_inter.inds)]
+                I_rm = self.selfevolution(compare_list)
+
+                # 7. Crossover self → P_self
+                P_self = Population(size=len(I_rm), problem=self.problem)
+                P_self.inds = self.crossover_pop(I_rm, len(I_rm))
+
+                # 8. Evaluate P_self
+                P_self = self.evaluate_pop(P_self)
+                fe += len(P_self.inds)
+                self.log.info(f"After P_self FE={fe}")
+                if fe > max_fe:
+                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{fe}.py")
+                    return best
+
+                # 9. Collective reflection
+                co_refs = [i.reflection for i in S_r if i.reflection]
+                self_refs = [i.reflection for i in I_rm if i.reflection]
+                MR = self.collective_reflect(co_refs + self_refs)
+
+                # 10. Mutation → P_new
+                mutated = self.mutate(P_self.inds, MR, pm)
+                P_new = Population(size=len(mutated), problem=self.problem)
+                P_new.inds = mutated
+
+                # 11. Evaluate P_new
+                P_new = self.evaluate_pop(P_new)
+                fe += len(P_new.inds)
+                self.log.info(f"After P_new FE={fe}")
+
+                # 12. Replacement
+                P = self.replacer(old_pop=P, new_pop=P_new, max_size=P.size)
+
+                best = max(P.inds, key=lambda i: i.fitness)
+                best.chromosome.save(f"tmp/best_{gen}.py")
+                self.log.info(f"Gen {gen} done FE={fe}, best={best.fitness:.2f}")
+
+                gen += 1
+            except Exception as e:
+                self.log.error(f"Error in gen {gen}: {e}")
+                continue
+
+        self.log.info(f"Done, best overall fitness {best.fitness:.2f}")
+        return best

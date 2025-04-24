@@ -1,6 +1,6 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from llm import OpenRouterLLM, LLMException
+from llm import LLM, LLMException
 from model import HDR, CodeSegmentHDR, HDRException
 import problem
 from problem import Problem, Job, Machine, TerminalDictMaker
@@ -179,7 +179,7 @@ class SimulationBaseEvaluator(Evaluator):
         return results
     
 class StaticLLMSurrogateEvaluator(Evaluator):
-    def __init__(self, llm_model: OpenRouterLLM, problem: Problem, prompt_template: str):
+    def __init__(self, llm_model: LLM, problem: Problem, prompt_template: str):
         super().__init__(problem)
         self.llm_model = llm_model
         self.context: str = ""
@@ -345,11 +345,12 @@ class StaticLLMSurrogateEvaluator(Evaluator):
         return results
 
 class EventDrivenLLMSurrogateEvaluator(Evaluator):
-    def __init__(self, llm_model: OpenRouterLLM, problem: Problem, 
-                 prompt_template: str, num_segments: int):
+    def __init__(self, llm_model: LLM, problem: Problem, 
+                 prompt_template: str, num_segments: int, batch_size: int):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
+        self.batch_size = batch_size
         self._logger = logging.getLogger(__name__)
         self.event_store = collections.defaultdict(list)
         self.history_store = []
@@ -377,7 +378,8 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 curr_sum = 0
                 
         if curr_bucket:
-            segments.append(curr_bucket[-1])
+            if len(segments) < num_segments - 1:
+                segments.append(curr_bucket[-1])
             
         segments.append(1e6)
             
@@ -500,7 +502,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 continue
         return evaluated_hdrs
     
-    def __call__(self, hdrs: List[HDR]):
+    def evaluate_batch(self, hdrs: List[HDR]):
         self._logger.info(f'Start evaluate {len(hdrs)} HDR.')
         for i in range(len(self.times)):
             t = int(self.times[i])
@@ -516,14 +518,28 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 next_time=self.times[i + 1] if i < len(self.times) - 1 else 1e6
             )
             
-            print(prompt)
-            
             response = self.llm_model.get_response(prompt)
             json_repsonse = self.llm_model.extract_response(response)
             results = self._process_json_response(json_repsonse)
-            print(self.history_store)
         
         return results
+    
+    def _retry(self, fn, max_retries: int, *args, **kwargs):
+        for attempt in range(1, max_retries+1):
+            try:
+                return fn(*args, **kwargs)
+            except (LLMException, HDRException) as e:
+                self._logger.warning(f"Attempt {attempt}/{max_retries} failed in {fn.__name__}: {e.msg}")
+        raise LLMException(f"All {max_retries} retries failed for {fn.__name__}")
+    
+    def __call__(self, hdrs: List[HDR]):
+        all_results = []
+        for i in range(0, len(hdrs), self.batch_size):
+            self._logger.info(f"Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}")
+            batch = hdrs[i:i + self.batch_size]
+            results = self._retry(self.evaluate_batch, 3, batch)
+            all_results.extend(results)
+        return all_results
         
         
         

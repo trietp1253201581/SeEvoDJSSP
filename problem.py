@@ -204,4 +204,54 @@ class Problem:
                 new_job.add_opr(new_opr)
             self.jobs.append(new_job)
             
+    def custom_generate(self, num_jobs:int, max_oprs_each_job:int, num_machines:int, max_arr_time:int = 1000,
+                        arrival_type: str='uniform', proc_dist: str='uniform', deadline_factor: float=2.0):
+        self.jobs = []
+        self.machines = [Machine(i) for i in range(num_machines)]
+        
+        for j in range(num_jobs):
+            new_job = Job(id=j)
+            
+            if arrival_type == 'uniform':
+                new_job.time_arr = int(random.uniform(0, max_arr_time))
+            elif arrival_type == 'gauss':
+                new_job.time_arr = int(random.gauss(max_arr_time / 2, max_arr_time / 6))
+            elif arrival_type == 'burst':
+                if random.random() < 0.8:
+                    new_job.time_arr = int(random.uniform(0, max_arr_time / 4))
+                else:
+                    new_job.time_arr = int(random.uniform(3 * max_arr_time / 4, max_arr_time))
+            else:
+                new_job.time_arr = random.randint(0, max_arr_time)
+            
+            new_job.prior = random.randint(1, 5)
+            num_opr = random.randint(1, max_oprs_each_job)
+            
+            oprs = []
+            total_duration = 0
+            for _ in range(num_opr):
+                if proc_dist == 'uniform':
+                    duration = int(random.uniform(1, 2 * max_arr_time))
+                elif proc_dist == 'bimodal':
+                    duration = random.choice([int(random.uniform(1, max_arr_time/3)), int(random.uniform(2 * max_arr_time/3, 2 * max_arr_time))])
+                else:
+                    duration = int(random.gauss(max_arr_time / 2, max_arr_time / 6))
+                
+                total_duration += duration
+                
+                selected_machine_ids = random.sample(range(num_machines), k=2)
+                available_machines = {
+                    self.machines[m_id]: duration + random.randint(-max_arr_time//5, max_arr_time//5) for m_id in selected_machine_ids
+                }
+                
+                # Deadline tính dồn, có thể cộng thêm thời gian ngẫu nhiên hoặc cố định
+                last_deadline = oprs[-1].deadline if oprs else new_job.time_arr
+                deadline = last_deadline + deadline_factor * duration
+                
+                oprs.append(Operation(deadline, available_machines))
+                
+            new_job.oprs = oprs
+            self.jobs.append(new_job)
+            
+            
 

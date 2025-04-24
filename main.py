@@ -4,7 +4,7 @@ from problem import Problem, AVAIABLE_TERMINALS
 import random
 from se_evo import LLMInitOperator, LLMCrossoverOperator, LLMMutationOperator, \
     CoEvoOperator, SelfEvoOperator, CollectiveRefOperator, RandomSelectOperator, \
-        TopKElitismReplaceOperator, se_evo
+        TopKElitismReplaceOperator, SelfEvoEngine
         
 from evaluate import SimulationBaseEvaluator, StaticLLMSurrogateEvaluator, EventDrivenLLMSurrogateEvaluator
 from datetime import datetime
@@ -22,12 +22,12 @@ logging.basicConfig(
 # Create problem 
 random.seed(42)
 
-problem = Problem(AVAIABLE_TERMINALS, pool_size=6)
-problem.random_generate(num_jobs=50, max_oprs_each_job=10, num_machines=15, max_arr_time=300)
+problem = Problem(AVAIABLE_TERMINALS, pool_size=16)
+problem.custom_generate(num_jobs=200, max_oprs_each_job=10, num_machines=20, max_arr_time=150, arrival_type='uniform', proc_dist='uniform', deadline_factor=1.2)
 
-#for job in problem.jobs:
-   # print(str(job))
-
+# for job in problem.jobs:
+#   print(str(job))
+    
 # Build llm
 #llm_model = OpenRouterLLM('deepseek', 'deepseek-r1-zero', free=True, timeout=(60, 600))
 llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600))
@@ -40,40 +40,22 @@ co_evo_func = CoEvoOperator(problem, llm_model, prompt_template=pt.CO_EVO_PROMPT
 self_evo_func = SelfEvoOperator(problem, llm_model, prompt_template=pt.SELF_EVO_PROMPT_TEMPLATE)
 collective_evo_func = CollectiveRefOperator(problem, llm_model, prompt_template=pt.COLLECTIVE_REF_PROMPT_TEMPLATE)
 selector = RandomSelectOperator(problem)
-replace_opr = TopKElitismReplaceOperator(problem, k=2)
-evaluator = StaticLLMSurrogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE)
-
-def load_examples():
+replace_opr = TopKElitismReplaceOperator(problem, k=3)
     
-    hdrs = []
-    simulator_evaluate = SimulationBaseEvaluator(problem)
-    for i in range(1, 6):
-        new_hdr = CodeSegmentHDR()
-        new_hdr.load(f'examples/hdr_{i}.py')
-        hdrs.append(new_hdr)
-        
-    evaluated = simulator_evaluate(hdrs)
-    for e in evaluated:
-        print(e[0])
-        print(e[1])
-    examples = []
-    evaluated.sort(key=lambda x: x[1])
-    for i in range(len(evaluated)):
-        examples.append((evaluated[0], 50.0 + 50.0 / len(evaluated) * i))
-    
-    return examples
-    
-for example in load_examples():
-    evaluator.add_example(example[0], example[1])
-
+#evaluator = EventDrivenLLMSurrogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE, num_segments=4, batch_size=6)
+evaluator = SimulationBaseEvaluator(problem)
 # Main Se-Evo process
-best = se_evo(50, problem, llm_init_func,
-              co_evo_func, self_evo_func, collective_evo_func,
-              llm_crossover_func, llm_mutation_func,
-              selector, replace_opr, evaluator,
-              init_size=26, subset_size=10,
-              template_file_path='template.txt',
-              pc=0.9, pm=0.2)
+se_engine = SelfEvoEngine(
+    problem, llm_init_func, co_evo_func, self_evo_func, collective_evo_func,
+    llm_crossover_func, llm_mutation_func, selector, replace_opr, evaluator,
+    max_retries=3
+)
+
+best = se_engine.run(
+    max_fe=20,
+    init_size=36, subset_size=12, template_file='template.txt',
+    pc=0.9, pm=0.1
+)
 
 if best is None:
     print("Not found sol!")
@@ -81,3 +63,5 @@ else:
     print("Best: ")
     print(str(best.chromosome))
     print(best.fitness)
+    
+llm_model.close()

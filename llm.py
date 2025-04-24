@@ -4,6 +4,10 @@ import os
 import re
 import time
 import tiktoken
+from abc import ABC, abstractmethod
+from typing import Literal
+from datetime import datetime
+
 class LLMException(Exception):
     def __init__(self, msg: str):
         super().__init__()
@@ -23,9 +27,63 @@ class MissingConfigException(LLMException):
     def __init__(self, msg: str="Missing config file: config.json"):
         super().__init__(msg)
         self.msg = msg
+        
+class ReachedCallLimitException(LLMException):
+    def __init__(self, msg: str="Reached call limit"):
+        super().__init__(msg)
+        self.msg = msg
+        
+class LLM(ABC):
+    def __init__(self, api_name: str|Literal['GOOGLE_AI', 'OPENROUTER']):
+        self._load_runtime_config(api_name)
+        self.api_name = api_name
 
-class OpenRouterLLM:
+    def _load_runtime_config(self, api_name: str):
+        try:
+            with open('./llm_runtime_config.json', 'r') as f:
+                data = json.load(f)[api_name]
+                date = json.load(f)['DATE']
+                self.call_cnt = data['CALL_CNT']
+                self.call_limit = data['CALL_LIMIT']
+                self.max_tokens = data['MAX_TOKENS']
+                
+                if date != datetime.now().strftime('%Y-%m-%d'):
+                    self.call_cnt = 0
+                print(self.call_cnt)
+        except Exception:
+            self.call_cnt = 0
+            self.call_limit = 1000
+            self.max_tokens = 6000
+            
+    def _save_runtime_config(self):
+        # Đọc trước
+        with open('./llm_runtime_config.json', 'r') as f:
+            data = json.load(f)
+
+        # Sửa dữ liệu
+        print(data)
+        data[self.api_name]['CALL_CNT'] = self.call_cnt
+        data[self.api_name]['CALL_LIMIT'] = self.call_limit
+        data[self.api_name]['MAX_TOKENS'] = self.max_tokens
+        data['DATE'] = datetime.now().strftime('%Y-%m-%d')
+
+        # Ghi lại sau
+        with open('./llm_runtime_config.json', 'w') as f:
+            json.dump(data, f, indent=4)
+            
+    def close(self):
+        self._save_runtime_config()
+    
+    @abstractmethod
+    def get_response(self, prompt: str) -> str:
+        pass
+    
+    @abstractmethod
+    def extract_response(self, response: str) -> dict:
+        pass
+class OpenRouterLLM(LLM):
     def __init__(self, brand: str, model: str, free: bool = True, timeout: tuple[float, float]=(30, 200)):
+        super().__init__('OPENROUTER')
         self.brand = brand
         self.model = model
         self.free = free
@@ -158,6 +216,11 @@ class OpenRouterLLM:
             'safety': 'ON'
         })
         
+        self.call_cnt += 1
+        
+        if self.call_cnt > self.call_limit:
+            raise ReachedCallLimitException()
+        
         try:
             response = requests.post(url=self.url, headers=headers, data=data, timeout=self.timeout)
             response.raise_for_status()  # Kiểm tra lỗi HTTP (4xx, 5xx)
@@ -165,8 +228,12 @@ class OpenRouterLLM:
                 raise BadAPIException(msg=response.json()['error']['message'])
             if 'choices' not in response.json():
                 raise BadResponseException(msg=response.json())
-            print(response.text)
-            return response.json()['choices'][0]['message']['content']
+            response_text = response.json()['choices'][0]['message']['content']
+            out_tokens = response.json()['usage']['completion_tokens'] if 'usage' in response.json() \
+                else len(tiktoken.encoding_for_model('gpt-4o').encode(response_text))
+            if out_tokens > self.max_tokens:
+                raise BadAPIException("Response too long, output tokens: " + str(out_tokens))
+            return response_text
         except requests.Timeout:
             raise BadAPIException("Timeout Request!")
         except requests.RequestException as e:
@@ -176,7 +243,6 @@ class OpenRouterLLM:
         m = re.search(r'(json)?(?P<obj>[^\`]+)', response)
         if m is not None:
             json_str = m.group('obj')
-            print(json_str)
             try:
                 json_obj = json.loads(json_str)
             
@@ -190,14 +256,16 @@ class OpenRouterLLM:
         
         
     def close(self):
-        self._delete_key()
+        #self._delete_key()
+        self._save_runtime_config()
         
-class GoogleAIStudioLLM:
+class GoogleAIStudioLLM(LLM):
     """
     Client for Google AI Studio Generative Language API.
     Requires 'GOOGLE_API_KEY' in config.json under key 'GOOGLE_AI_API_KEY'.
     """
     def __init__(self, model: str, timeout: tuple[float, float]=(30, 200)):
+        super().__init__('GOOGLE_AI')
         self.model = model
         self.timeout = timeout
         self.url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
@@ -223,10 +291,12 @@ class GoogleAIStudioLLM:
             ],
             "generationConfig": {
                 "temperature": 0.8,
-                "maxOutputTokens": 6000
+                "maxOutputTokens": self.max_tokens
             }
         }
-        print(len(tiktoken.encoding_for_model('gpt-4o').encode(prompt)))
+        self.call_cnt += 1
+        if self.call_cnt > self.call_limit:
+            raise ReachedCallLimitException()
         try:
             time.sleep(3.5)
             resp = requests.post(self.url, headers=headers, params=params,
@@ -236,8 +306,14 @@ class GoogleAIStudioLLM:
             if 'candidates' in data and data['candidates']:
                 candidate = data['candidates'][0]
                 if 'content' in candidate and 'parts' in candidate['content']:
-                    print(len(tiktoken.encoding_for_model('gpt-4o').encode(candidate['content']['parts'][0].get('text', ''))))
-                    print(candidate.get('finishReason', 'Unknown'))
+                    response_text = candidate['content']['parts'][0].get('text', '')
+                    out_tokens = len(tiktoken.encoding_for_model('gpt-4o').encode(response_text))
+                    print(out_tokens)
+                    if out_tokens > self.max_tokens:
+                        raise BadAPIException("Response too long, output tokens: " + str(out_tokens))
+                    finishReason = candidate.get('finishReason', 'Unknown')
+                    if finishReason != 'STOP':
+                        raise BadAPIException("Response not finished correctly " + finishReason)
                     return candidate['content']['parts'][0].get('text', '')
             raise BadResponseException(f"Unexpected response format: {data}")
         except requests.Timeout:
@@ -255,9 +331,12 @@ class GoogleAIStudioLLM:
             
                 return json_obj
             except json.decoder.JSONDecodeError as e:
-                print("Bad response:" + json_str[:20] + "\n" + json_str[-20:])
                 raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
             except TypeError as e:
                 raise BadResponseException(msg="Bad response:" + json_str[:20] + "\n" + json_str[-20:])
         else:
             raise BadResponseException()
+        
+    def close(self):
+        self._save_runtime_config()
+
