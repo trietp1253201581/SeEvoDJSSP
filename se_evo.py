@@ -10,7 +10,7 @@ from evaluate import Evaluator
 import datetime
 import logging
 import pickle
-
+import time
 
 random.seed(42)
 
@@ -331,6 +331,7 @@ class SelfEvoEngine:
         self.gen = 0
         self.P = None
         self.best = None
+        self.solve_time = 0
         self.log = logging.getLogger(__name__)
 
     def initialize(self, init_size: int, template: str) -> Population:
@@ -405,7 +406,7 @@ class SelfEvoEngine:
     ) -> Individual:
         self.log.info(f"Start se_evo at {datetime.datetime.now()}")
         template = get_template(template_file)
-
+        start_time = time.time()
         # 1. Initialize
         if state == 'new':
             try:
@@ -413,6 +414,7 @@ class SelfEvoEngine:
                 self.P = self.evaluate_pop(self.P)
             except Exception as e:
                 self.log.error(f"Error in initialize: {e}")
+                self.solve_time += time.time() - start_time
                 return None
             self.fe = len(self.P.inds)
             self.best = max(self.P.inds, key=lambda i: i.fitness)
@@ -422,21 +424,22 @@ class SelfEvoEngine:
         else:
             self.load_state(checkpoint_path)
             
-        print(self.fe)
-        print(self.P)
         while self.fe < max_fe:
             try:
                 self.log.info(f"Gen {self.gen}")
                 # 2. Selection
                 S_p = self.selector(self.P, subset_size)
+                self.log.info(f"Selected {len(S_p.inds)} individuals")
 
                 # 3. Co-evolution
                 S_r = self.coevolution(S_p)
+                self.log.info(f"Co-evolution done with {len(S_r)} individuals")
 
                 # 4. Crossover → P_inter
-                inter = self.crossover_pop(S_r, S_p.size, pc)
+                inter = self.crossover_pop(S_r, len(S_p.inds), pc)
                 P_inter = Population(size=len(inter), problem=self.problem)
                 P_inter.inds = inter
+                self.log.info(f"Crossover done with {len(P_inter.inds)} individuals")
 
                 # 5. Evaluate P_inter
                 P_inter = self.evaluate_pop(P_inter)
@@ -444,6 +447,7 @@ class SelfEvoEngine:
                 self.log.info(f"After P_inter FE={self.fe}")
                 if self.fe > max_fe:
                     self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
+                    self.solve_time += time.time() - start_time
                     return self.best
 
                 # Update best so far
@@ -454,29 +458,33 @@ class SelfEvoEngine:
                 # You must build compare list beforehand
                 compare_list = [(p, c, p.reflection) for p,c in zip(S_p.inds, P_inter.inds)]
                 I_rm = self.selfevolution(compare_list)
+                self.log.info(f"Self-evolution done with {len(I_rm)} individuals")
 
                 # 7. Crossover self → P_self
                 P_self = Population(size=len(I_rm), problem=self.problem)
-                P_self.inds = self.crossover_pop(I_rm, len(I_rm))
-
+                P_self.inds = self.crossover_pop(I_rm, len(I_rm), pc)
+                self.log.info(f"Crossover self done with {len(P_self.inds)} individuals")
                 # 8. Evaluate P_self
                 P_self = self.evaluate_pop(P_self)
                 self.fe += len(P_self.inds)
                 self.log.info(f"After P_self FE={self.fe}")
                 if self.fe > max_fe:
                     self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
+                    self.solve_time += time.time() - start_time
                     return self.best
 
                 # 9. Collective reflection
                 co_refs = [i.reflection for i in S_r if i.reflection]
                 self_refs = [i.reflection for i in I_rm if i.reflection]
                 MR = self.collective_reflect(co_refs + self_refs)
+                self.log.info(f"Collective reflection done with {len(co_refs + self_refs)} reflections")
 
                 # 10. Mutation → P_new
                 mutated = self.mutate(P_self.inds, MR, pm)
                 P_new = Population(size=len(mutated), problem=self.problem)
                 P_new.inds = mutated
-
+                self.log.info(f"Mutation done with {len(P_new.inds)} individuals")
+                
                 # 11. Evaluate P_new
                 P_new = self.evaluate_pop(P_new)
                 self.fe += len(P_new.inds)
@@ -495,6 +503,7 @@ class SelfEvoEngine:
                 continue
 
         self.log.info(f"Done, best overall fitness {self.best.fitness:.2f}")
+        self.solve_time += time.time() - start_time
         return self.best
     
     def save_state(self, checkpoint_path: str):

@@ -1,294 +1,336 @@
-[2025-04-24 13:57:32] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 13:57:32.216111
-[2025-04-24 13:57:32] INFO in se_evo (se_evo.py:335): Initializing population with 32 individuals
-[2025-04-24 13:57:59] INFO in se_evo (se_evo.py:337): Population initialized with 32 individuals
-[2025-04-24 13:57:59] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 4
-[2025-04-24 13:57:59] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 13:58:12] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 13:58:42] WARNING in se_evo (se_evo.py:387): Attempt 1/3 failed in <lambda>: Response not finished correctly MAX_TOKENS
-[2025-04-24 13:58:42] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 4
-[2025-04-24 13:58:42] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 13:58:53] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 13:59:06] WARNING in se_evo (se_evo.py:387): Attempt 2/3 failed in <lambda>: Bad response:
+[2025-04-24 23:15:58] INFO in se_evo (se_evo.py:407): Start se_evo at 2025-04-24 23:15:58.225731
+[2025-04-24 23:15:58] INFO in se_evo (se_evo.py:341): Initializing population with 36 individuals
+[2025-04-24 23:16:27] INFO in se_evo (se_evo.py:343): Population initialized with 36 individuals
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:172): Start evaluate 36 HDR.
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 13/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 14/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 15/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 16/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 17/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 18/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 19/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 20/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 21/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 22/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 23/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 24/36
+[2025-04-24 23:16:27] INFO in evaluate (evaluate.py:175): Evaluate HDR 25/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 26/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 27/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 28/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 29/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 30/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 31/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 32/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 33/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 34/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 35/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 36/36
+[2025-04-24 23:16:28] INFO in evaluate (evaluate.py:179): Successfully evaluate 36/36 HDR.
+[2025-04-24 23:16:28] INFO in se_evo (se_evo.py:421): Init FE=36, best=-823.00
+[2025-04-24 23:16:28] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:16:28] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:16:45] WARNING in se_evo (se_evo.py:393): Attempt 1/3 failed in <lambda>: Bad response:
 {
-    "predicted": 
-0
-        }
-    ]
-}
+    "results": [
 
-[2025-04-24 13:59:06] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 4
-[2025-04-24 13:59:06] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 13:59:37] WARNING in se_evo (se_evo.py:387): Attempt 3/3 failed in <lambda>: Response not finished correctly MAX_TOKENS
-[2025-04-24 13:59:37] ERROR in se_evo (se_evo.py:407): Error in initialize: All 3 retries failed for <lambda>
-[2025-04-24 14:02:46] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 14:02:46.352847
-[2025-04-24 14:02:46] INFO in se_evo (se_evo.py:335): Initializing population with 32 individuals
-[2025-04-24 14:03:12] INFO in se_evo (se_evo.py:337): Population initialized with 32 individuals
-[2025-04-24 14:03:12] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 4
-[2025-04-24 14:03:12] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 14:03:24] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:03:34] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:03:55] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:04:22] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:04:41] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:04:41] INFO in evaluate (evaluate.py:538): Processing HDR batch 2 of 4
-[2025-04-24 14:04:41] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 14:04:53] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:05:05] WARNING in se_evo (se_evo.py:387): Attempt 1/3 failed in <lambda>: Bad response:
+where the weight of 
+[2025-04-24 23:17:01] WARNING in se_evo (se_evo.py:393): Attempt 2/3 failed in <lambda>: Bad response:
 {
-    "predicted": 
-0
-        }
-    ]
-}
+    "results": [
 
-[2025-04-24 14:05:05] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 4
-[2025-04-24 14:05:05] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 14:05:16] INFO in evaluate (evaluate.py:492): Successfully update history store with 8 HDRs.
-[2025-04-24 14:05:48] WARNING in se_evo (se_evo.py:387): Attempt 2/3 failed in <lambda>: Response not finished correctly MAX_TOKENS
-[2025-04-24 14:05:48] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 4
-[2025-04-24 14:05:48] INFO in evaluate (evaluate.py:506): Start evaluate 8 HDR.
-[2025-04-24 14:06:19] WARNING in se_evo (se_evo.py:387): Attempt 3/3 failed in <lambda>: Response not finished correctly MAX_TOKENS
-[2025-04-24 14:06:19] ERROR in se_evo (se_evo.py:407): Error in initialize: All 3 retries failed for <lambda>
-[2025-04-24 14:10:14] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 14:10:14.314263
-[2025-04-24 14:10:14] INFO in se_evo (se_evo.py:335): Initializing population with 36 individuals
-[2025-04-24 14:10:42] INFO in se_evo (se_evo.py:337): Population initialized with 35 individuals
-[2025-04-24 14:10:42] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 6
-[2025-04-24 14:10:42] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:10:55] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:11:06] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Bad response:
+tor or threshold to 
+[2025-04-24 23:17:19] WARNING in se_evo (se_evo.py:393): Attempt 3/3 failed in <lambda>: Bad response:
 {
-    "predicted": 
-2
-        }
-    ]
-}
+    "results": [
 
-[2025-04-24 14:11:06] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:11:20] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:11:32] WARNING in evaluate (evaluate.py:532): Attempt 2/3 failed in evaluate_batch: Bad response:
+ jobs. For example: 
+[2025-04-24 23:17:19] ERROR in se_evo (se_evo.py:504): Error in gen 1: All 3 retries failed for <lambda>
+[2025-04-24 23:17:19] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:17:19] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:17:37] INFO in se_evo (se_evo.py:438): Co-evolution done with 12 individuals
+[2025-04-24 23:17:37] ERROR in se_evo (se_evo.py:504): Error in gen 1: object of type 'Population' has no len()
+[2025-04-24 23:17:37] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:17:37] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:17:54] INFO in se_evo (se_evo.py:438): Co-evolution done with 12 individuals
+[2025-04-24 23:17:54] ERROR in se_evo (se_evo.py:504): Error in gen 1: object of type 'Population' has no len()
+[2025-04-24 23:17:54] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:17:54] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:19:33] INFO in se_evo (se_evo.py:407): Start se_evo at 2025-04-24 23:19:33.352117
+[2025-04-24 23:19:33] INFO in se_evo (se_evo.py:341): Initializing population with 36 individuals
+[2025-04-24 23:20:02] INFO in se_evo (se_evo.py:343): Population initialized with 35 individuals
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:172): Start evaluate 35 HDR.
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 13/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 14/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 15/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 16/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 17/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 18/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 19/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 20/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 21/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 22/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 23/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 24/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 25/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 26/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 27/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 28/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 29/35
+[2025-04-24 23:20:02] INFO in evaluate (evaluate.py:175): Evaluate HDR 30/35
+[2025-04-24 23:20:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 31/35
+[2025-04-24 23:20:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 32/35
+[2025-04-24 23:20:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 33/35
+[2025-04-24 23:20:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 34/35
+[2025-04-24 23:20:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 35/35
+[2025-04-24 23:20:03] INFO in evaluate (evaluate.py:179): Successfully evaluate 35/35 HDR.
+[2025-04-24 23:20:03] INFO in se_evo (se_evo.py:421): Init FE=35, best=-823.00
+[2025-04-24 23:20:03] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:20:03] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:20:19] INFO in se_evo (se_evo.py:438): Co-evolution done with 12 individuals
+[2025-04-24 23:20:19] ERROR in se_evo (se_evo.py:504): Error in gen 1: object of type 'Population' has no len()
+[2025-04-24 23:20:19] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:20:19] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:23:47] INFO in se_evo (se_evo.py:407): Start se_evo at 2025-04-24 23:23:47.419394
+[2025-04-24 23:23:47] INFO in se_evo (se_evo.py:341): Initializing population with 36 individuals
+[2025-04-24 23:24:16] INFO in se_evo (se_evo.py:343): Population initialized with 35 individuals
+[2025-04-24 23:24:16] INFO in evaluate (evaluate.py:172): Start evaluate 35 HDR.
+[2025-04-24 23:24:16] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/35
+[2025-04-24 23:24:16] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/35
+[2025-04-24 23:24:16] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/35
+[2025-04-24 23:24:16] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 13/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 14/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 15/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 16/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 17/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 18/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 19/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 20/35
+[2025-04-24 23:24:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 21/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 22/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 23/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 24/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 25/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 26/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 27/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 28/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 29/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 30/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 31/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 32/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 33/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 34/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:175): Evaluate HDR 35/35
+[2025-04-24 23:24:18] INFO in evaluate (evaluate.py:179): Successfully evaluate 35/35 HDR.
+[2025-04-24 23:24:18] INFO in se_evo (se_evo.py:421): Init FE=35, best=-823.00
+[2025-04-24 23:24:18] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:24:18] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:24:35] INFO in se_evo (se_evo.py:438): Co-evolution done with 12 individuals
+[2025-04-24 23:24:35] ERROR in se_evo (se_evo.py:505): Error in gen 1: object of type 'Population' has no len()
+[2025-04-24 23:24:35] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:24:35] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:24:51] INFO in se_evo (se_evo.py:438): Co-evolution done with 12 individuals
+[2025-04-24 23:24:51] ERROR in se_evo (se_evo.py:505): Error in gen 1: object of type 'Population' has no len()
+[2025-04-24 23:24:51] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:24:51] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:25:08] INFO in se_evo (se_evo.py:438): Co-evolution done with 12 individuals
+[2025-04-24 23:25:08] ERROR in se_evo (se_evo.py:505): Error in gen 1: object of type 'Population' has no len()
+[2025-04-24 23:25:08] INFO in se_evo (se_evo.py:431): Gen 1
+[2025-04-24 23:25:08] INFO in se_evo (se_evo.py:434): Selected 12 individuals
+[2025-04-24 23:26:23] INFO in se_evo (se_evo.py:407): Start se_evo at 2025-04-24 23:26:23.535320
+[2025-04-24 23:26:23] INFO in se_evo (se_evo.py:341): Initializing population with 36 individuals
+[2025-04-24 23:26:51] INFO in se_evo (se_evo.py:343): Population initialized with 34 individuals
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:172): Start evaluate 34 HDR.
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 13/34
+[2025-04-24 23:26:51] INFO in evaluate (evaluate.py:175): Evaluate HDR 14/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 15/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 16/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 17/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 18/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 19/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 20/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 21/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 22/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 23/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 24/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 25/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 26/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 27/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 28/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 29/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 30/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 31/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 32/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 33/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:175): Evaluate HDR 34/34
+[2025-04-24 23:26:52] INFO in evaluate (evaluate.py:179): Successfully evaluate 34/34 HDR.
+[2025-04-24 23:26:52] INFO in se_evo (se_evo.py:421): Init FE=34, best=-823.00
+[2025-04-24 23:26:52] INFO in se_evo (se_evo.py:429): Gen 1
+[2025-04-24 23:26:52] INFO in se_evo (se_evo.py:432): Selected 12 individuals
+[2025-04-24 23:27:11] WARNING in se_evo (se_evo.py:393): Attempt 1/3 failed in <lambda>: Bad response:
 {
-    "predicted": 
-0
-        }
-    ]
-}
+    "results": [
 
-[2025-04-24 14:11:32] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:11:43] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:11:55] WARNING in evaluate (evaluate.py:532): Attempt 3/3 failed in evaluate_batch: Bad response:
+ible improvement is 
+[2025-04-24 23:27:27] INFO in se_evo (se_evo.py:436): Co-evolution done with 12 individuals
+[2025-04-24 23:28:01] INFO in se_evo (se_evo.py:442): Crossover done with 12 individuals
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:172): Start evaluate 12 HDR.
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/12
+[2025-04-24 23:28:01] INFO in evaluate (evaluate.py:179): Successfully evaluate 12/12 HDR.
+[2025-04-24 23:28:01] INFO in se_evo (se_evo.py:447): After P_inter FE=46
+[2025-04-24 23:28:16] INFO in se_evo (se_evo.py:461): Self-evolution done with 12 individuals
+[2025-04-24 23:28:50] INFO in se_evo (se_evo.py:466): Crossover self done with 12 individuals
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:172): Start evaluate 12 HDR.
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/12
+[2025-04-24 23:28:50] INFO in evaluate (evaluate.py:179): Successfully evaluate 12/12 HDR.
+[2025-04-24 23:28:50] INFO in se_evo (se_evo.py:470): After P_self FE=58
+[2025-04-24 23:28:56] INFO in se_evo (se_evo.py:480): Collective reflection done with 24 reflections
+[2025-04-24 23:29:03] INFO in se_evo (se_evo.py:486): Mutation done with 12 individuals
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:172): Start evaluate 12 HDR.
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/12
+[2025-04-24 23:29:03] INFO in evaluate (evaluate.py:179): Successfully evaluate 12/12 HDR.
+[2025-04-24 23:29:03] INFO in se_evo (se_evo.py:491): After P_new FE=70
+[2025-04-24 23:29:03] INFO in se_evo (se_evo.py:498): Gen 1 done FE=70, best=-823.00
+[2025-04-24 23:29:03] INFO in se_evo (se_evo.py:429): Gen 2
+[2025-04-24 23:29:03] INFO in se_evo (se_evo.py:432): Selected 12 individuals
+[2025-04-24 23:29:22] WARNING in se_evo (se_evo.py:393): Attempt 1/3 failed in <lambda>: Bad response:
 {
-    "predicted": 
-5
-        }
-    ]
-}
+    "results": [
 
-[2025-04-24 14:11:55] ERROR in se_evo (se_evo.py:407): Error in initialize: All 3 retries failed for evaluate_batch
-[2025-04-24 14:13:58] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 14:13:58.168498
-[2025-04-24 14:13:58] INFO in se_evo (se_evo.py:335): Initializing population with 36 individuals
-[2025-04-24 14:14:25] INFO in se_evo (se_evo.py:337): Population initialized with 35 individuals
-[2025-04-24 14:14:25] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 6
-[2025-04-24 14:14:25] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:14:37] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:14:50] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:15:02] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:15:13] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:15:13] INFO in evaluate (evaluate.py:538): Processing HDR batch 2 of 6
-[2025-04-24 14:15:13] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:15:43] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Response not finished correctly MAX_TOKENS
-[2025-04-24 14:15:43] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:16:03] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:16:13] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:16:24] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:16:34] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:16:34] INFO in evaluate (evaluate.py:538): Processing HDR batch 3 of 6
-[2025-04-24 14:16:34] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:16:44] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:16:53] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:17:03] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Bad response:
+onsider normalizing 
+[2025-04-24 23:29:40] WARNING in se_evo (se_evo.py:393): Attempt 2/3 failed in <lambda>: Bad response:
 {
-    "predicted": 
-0
-        }
-    ]
-}
+    "results": [
 
-[2025-04-24 14:17:03] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:17:13] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:17:22] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:17:32] WARNING in evaluate (evaluate.py:532): Attempt 2/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-6
-        }
-    ]
-}
-
-[2025-04-24 14:17:32] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:17:42] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:17:52] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:18:03] WARNING in evaluate (evaluate.py:532): Attempt 3/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-0
-        }
-    ]
-}
-
-[2025-04-24 14:18:03] ERROR in se_evo (se_evo.py:407): Error in initialize: All 3 retries failed for evaluate_batch
-[2025-04-24 14:20:32] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 14:20:32.040026
-[2025-04-24 14:20:32] INFO in se_evo (se_evo.py:335): Initializing population with 36 individuals
-[2025-04-24 14:21:00] INFO in se_evo (se_evo.py:337): Population initialized with 35 individuals
-[2025-04-24 14:21:00] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 6
-[2025-04-24 14:21:00] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:21:10] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:21:19] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:21:28] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:21:37] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:21:37] INFO in evaluate (evaluate.py:538): Processing HDR batch 2 of 6
-[2025-04-24 14:21:37] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:21:47] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:21:56] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:22:08] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-3
-        }
-    ]
-}
-
-[2025-04-24 14:22:08] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:22:24] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:22:39] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:22:51] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:23:02] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:23:02] INFO in evaluate (evaluate.py:538): Processing HDR batch 3 of 6
-[2025-04-24 14:23:02] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:23:13] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:23:22] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:23:32] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-0
-        }
-    ]
-}
-
-[2025-04-24 14:23:32] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:23:45] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:24:15] WARNING in evaluate (evaluate.py:532): Attempt 2/3 failed in evaluate_batch: Response not finished correctly MAX_TOKENS
-[2025-04-24 14:24:15] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:24:25] WARNING in evaluate (evaluate.py:532): Attempt 3/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-0
-        }
-    ]
-}
-
-[2025-04-24 14:24:25] ERROR in se_evo (se_evo.py:407): Error in initialize: 'Exception' object has no attribute 'msg'
-[2025-04-24 14:27:51] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 14:27:51.454340
-[2025-04-24 14:27:51] INFO in se_evo (se_evo.py:335): Initializing population with 36 individuals
-[2025-04-24 14:28:20] INFO in se_evo (se_evo.py:337): Population initialized with 35 individuals
-[2025-04-24 14:28:20] INFO in evaluate (evaluate.py:538): Processing HDR batch 1 of 6
-[2025-04-24 14:28:20] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:28:30] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:28:42] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:28:54] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-3
-        }
-    ]
-}
-
-[2025-04-24 14:28:54] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:29:03] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:29:13] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:29:34] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:29:55] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:29:55] INFO in evaluate (evaluate.py:538): Processing HDR batch 2 of 6
-[2025-04-24 14:29:55] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:30:04] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:30:15] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:30:27] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:30:37] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:30:37] INFO in evaluate (evaluate.py:538): Processing HDR batch 3 of 6
-[2025-04-24 14:30:37] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:30:50] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:31:02] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Bad response:
-{
-    "predicted": 
-6
-        }
-    ]
-}
-
-[2025-04-24 14:31:02] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:31:12] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:31:22] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:31:34] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:31:47] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:31:47] INFO in evaluate (evaluate.py:538): Processing HDR batch 4 of 6
-[2025-04-24 14:31:47] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:32:18] WARNING in evaluate (evaluate.py:532): Attempt 1/3 failed in evaluate_batch: Response not finished correctly MAX_TOKENS
-[2025-04-24 14:32:18] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:32:32] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:32:48] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:33:03] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:33:14] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:33:14] INFO in evaluate (evaluate.py:538): Processing HDR batch 5 of 6
-[2025-04-24 14:33:14] INFO in evaluate (evaluate.py:506): Start evaluate 6 HDR.
-[2025-04-24 14:33:24] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:33:35] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:33:47] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:34:00] INFO in evaluate (evaluate.py:492): Successfully update history store with 6 HDRs.
-[2025-04-24 14:34:00] INFO in evaluate (evaluate.py:538): Processing HDR batch 6 of 6
-[2025-04-24 14:34:00] INFO in evaluate (evaluate.py:506): Start evaluate 5 HDR.
-[2025-04-24 14:34:11] INFO in evaluate (evaluate.py:492): Successfully update history store with 5 HDRs.
-[2025-04-24 14:34:22] INFO in evaluate (evaluate.py:492): Successfully update history store with 5 HDRs.
-[2025-04-24 14:34:32] INFO in evaluate (evaluate.py:492): Successfully update history store with 5 HDRs.
-[2025-04-24 14:34:42] INFO in evaluate (evaluate.py:492): Successfully update history store with 5 HDRs.
-[2025-04-24 14:34:42] INFO in se_evo (se_evo.py:411): Init FE=35, best=850.00
-[2025-04-24 14:34:42] INFO in se_evo (se_evo.py:484): Done, best overall fitness 850.00
-[2025-04-24 14:36:30] INFO in se_evo (se_evo.py:399): Start se_evo at 2025-04-24 14:36:30.539947
-[2025-04-24 14:36:30] INFO in se_evo (se_evo.py:335): Initializing population with 36 individuals
-[2025-04-24 14:36:59] INFO in se_evo (se_evo.py:337): Population initialized with 35 individuals
-[2025-04-24 14:36:59] INFO in evaluate (evaluate.py:172): Start evaluate 35 HDR.
-[2025-04-24 21:00:32] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:00:32.105457
-[2025-04-24 21:00:32] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
-[2025-04-24 21:01:01] INFO in se_evo (se_evo.py:342): Population initialized with 34 individuals
-[2025-04-24 21:01:01] INFO in evaluate (evaluate.py:172): Start evaluate 34 HDR.
-[2025-04-24 21:01:07] INFO in evaluate (evaluate.py:178): Successfully evaluate 34/34 HDR.
-[2025-04-24 21:01:07] INFO in se_evo (se_evo.py:419): Init FE=34, best=-469.00
-[2025-04-24 21:01:07] INFO in se_evo (se_evo.py:494): Done, best overall fitness -469.00
-[2025-04-24 21:02:50] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:02:50.318731
-[2025-04-24 21:02:50] INFO in se_evo (se_evo.py:497): Done, best overall fitness -469.00
-[2025-04-24 21:07:06] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:07:06.297206
-[2025-04-24 21:07:06] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
-[2025-04-24 21:07:35] INFO in se_evo (se_evo.py:342): Population initialized with 35 individuals
-[2025-04-24 21:07:35] INFO in evaluate (evaluate.py:172): Start evaluate 35 HDR.
-[2025-04-24 21:14:52] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:14:52.476491
-[2025-04-24 21:14:52] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
-[2025-04-24 21:15:24] INFO in se_evo (se_evo.py:342): Population initialized with 37 individuals
-[2025-04-24 21:15:24] INFO in evaluate (evaluate.py:172): Start evaluate 37 HDR.
-[2025-04-24 21:24:21] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:24:21.043308
-[2025-04-24 21:24:21] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
-[2025-04-24 21:24:49] INFO in se_evo (se_evo.py:342): Population initialized with 34 individuals
-[2025-04-24 21:24:49] INFO in evaluate (evaluate.py:172): Start evaluate 34 HDR.
-[2025-04-24 21:24:49] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/34
-[2025-04-24 21:25:04] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/34
-[2025-04-24 21:25:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/34
-[2025-04-24 21:25:59] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/34
-[2025-04-24 21:26:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/34
-[2025-04-24 21:26:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/34
-[2025-04-24 21:27:05] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/34
-[2025-04-24 21:27:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/34
-[2025-04-24 21:27:48] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/34
-[2025-04-24 21:28:12] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/34
-[2025-04-24 21:28:41] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/34
-[2025-04-24 21:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/34
-[2025-04-24 21:29:13] INFO in evaluate (evaluate.py:175): Evaluate HDR 13/34
-[2025-04-24 21:29:40] INFO in evaluate (evaluate.py:175): Evaluate HDR 14/34
-[2025-04-24 21:30:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 15/34
-[2025-04-24 21:30:35] INFO in evaluate (evaluate.py:175): Evaluate HDR 16/34
+nalty term based on 
+[2025-04-24 23:29:56] INFO in se_evo (se_evo.py:436): Co-evolution done with 12 individuals
+[2025-04-24 23:30:37] INFO in se_evo (se_evo.py:442): Crossover done with 12 individuals
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:172): Start evaluate 12 HDR.
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/12
+[2025-04-24 23:30:37] INFO in evaluate (evaluate.py:179): Successfully evaluate 12/12 HDR.
+[2025-04-24 23:30:37] INFO in se_evo (se_evo.py:447): After P_inter FE=82
+[2025-04-24 23:30:53] INFO in se_evo (se_evo.py:461): Self-evolution done with 12 individuals
+[2025-04-24 23:31:25] INFO in se_evo (se_evo.py:466): Crossover self done with 12 individuals
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:172): Start evaluate 12 HDR.
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/12
+[2025-04-24 23:31:25] INFO in evaluate (evaluate.py:179): Successfully evaluate 12/12 HDR.
+[2025-04-24 23:31:25] INFO in se_evo (se_evo.py:470): After P_self FE=94
+[2025-04-24 23:31:31] INFO in se_evo (se_evo.py:480): Collective reflection done with 24 reflections
+[2025-04-24 23:31:37] INFO in se_evo (se_evo.py:486): Mutation done with 12 individuals
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:172): Start evaluate 12 HDR.
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/12
+[2025-04-24 23:31:37] INFO in evaluate (evaluate.py:179): Successfully evaluate 12/12 HDR.
+[2025-04-24 23:31:37] INFO in se_evo (se_evo.py:491): After P_new FE=106
+[2025-04-24 23:31:37] INFO in se_evo (se_evo.py:498): Gen 2 done FE=106, best=-823.00
+[2025-04-24 23:31:37] INFO in se_evo (se_evo.py:505): Done, best overall fitness -823.00

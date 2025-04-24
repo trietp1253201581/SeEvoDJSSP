@@ -84,8 +84,8 @@ class LLM(ABC):
     def extract_response(self, response: str) -> dict:
         pass
 class OpenRouterLLM(LLM):
-    def __init__(self, brand: str, model: str, free: bool = True, timeout: tuple[float, float]=(30, 200), core_config: str = './config.json'):
-        super().__init__('OPENROUTER')
+    def __init__(self, brand: str, model: str, free: bool = True, timeout: tuple[float, float]=(30, 200), core_config: str = './config.json', runtime_config: str = './llm_runtime_config.json'):
+        super().__init__('OPENROUTER', runtime_config)
         self.core_config = core_config
         self.brand = brand
         self.model = model
@@ -267,8 +267,9 @@ class GoogleAIStudioLLM(LLM):
     Client for Google AI Studio Generative Language API.
     Requires 'GOOGLE_API_KEY' in config.json under key 'GOOGLE_AI_API_KEY'.
     """
-    def __init__(self, model: str, timeout: tuple[float, float]=(30, 200)):
-        super().__init__('GOOGLE_AI')
+    def __init__(self, model: str, timeout: tuple[float, float]=(30, 200), core_config: str = './config.json', runtime_config: str = './llm_runtime_config.json'):
+        super().__init__('GOOGLE_AI', runtime_config)
+        self.core_config = core_config
         self.model = model
         self.timeout = timeout
         self.url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"

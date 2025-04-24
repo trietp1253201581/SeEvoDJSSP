@@ -23,7 +23,7 @@ logging.basicConfig(
 random.seed(42)
 
 problem = Problem(AVAIABLE_TERMINALS, pool_size=15)
-problem.custom_generate(num_jobs=120, max_oprs_each_job=5, num_machines=20, max_arr_time=120, arrival_type='uniform', proc_dist='uniform', deadline_factor=1.4)
+problem.custom_generate(num_jobs=150, max_oprs_each_job=5, num_machines=20, max_arr_time=120, arrival_type='uniform', proc_dist='uniform', deadline_factor=1.4)
 
 
 # for job in problem.jobs:
@@ -53,7 +53,7 @@ se_engine = SelfEvoEngine(
 )
 
 best = se_engine.run(
-    max_fe=500,
+    max_fe=1000,
     init_size=36, subset_size=12, template_file='template.txt',
     pc=0.8, pm=0.1, state='new'
 )
@@ -66,5 +66,5 @@ else:
     print("Best: ")
     print(str(best.chromosome))
     print(best.fitness)
-    
+    print(f"Time: {se_engine.solve_time:.2f}s")
 llm_model.close()
