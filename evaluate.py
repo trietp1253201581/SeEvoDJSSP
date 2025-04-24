@@ -171,7 +171,8 @@ class SimulationBaseEvaluator(Evaluator):
     def __call__(self, hdrs) -> List[Tuple[HDR, float]]:
         self._logger.info(f'Start evaluate {len(hdrs)} HDR.')
         results = []
-        for hdr in hdrs:
+        for id, hdr in enumerate(hdrs):
+            self._logger.info(f'Evaluate HDR {id + 1}/{len(hdrs)}')
             makespan = self.simulator.simulate(hdr, debug=False)
             fitness = -makespan
             results.append((hdr, fitness))

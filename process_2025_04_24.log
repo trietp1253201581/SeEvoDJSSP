@@ -255,3 +255,40 @@
 [2025-04-24 14:36:30] INFO in se_evo (se_evo.py:335): Initializing population with 36 individuals
 [2025-04-24 14:36:59] INFO in se_evo (se_evo.py:337): Population initialized with 35 individuals
 [2025-04-24 14:36:59] INFO in evaluate (evaluate.py:172): Start evaluate 35 HDR.
+[2025-04-24 21:00:32] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:00:32.105457
+[2025-04-24 21:00:32] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
+[2025-04-24 21:01:01] INFO in se_evo (se_evo.py:342): Population initialized with 34 individuals
+[2025-04-24 21:01:01] INFO in evaluate (evaluate.py:172): Start evaluate 34 HDR.
+[2025-04-24 21:01:07] INFO in evaluate (evaluate.py:178): Successfully evaluate 34/34 HDR.
+[2025-04-24 21:01:07] INFO in se_evo (se_evo.py:419): Init FE=34, best=-469.00
+[2025-04-24 21:01:07] INFO in se_evo (se_evo.py:494): Done, best overall fitness -469.00
+[2025-04-24 21:02:50] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:02:50.318731
+[2025-04-24 21:02:50] INFO in se_evo (se_evo.py:497): Done, best overall fitness -469.00
+[2025-04-24 21:07:06] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:07:06.297206
+[2025-04-24 21:07:06] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
+[2025-04-24 21:07:35] INFO in se_evo (se_evo.py:342): Population initialized with 35 individuals
+[2025-04-24 21:07:35] INFO in evaluate (evaluate.py:172): Start evaluate 35 HDR.
+[2025-04-24 21:14:52] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:14:52.476491
+[2025-04-24 21:14:52] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
+[2025-04-24 21:15:24] INFO in se_evo (se_evo.py:342): Population initialized with 37 individuals
+[2025-04-24 21:15:24] INFO in evaluate (evaluate.py:172): Start evaluate 37 HDR.
+[2025-04-24 21:24:21] INFO in se_evo (se_evo.py:406): Start se_evo at 2025-04-24 21:24:21.043308
+[2025-04-24 21:24:21] INFO in se_evo (se_evo.py:340): Initializing population with 36 individuals
+[2025-04-24 21:24:49] INFO in se_evo (se_evo.py:342): Population initialized with 34 individuals
+[2025-04-24 21:24:49] INFO in evaluate (evaluate.py:172): Start evaluate 34 HDR.
+[2025-04-24 21:24:49] INFO in evaluate (evaluate.py:175): Evaluate HDR 1/34
+[2025-04-24 21:25:04] INFO in evaluate (evaluate.py:175): Evaluate HDR 2/34
+[2025-04-24 21:25:25] INFO in evaluate (evaluate.py:175): Evaluate HDR 3/34
+[2025-04-24 21:25:59] INFO in evaluate (evaluate.py:175): Evaluate HDR 4/34
+[2025-04-24 21:26:17] INFO in evaluate (evaluate.py:175): Evaluate HDR 5/34
+[2025-04-24 21:26:37] INFO in evaluate (evaluate.py:175): Evaluate HDR 6/34
+[2025-04-24 21:27:05] INFO in evaluate (evaluate.py:175): Evaluate HDR 7/34
+[2025-04-24 21:27:28] INFO in evaluate (evaluate.py:175): Evaluate HDR 8/34
+[2025-04-24 21:27:48] INFO in evaluate (evaluate.py:175): Evaluate HDR 9/34
+[2025-04-24 21:28:12] INFO in evaluate (evaluate.py:175): Evaluate HDR 10/34
+[2025-04-24 21:28:41] INFO in evaluate (evaluate.py:175): Evaluate HDR 11/34
+[2025-04-24 21:29:03] INFO in evaluate (evaluate.py:175): Evaluate HDR 12/34
+[2025-04-24 21:29:13] INFO in evaluate (evaluate.py:175): Evaluate HDR 13/34
+[2025-04-24 21:29:40] INFO in evaluate (evaluate.py:175): Evaluate HDR 14/34
+[2025-04-24 21:30:01] INFO in evaluate (evaluate.py:175): Evaluate HDR 15/34
+[2025-04-24 21:30:35] INFO in evaluate (evaluate.py:175): Evaluate HDR 16/34

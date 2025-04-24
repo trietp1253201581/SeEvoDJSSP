@@ -1,5 +1,5 @@
 from model import CodeSegmentHDR, HDRException
-from typing import List, Tuple
+from typing import List, Literal, Tuple
 from llm import LLM, LLMException
 from basic_evo import Individual, Population, Operator
 from abc import abstractmethod
@@ -9,6 +9,7 @@ from problem import Problem
 from evaluate import Evaluator
 import datetime
 import logging
+import pickle
 
 
 random.seed(42)
@@ -326,6 +327,10 @@ class SelfEvoEngine:
         self.replacer = replacer
         self.fitness_eval = fitness_eval
         self.max_retries = max_retries
+        self.fe = 0
+        self.gen = 0
+        self.P = None
+        self.best = None
         self.log = logging.getLogger(__name__)
 
     def initialize(self, init_size: int, template: str) -> Population:
@@ -394,28 +399,36 @@ class SelfEvoEngine:
         subset_size: int,
         template_file: str,
         pc: float = 0.8,
-        pm: float = 0.1
+        pm: float = 0.1,
+        state: str | Literal['new', 'resume'] = 'new',
+        checkpoint_path: str|None = None
     ) -> Individual:
         self.log.info(f"Start se_evo at {datetime.datetime.now()}")
-        template = open(template_file).read()
+        template = get_template(template_file)
 
         # 1. Initialize
-        try:
-            P = self.initialize(init_size, template)
-            P = self.evaluate_pop(P)
-        except Exception as e:
-            self.log.error(f"Error in initialize: {e}")
-            return None
-        fe = len(P.inds)
-        best = max(P.inds, key=lambda i: i.fitness)
-        self.log.info(f"Init FE={fe}, best={best.fitness:.2f}")
-
-        gen = 1
-        while fe < max_fe:
+        if state == 'new':
             try:
-                self.log.info(f"Gen {gen}")
+                self.P = self.initialize(init_size, template)
+                self.P = self.evaluate_pop(self.P)
+            except Exception as e:
+                self.log.error(f"Error in initialize: {e}")
+                return None
+            self.fe = len(self.P.inds)
+            self.best = max(self.P.inds, key=lambda i: i.fitness)
+            self.log.info(f"Init FE={self.fe}, best={self.best.fitness:.2f}")
+            self.gen = 1
+            
+        else:
+            self.load_state(checkpoint_path)
+            
+        print(self.fe)
+        print(self.P)
+        while self.fe < max_fe:
+            try:
+                self.log.info(f"Gen {self.gen}")
                 # 2. Selection
-                S_p = self.selector(P, subset_size)
+                S_p = self.selector(self.P, subset_size)
 
                 # 3. Co-evolution
                 S_r = self.coevolution(S_p)
@@ -427,15 +440,15 @@ class SelfEvoEngine:
 
                 # 5. Evaluate P_inter
                 P_inter = self.evaluate_pop(P_inter)
-                fe += len(P_inter.inds)
-                self.log.info(f"After P_inter FE={fe}")
-                if fe > max_fe:
-                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{fe}.py")
-                    return best
+                self.fe += len(P_inter.inds)
+                self.log.info(f"After P_inter FE={self.fe}")
+                if self.fe > max_fe:
+                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
+                    return self.best
 
                 # Update best so far
-                best = max(P_inter.inds, key=lambda i: i.fitness)
-                best.chromosome.save(f"tmp/best_{fe}.py")
+                self.best = max(P_inter.inds, key=lambda i: i.fitness)
+                self.best.chromosome.save(f"tmp/best_{self.fe}.py")
 
                 # 6. Self-evolution
                 # You must build compare list beforehand
@@ -448,11 +461,11 @@ class SelfEvoEngine:
 
                 # 8. Evaluate P_self
                 P_self = self.evaluate_pop(P_self)
-                fe += len(P_self.inds)
-                self.log.info(f"After P_self FE={fe}")
-                if fe > max_fe:
-                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{fe}.py")
-                    return best
+                self.fe += len(P_self.inds)
+                self.log.info(f"After P_self FE={self.fe}")
+                if self.fe > max_fe:
+                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
+                    return self.best
 
                 # 9. Collective reflection
                 co_refs = [i.reflection for i in S_r if i.reflection]
@@ -466,20 +479,29 @@ class SelfEvoEngine:
 
                 # 11. Evaluate P_new
                 P_new = self.evaluate_pop(P_new)
-                fe += len(P_new.inds)
-                self.log.info(f"After P_new FE={fe}")
+                self.fe += len(P_new.inds)
+                self.log.info(f"After P_new FE={self.fe}")
 
                 # 12. Replacement
-                P = self.replacer(old_pop=P, new_pop=P_new, max_size=P.size)
+                self.P = self.replacer(old_pop=self.P, new_pop=P_new, max_size=self.P.size)
 
-                best = max(P.inds, key=lambda i: i.fitness)
-                best.chromosome.save(f"tmp/best_{gen}.py")
-                self.log.info(f"Gen {gen} done FE={fe}, best={best.fitness:.2f}")
+                self.best = max(self.P.inds, key=lambda i: i.fitness)
+                self.best.chromosome.save(f"tmp/best_{self.gen}.py")
+                self.log.info(f"Gen {self.gen} done FE={self.fe}, best={self.best.fitness:.2f}")
 
-                gen += 1
+                self.gen += 1
             except Exception as e:
-                self.log.error(f"Error in gen {gen}: {e}")
+                self.log.error(f"Error in gen {self.gen}: {e}")
                 continue
 
-        self.log.info(f"Done, best overall fitness {best.fitness:.2f}")
-        return best
+        self.log.info(f"Done, best overall fitness {self.best.fitness:.2f}")
+        return self.best
+    
+    def save_state(self, checkpoint_path: str):
+        with open(checkpoint_path, 'wb') as f:
+            pickle.dump(self, f)
+            
+    def load_state(self, checkpoint_path: str):
+        with open(checkpoint_path, 'rb') as f:
+            loaded = pickle.load(f)
+            self.__dict__.update(loaded.__dict__)

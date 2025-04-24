@@ -34,15 +34,17 @@ class ReachedCallLimitException(LLMException):
         self.msg = msg
         
 class LLM(ABC):
-    def __init__(self, api_name: str|Literal['GOOGLE_AI', 'OPENROUTER']):
+    def __init__(self, api_name: str|Literal['GOOGLE_AI', 'OPENROUTER'], runtime_config: str = './llm_runtime_config.json'):
+        self.config_file = runtime_config
         self._load_runtime_config(api_name)
         self.api_name = api_name
 
     def _load_runtime_config(self, api_name: str):
         try:
-            with open('./llm_runtime_config.json', 'r') as f:
-                data = json.load(f)[api_name]
-                date = json.load(f)['DATE']
+            with open(self.config_file, 'r') as f:
+                config = json.load(f)
+                data = config[api_name]
+                date = config['DATE']
                 self.call_cnt = data['CALL_CNT']
                 self.call_limit = data['CALL_LIMIT']
                 self.max_tokens = data['MAX_TOKENS']
@@ -57,7 +59,7 @@ class LLM(ABC):
             
     def _save_runtime_config(self):
         # Đọc trước
-        with open('./llm_runtime_config.json', 'r') as f:
+        with open(self.config_file, 'r') as f:
             data = json.load(f)
 
         # Sửa dữ liệu
@@ -68,7 +70,7 @@ class LLM(ABC):
         data['DATE'] = datetime.now().strftime('%Y-%m-%d')
 
         # Ghi lại sau
-        with open('./llm_runtime_config.json', 'w') as f:
+        with open(self.config_file, 'w') as f:
             json.dump(data, f, indent=4)
             
     def close(self):
@@ -82,8 +84,9 @@ class LLM(ABC):
     def extract_response(self, response: str) -> dict:
         pass
 class OpenRouterLLM(LLM):
-    def __init__(self, brand: str, model: str, free: bool = True, timeout: tuple[float, float]=(30, 200)):
+    def __init__(self, brand: str, model: str, free: bool = True, timeout: tuple[float, float]=(30, 200), core_config: str = './config.json'):
         super().__init__('OPENROUTER')
+        self.core_config = core_config
         self.brand = brand
         self.model = model
         self.free = free
@@ -101,7 +104,7 @@ class OpenRouterLLM(LLM):
 
     def _load_provision_key(self):
         try:
-            with open('./config.json', 'r') as f:
+            with open(self.core_config, 'r') as f:
                 data = json.load(f)
                 self.provision_key = data['OPEN_ROUTER_PROVISION_KEY']
         except Exception:
@@ -110,15 +113,15 @@ class OpenRouterLLM(LLM):
     def _save_key(self):
         # Save API key and key hash to config.json
         config = {}
-        if os.path.exists('./config.json'):
-            with open('./config.json', 'r') as f:
+        if os.path.exists(self.core_config):
+            with open(self.core_config, 'r') as f:
                 try:
                     config = json.load(f)
                 except json.JSONDecodeError:
                     config = {}
         config['OPEN_ROUTER_API_KEY'] = self._key
         config['OPEN_ROUTER_API_KEY_HASH'] = self._key_hash
-        with open('./config.json', 'w') as f:
+        with open(self.core_config, 'w') as f:
             json.dump(config, f, indent=4)
 
     def _create_key(self):
@@ -151,11 +154,11 @@ class OpenRouterLLM(LLM):
         response.raise_for_status()
         # Remove from config
         config = {}
-        with open('./config.json', 'r') as f:
+        with open(self.core_config, 'r') as f:
             config = json.load(f)
         config.pop('OPEN_ROUTER_API_KEY', None)
         config.pop('OPEN_ROUTER_API_KEY_HASH', None)
-        with open('./config.json', 'w') as f:
+        with open(self.core_config, 'w') as f:
             json.dump(config, f, indent=4)
 
     def get_key(self, key_hash: str = None):
@@ -167,7 +170,7 @@ class OpenRouterLLM(LLM):
         else:
             # Try loading from config
             try:
-                with open('./config.json', 'r') as f:
+                with open(self.core_config, 'r') as f:
                     data = json.load(f)
                     key_hash = data.get('OPEN_ROUTER_API_KEY_HASH')
             except Exception:
@@ -192,7 +195,7 @@ class OpenRouterLLM(LLM):
         if not self._key:
             # Attempt to load existing key
             try:
-                with open('./config.json', 'r') as f:
+                with open(self.core_config, 'r') as f:
                     data = json.load(f)
                     self._key = data.get('OPEN_ROUTER_API_KEY')
                     self._key_hash = data.get('OPEN_ROUTER_API_KEY_HASH')
@@ -273,7 +276,7 @@ class GoogleAIStudioLLM(LLM):
 
     def _load_api_key(self) -> str:
         try:
-            with open('./config.json', 'r') as f:
+            with open(self.core_config, 'r') as f:
                 data = json.load(f)
                 return data['GOOGLE_AI_API_KEY']
         except Exception:

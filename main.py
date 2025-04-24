@@ -22,8 +22,9 @@ logging.basicConfig(
 # Create problem 
 random.seed(42)
 
-problem = Problem(AVAIABLE_TERMINALS, pool_size=16)
-problem.custom_generate(num_jobs=200, max_oprs_each_job=10, num_machines=20, max_arr_time=150, arrival_type='uniform', proc_dist='uniform', deadline_factor=1.2)
+problem = Problem(AVAIABLE_TERMINALS, pool_size=15)
+problem.custom_generate(num_jobs=120, max_oprs_each_job=5, num_machines=20, max_arr_time=120, arrival_type='uniform', proc_dist='uniform', deadline_factor=1.4)
+
 
 # for job in problem.jobs:
 #   print(str(job))
@@ -40,7 +41,7 @@ co_evo_func = CoEvoOperator(problem, llm_model, prompt_template=pt.CO_EVO_PROMPT
 self_evo_func = SelfEvoOperator(problem, llm_model, prompt_template=pt.SELF_EVO_PROMPT_TEMPLATE)
 collective_evo_func = CollectiveRefOperator(problem, llm_model, prompt_template=pt.COLLECTIVE_REF_PROMPT_TEMPLATE)
 selector = RandomSelectOperator(problem)
-replace_opr = TopKElitismReplaceOperator(problem, k=3)
+replace_opr = TopKElitismReplaceOperator(problem, k=2)
     
 #evaluator = EventDrivenLLMSurrogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE, num_segments=4, batch_size=6)
 evaluator = SimulationBaseEvaluator(problem)
@@ -52,10 +53,12 @@ se_engine = SelfEvoEngine(
 )
 
 best = se_engine.run(
-    max_fe=20,
+    max_fe=500,
     init_size=36, subset_size=12, template_file='template.txt',
-    pc=0.9, pm=0.1
+    pc=0.8, pm=0.1, state='new'
 )
+
+se_engine.save_state('checkpoint_simulation_based.pkl')
 
 if best is None:
     print("Not found sol!")
