@@ -81,6 +81,8 @@ class CodeSegmentHDR(HDR):
             exec(self._code, globals(), local_vars)
             func = local_vars['hdr']
             return func(**kwargs)
+        except UnboundLocalError as e:
+            raise HDRException(str(e))
         except TypeError as e:
             raise InvalidKwargsException(f"Invalid kwargs " + str(e))
         except SyntaxError as e:
@@ -91,7 +93,6 @@ class CodeSegmentHDR(HDR):
             raise HDRException(str(e))
         except ValueError as e:
             raise HDRException(str(e))
-        except UnboundLocalError as e:
-            raise HDRException(str(e))
+        
         
     

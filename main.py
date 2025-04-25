@@ -9,15 +9,30 @@ from se_evo import LLMInitOperator, LLMCrossoverOperator, LLMMutationOperator, \
 from evaluate import SimulationBaseEvaluator, StaticLLMSurrogateEvaluator, EventDrivenLLMSurrogateEvaluator
 from datetime import datetime
 import prompt_template as pt
+import os
 
 # Set logging
 import logging
-logging.basicConfig(
-    filename=f'process_{datetime.now().strftime("%Y_%m_%d")}.log',
-    level=logging.INFO,
-    format='[%(asctime)s] %(levelname)s in %(name)s (%(filename)s:%(lineno)d): %(message)s',
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Định dạng chung
+formatter = logging.Formatter(
+    '[%(asctime)s] %(levelname)s in %(name)s (%(filename)s:%(lineno)d): %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
+
+# Handler ghi vào file
+file_handler = logging.FileHandler(f'/kaggle/working/SeEvoDJSSP/process_{datetime.now().strftime("%Y_%m_%d")}.log')
+file_handler.setFormatter(formatter)
+
+# Handler ghi ra console
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+
+# Thêm cả 2 handler vào logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
         
 # Create problem 
 random.seed(42)
@@ -31,7 +46,9 @@ problem.custom_generate(num_jobs=250, max_oprs_each_job=5, num_machines=20, max_
     
 # Build llm
 #llm_model = OpenRouterLLM('deepseek', 'deepseek-r1-zero', free=True, timeout=(60, 600))
-llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600))
+llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600), 
+                              core_config='/kaggle/working/SeEvoDJSSP/config.json',
+                              runtime_config='/kaggle/working/SeEvoDJSSP/llm_runtime_config.json')
 
 # Create Operator
 llm_init_func = LLMInitOperator(problem, llm_model, prompt_template=pt.INIT_IND_PROMPT_TEMPLATE)
@@ -54,11 +71,11 @@ se_engine = SelfEvoEngine(
 
 best = se_engine.run(
     max_fe=500,
-    init_size=36, subset_size=12, template_file='template.txt',
+    init_size=36, subset_size=12, template_file='/kaggle/working/SeEvoDJSSP/template.txt',
     pc=0.8, pm=0.1, state='new'
 )
 
-se_engine.save_state('checkpoint_simulation_based.pkl')
+se_engine.save_state('/kaggle/working/SeEvoDJSSP/checkpoint_simulation_based.pkl')
 
 if best is None:
     print("Not found sol!")
@@ -67,4 +84,6 @@ else:
     print(str(best.chromosome))
     print(best.fitness)
     print(f"Time: {se_engine.solve_time:.2f}s")
+    os.makedirs('/kaggle/working/SeEvoDJSSP/best_solution', exist_ok=True)
+    best.chromosome.save(f'/kaggle/working/SeEvoDJSSP/best_solution/best_{se_engine.fe}.py')
 llm_model.close()
