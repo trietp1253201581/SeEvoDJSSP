@@ -292,7 +292,7 @@ class TopKElitismReplaceOperator(Operator):
         num_random = max_size - self.k
         remaining_inds = sorted_inds[self.k:] + new_pop.inds
         if num_random > 0:
-            choosen = random.choices(remaining_inds, k=num_random)
+            choosen = random.sample(remaining_inds, k=num_random)
         else:
             choosen = []
             
