@@ -452,7 +452,6 @@ class SelfEvoEngine:
 
                 # Update best so far
                 self.best = max(P_inter.inds, key=lambda i: i.fitness)
-                self.best.chromosome.save(f"tmp/best_{self.fe}.py")
 
                 # 6. Self-evolution
                 # You must build compare list beforehand
@@ -494,7 +493,6 @@ class SelfEvoEngine:
                 self.P = self.replacer(old_pop=self.P, new_pop=P_new, max_size=self.P.size)
 
                 self.best = max(self.P.inds, key=lambda i: i.fitness)
-                self.best.chromosome.save(f"tmp/best_{self.gen}.py")
                 self.log.info(f"Gen {self.gen} done FE={self.fe}, best={self.best.fitness:.2f}")
 
                 self.gen += 1

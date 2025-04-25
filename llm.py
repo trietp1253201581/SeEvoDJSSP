@@ -51,7 +51,7 @@ class LLM(ABC):
                 
                 if date != datetime.now().strftime('%Y-%m-%d'):
                     self.call_cnt = 0
-                print(self.call_cnt)
+                #print(self.call_cnt)
         except Exception:
             self.call_cnt = 0
             self.call_limit = 1000
@@ -63,7 +63,7 @@ class LLM(ABC):
             data = json.load(f)
 
         # Sửa dữ liệu
-        print(data)
+        #print(data)
         data[self.api_name]['CALL_CNT'] = self.call_cnt
         data[self.api_name]['CALL_LIMIT'] = self.call_limit
         data[self.api_name]['MAX_TOKENS'] = self.max_tokens
@@ -312,7 +312,7 @@ class GoogleAIStudioLLM(LLM):
                 if 'content' in candidate and 'parts' in candidate['content']:
                     response_text = candidate['content']['parts'][0].get('text', '')
                     out_tokens = len(tiktoken.encoding_for_model('gpt-4o').encode(response_text))
-                    print(out_tokens)
+                    #print(out_tokens)
                     if out_tokens > self.max_tokens:
                         raise BadAPIException("Response too long, output tokens: " + str(out_tokens))
                     finishReason = candidate.get('finishReason', 'Unknown')
