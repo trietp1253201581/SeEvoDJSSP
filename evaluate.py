@@ -462,7 +462,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 min_remain_process_time = min(min_remain_process_time, remain_process_time)
                 max_remain_process_time = max(max_remain_process_time, remain_process_time)
                 
-            lines.append(f'- Remaining jobs: {", ".join(str(j_dict['job']) for j_dict in remaining_jobs)}')
+            lines.append(f'- Remaining jobs: {", ".join(str(j_dict["job"]) for j_dict in remaining_jobs)}')
             lines.append(f'- Remaining operations: min={min_remain_oprs}, max={max_remain_oprs}, avg={total_remain_oprs / len(remaining_jobs) if len(remaining_jobs) > 0 else 0:.2f}')
             lines.append(f'- Remaining process time: min={min_remain_process_time:.2f}, max={max_remain_process_time:.2f}, avg={total_remain_process_time / len(remaining_jobs) if len(remaining_jobs) > 0 else 0:.2f}')
 
