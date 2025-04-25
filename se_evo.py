@@ -445,10 +445,10 @@ class SelfEvoEngine:
                 P_inter = self.evaluate_pop(P_inter)
                 self.fe += len(P_inter.inds)
                 self.log.info(f"After P_inter FE={self.fe}")
-                if self.fe > max_fe:
-                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
-                    self.solve_time += time.time() - start_time
-                    return self.best
+                #if self.fe > max_fe:
+                #    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
+                #    self.solve_time += time.time() - start_time
+                #    return self.best
 
                 # Update best so far
                 self.best = max(P_inter.inds, key=lambda i: i.fitness)
@@ -468,10 +468,10 @@ class SelfEvoEngine:
                 P_self = self.evaluate_pop(P_self)
                 self.fe += len(P_self.inds)
                 self.log.info(f"After P_self FE={self.fe}")
-                if self.fe > max_fe:
-                    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
-                    self.solve_time += time.time() - start_time
-                    return self.best
+                #if self.fe > max_fe:
+                #    self.log.info("Reached max FE, return best individua in " + f"tmp/best_{self.fe}.py")
+                #    self.solve_time += time.time() - start_time
+                #    return self.best
 
                 # 9. Collective reflection
                 co_refs = [i.reflection for i in S_r if i.reflection]
