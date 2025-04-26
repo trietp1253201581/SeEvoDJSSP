@@ -395,7 +395,7 @@ class SelfEvoEngine:
 
     def run(
         self,
-        max_fe: int,
+        num_gen: int,
         init_size: int,
         subset_size: int,
         template_file: str,
@@ -424,7 +424,7 @@ class SelfEvoEngine:
         else:
             self.load_state(checkpoint_path)
             
-        while self.fe < max_fe:
+        while self.gen < num_gen:
             try:
                 self.log.info(f"Gen {self.gen}")
                 # 2. Selection

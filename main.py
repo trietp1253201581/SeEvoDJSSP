@@ -70,7 +70,7 @@ se_engine = SelfEvoEngine(
 )
 
 best = se_engine.run(
-    max_fe=500,
+    num_gen=500,
     init_size=36, subset_size=12, template_file='/kaggle/working/SeEvoDJSSP/template.txt',
     pc=0.8, pm=0.1, state='new'
 )
