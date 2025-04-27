@@ -1,3 +1,4 @@
+import math
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from llm import LLM, LLMException
@@ -5,7 +6,7 @@ from model import HDR, CodeSegmentHDR, HDRException
 import problem
 from problem import Problem, Job, Machine, TerminalDictMaker
 import copy
-from typing import List, Tuple
+from typing import List, Tuple, Literal
 import time
 from abc import ABC, abstractmethod
 import logging
@@ -346,9 +347,12 @@ class StaticLLMSurrogateEvaluator(Evaluator):
         return results
 
 class EventDrivenLLMSurrogateEvaluator(Evaluator):
+    MAX_CALLS = 1000
+    START_RATE = 0.85
+    END_RATE = 1.0
     def __init__(self, llm_model: LLM, problem: Problem, 
                  prompt_template: str, num_segments: int, batch_size: int,
-                 max_retries: int = 3):
+                 max_retries: int = 3, scaling_schedule: str|Literal['linear', 'sin']|None = None):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
@@ -358,9 +362,24 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
         self.event_store = collections.defaultdict(list)
         self.history_store = []
         self.job_map = {j.id: j for j in self.problem.jobs}
+        self.scaling_schedule = scaling_schedule
+        self.call_cnt = 0
         
         self._build_event_map()
         self.times = self._build_times(list(self.event_store.keys()), num_segments)
+        
+    def _get_scaling_factor(self):
+        if self.scaling_schedule is None:
+            return 1.0
+        else:
+            t = min(self.call_cnt/EventDrivenLLMSurrogateEvaluator.MAX_CALLS, 1.0)
+            if self.scaling_schedule == 'linear':
+                return EventDrivenLLMSurrogateEvaluator.START_RATE + (EventDrivenLLMSurrogateEvaluator.END_RATE - EventDrivenLLMSurrogateEvaluator.START_RATE) * t
+            elif self.scaling_schedule == 'sin':
+                return EventDrivenLLMSurrogateEvaluator.START_RATE + (EventDrivenLLMSurrogateEvaluator.END_RATE - EventDrivenLLMSurrogateEvaluator.START_RATE) * (1 + math.sin(t * math.pi)) / 2
+            else:
+                return 1.0
+        
         
     def _build_times(self, times: List[int], num_segments: int):
         # Chia theo time density
@@ -537,12 +556,15 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
     
     def __call__(self, hdrs: List[HDR]):
         all_results = []
+        self.call_cnt += 1
+        scaling_factor = self._get_scaling_factor()
         for i in range(0, len(hdrs), self.batch_size):
             self._logger.info(f"Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}")
             batch = hdrs[i:i + self.batch_size]
             results = self._retry(self.evaluate_batch, self.max_retries, batch)
             all_results.extend(results)
-        return all_results
+        scaled_results = [(hdr, fitness * scaling_factor) for hdr, fitness in all_results]
+        return scaled_results
         
         
         
