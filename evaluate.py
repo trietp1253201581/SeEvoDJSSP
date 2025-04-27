@@ -347,11 +347,13 @@ class StaticLLMSurrogateEvaluator(Evaluator):
 
 class EventDrivenLLMSurrogateEvaluator(Evaluator):
     def __init__(self, llm_model: LLM, problem: Problem, 
-                 prompt_template: str, num_segments: int, batch_size: int):
+                 prompt_template: str, num_segments: int, batch_size: int,
+                 max_retries: int = 3):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
         self.batch_size = batch_size
+        self.max_retries = max_retries
         self._logger = logging.getLogger(__name__)
         self.event_store = collections.defaultdict(list)
         self.history_store = []
@@ -538,7 +540,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
         for i in range(0, len(hdrs), self.batch_size):
             self._logger.info(f"Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}")
             batch = hdrs[i:i + self.batch_size]
-            results = self._retry(self.evaluate_batch, 3, batch)
+            results = self._retry(self.evaluate_batch, self.max_retries, batch)
             all_results.extend(results)
         return all_results
         

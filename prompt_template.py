@@ -241,7 +241,7 @@ HDR must be returned as a string with newline characters (\\n) properly escaped.
 where n is the num of HDRs.
 **Note**: 
 - The value of any code field must be a copy of the code in the HDRs with history.
-- The fitness value must be a float value between 0 and 1000, and it would be diversity. Do not only return the fitness like 100, 250, 350, etc.
+- The fitness value must be a float value between 0 and 1000 (0 is worst, 1000 is best), and it would be diversity. Do not only return the fitness like 100, 250, 350, etc.
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
 - Response should be short and concise, but still include enough information to be useful and IN CORRECT JSON FORMAT.
