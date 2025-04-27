@@ -348,12 +348,10 @@ class StaticLLMSurrogateEvaluator(Evaluator):
         return results
 
 class EventDrivenLLMSurrogateEvaluator(Evaluator):
-    MAX_CALLS = 100
-    START_RATE = 0.85
-    END_RATE = 1.0
     def __init__(self, llm_model: LLM, problem: Problem, 
                  prompt_template: str, num_segments: int, batch_size: int,
-                 max_retries: int = 3, scaling_schedule: str|Literal['linear', 'sin', 'random']|None = None):
+                 max_retries: int = 3, scaling_schedule: str|Literal['linear', 'sin', 'random']|None = None,
+                 start_rate: float = 0.8, max_calls_to_end: int = 100):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
@@ -365,6 +363,8 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
         self.job_map = {j.id: j for j in self.problem.jobs}
         self.scaling_schedule = scaling_schedule
         self.call_cnt = 0
+        self.start_rate = start_rate
+        self.max_calls_to_end = max_calls_to_end
         
         self._build_event_map()
         self.times = self._build_times(list(self.event_store.keys()), num_segments)
@@ -373,13 +373,13 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
         if self.scaling_schedule is None:
             return 1.0
         else:
-            t = min(self.call_cnt/EventDrivenLLMSurrogateEvaluator.MAX_CALLS, 1.0)
+            t = min(self.call_cnt/self.max_calls_to_end, 1.0)
             if self.scaling_schedule == 'linear':
-                return EventDrivenLLMSurrogateEvaluator.START_RATE + (EventDrivenLLMSurrogateEvaluator.END_RATE - EventDrivenLLMSurrogateEvaluator.START_RATE) * t
+                return self.start_rate + (1.0 - self.start_rate) * t
             elif self.scaling_schedule == 'sin':
-                return EventDrivenLLMSurrogateEvaluator.START_RATE + (EventDrivenLLMSurrogateEvaluator.END_RATE - EventDrivenLLMSurrogateEvaluator.START_RATE) * (1 + math.sin(t * math.pi)) / 2
+                return self.start_rate + (1.0 - self.start_rate) * (1 + math.sin(t * math.pi)) / 2
             elif self.scaling_schedule == 'random':
-                return random.uniform(EventDrivenLLMSurrogateEvaluator.START_RATE, EventDrivenLLMSurrogateEvaluator.END_RATE)
+                return self.start_rate + (1.0 - self.start_rate) * random.uniform(0, 1)
             else:
                 self._logger.warning(f"Invalid scaling schedule: {self.scaling_schedule}")
                 return 1.0
