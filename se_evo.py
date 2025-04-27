@@ -389,8 +389,10 @@ class SelfEvoEngine:
         for attempt in range(1, self.max_retries+1):
             try:
                 return fn(*args, **kwargs)
-            except (LLMException, HDRException, Exception) as e:
+            except (LLMException, HDRException) as e:
                 self.log.warning(f"Attempt {attempt}/{self.max_retries} failed in {fn.__name__}: {e.msg}")
+            except Exception as e:
+                self.log.warning(f"Attempt {attempt}/{self.max_retries} failed in {fn.__name__}: {e}")
         raise Exception(f"All {self.max_retries} retries failed for {fn.__name__}")
 
     def run(
