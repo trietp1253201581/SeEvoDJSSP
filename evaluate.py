@@ -1,4 +1,5 @@
 import math
+import random
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from llm import LLM, LLMException
@@ -352,7 +353,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
     END_RATE = 1.0
     def __init__(self, llm_model: LLM, problem: Problem, 
                  prompt_template: str, num_segments: int, batch_size: int,
-                 max_retries: int = 3, scaling_schedule: str|Literal['linear', 'sin']|None = None):
+                 max_retries: int = 3, scaling_schedule: str|Literal['linear', 'sin', 'random']|None = None):
         super().__init__(problem)
         self.llm_model = llm_model
         self.prompt_template = prompt_template
@@ -377,9 +378,11 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 return EventDrivenLLMSurrogateEvaluator.START_RATE + (EventDrivenLLMSurrogateEvaluator.END_RATE - EventDrivenLLMSurrogateEvaluator.START_RATE) * t
             elif self.scaling_schedule == 'sin':
                 return EventDrivenLLMSurrogateEvaluator.START_RATE + (EventDrivenLLMSurrogateEvaluator.END_RATE - EventDrivenLLMSurrogateEvaluator.START_RATE) * (1 + math.sin(t * math.pi)) / 2
+            elif self.scaling_schedule == 'random':
+                return random.uniform(EventDrivenLLMSurrogateEvaluator.START_RATE, EventDrivenLLMSurrogateEvaluator.END_RATE)
             else:
+                self._logger.warning(f"Invalid scaling schedule: {self.scaling_schedule}")
                 return 1.0
-        
         
     def _build_times(self, times: List[int], num_segments: int):
         # Chia theo time density
