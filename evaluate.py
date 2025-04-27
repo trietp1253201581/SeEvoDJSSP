@@ -347,7 +347,7 @@ class StaticLLMSurrogateEvaluator(Evaluator):
         return results
 
 class EventDrivenLLMSurrogateEvaluator(Evaluator):
-    MAX_CALLS = 1000
+    MAX_CALLS = 100
     START_RATE = 0.85
     END_RATE = 1.0
     def __init__(self, llm_model: LLM, problem: Problem, 
