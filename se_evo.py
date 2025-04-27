@@ -103,10 +103,10 @@ class CoEvoOperator(LLMBaseOperator):
         for i in range(len(pairs)):
             pair_str += f"Pair {i}:\n"
             ind1, ind2 = pairs[i]
-            pair_str += f"HDR 1 with makespan {-ind1.fitness}: \n"
+            pair_str += f"HDR 1 with makespan {-ind1.fitness if ind1.fitness < 0 else 2000 - ind1.fitness}: \n"
             pair_str += str(ind1.chromosome.code)
             pair_str += "\n"
-            pair_str += f"HDR 2 with makespan {-ind2.fitness}: \n"
+            pair_str += f"HDR 2 with makespan {-ind2.fitness if ind2.fitness < 0 else 2000 - ind2.fitness}: \n"
             pair_str += str(ind2.chromosome.code)
             pair_str += "--------------\n"
             
@@ -180,10 +180,10 @@ class SelfEvoOperator(LLMBaseOperator):
             pair_str += f"Pair {i+1}:\n"
             ind1, ind2, co_ref = compare_hdrs[i]
             pair_str += f"Co-Evo Reflection have used: {co_ref}. \n"
-            pair_str += f"HDR before apply reflection with makespan {-ind1.fitness}: \n"
+            pair_str += f"HDR before apply reflection with makespan {-ind1.fitness if ind1.fitness < 0 else 2000 - ind1.fitness}: \n"
             pair_str += str(ind1.chromosome.code)
             pair_str += "\n"
-            pair_str += f"HDR after apply reflection with makespan {-ind2.fitness}: \n"
+            pair_str += f"HDR after apply reflection with makespan {-ind2.fitness if ind2.fitness < 0 else 2000 - ind2.fitness}: \n"
             pair_str += str(ind2.chromosome.code)
             pair_str += "--------------\n"
             
