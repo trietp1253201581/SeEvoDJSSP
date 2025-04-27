@@ -424,7 +424,7 @@ class SelfEvoEngine:
         else:
             self.load_state(checkpoint_path)
             
-        while self.gen < num_gen:
+        while self.gen <= num_gen:
             try:
                 self.log.info(f"Gen {self.gen}")
                 # 2. Selection
