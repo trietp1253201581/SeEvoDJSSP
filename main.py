@@ -23,7 +23,7 @@ formatter = logging.Formatter(
 )
 
 # Handler ghi vào file
-file_handler = logging.FileHandler(f'/kaggle/working/SeEvoDJSSP/process_{datetime.now().strftime("%Y_%m_%d")}.log')
+file_handler = logging.FileHandler(f'process_{datetime.now().strftime("%Y_%m_%d")}.log')
 file_handler.setFormatter(formatter)
 
 # Handler ghi ra console
@@ -38,7 +38,10 @@ logger.addHandler(console_handler)
 random.seed(42)
 
 problem = Problem(AVAIABLE_TERMINALS, pool_size=15)
-problem.custom_generate(num_jobs=250, max_oprs_each_job=5, num_machines=20, max_arr_time=120, arrival_type='uniform', proc_dist='uniform', deadline_factor=1.4)
+problem.custom_generate(num_jobs=240, max_oprs_each_job=5, 
+                        num_machines=20, max_arr_time=120, 
+                        arrival_type='uniform', proc_dist='uniform', 
+                        deadline_factor=1.4)
 
 
 # for job in problem.jobs:
@@ -47,8 +50,8 @@ problem.custom_generate(num_jobs=250, max_oprs_each_job=5, num_machines=20, max_
 # Build llm
 #llm_model = OpenRouterLLM('deepseek', 'deepseek-r1-zero', free=True, timeout=(60, 600))
 llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600), 
-                              core_config='/kaggle/working/SeEvoDJSSP/config.json',
-                              runtime_config='/kaggle/working/SeEvoDJSSP/llm_runtime_config.json')
+                              core_config='config.json',
+                              runtime_config='llm_runtime_config.json')
 
 # Create Operator
 llm_init_func = LLMInitOperator(problem, llm_model, prompt_template=pt.INIT_IND_PROMPT_TEMPLATE)
@@ -60,8 +63,14 @@ collective_evo_func = CollectiveRefOperator(problem, llm_model, prompt_template=
 selector = RandomSelectOperator(problem)
 replace_opr = TopKElitismReplaceOperator(problem, k=2)
     
-#evaluator = EventDrivenLLMSurrogateEvaluator(llm_model, problem, prompt_template=pt.SURROGATE_PROMPT_TEMPLATE, num_segments=4, batch_size=6)
-evaluator = SimulationBaseEvaluator(problem)
+evaluator = EventDrivenLLMSurrogateEvaluator(llm_model, problem,
+                                             prompt_template=pt.SURROGATE_PROMPT_TEMPLATE, 
+                                             num_segments=4, batch_size=4,
+                                             max_retries=4,
+                                             scaling_schedule='linear',
+                                             start_rate=0.7,
+                                             max_calls_to_end=35)
+#evaluator = SimulationBaseEvaluator(problem)
 # Main Se-Evo process
 se_engine = SelfEvoEngine(
     problem, llm_init_func, co_evo_func, self_evo_func, collective_evo_func,
@@ -70,12 +79,12 @@ se_engine = SelfEvoEngine(
 )
 
 best = se_engine.run(
-    num_gen=500,
-    init_size=36, subset_size=12, template_file='/kaggle/working/SeEvoDJSSP/template.txt',
+    num_gen=18,
+    init_size=36, subset_size=12, template_file='template.txt',
     pc=0.8, pm=0.1, state='new'
 )
 
-se_engine.save_state('/kaggle/working/SeEvoDJSSP/checkpoint_simulation_based.pkl')
+se_engine.save_state('checkpoint_surrogate_based.pkl')
 
 if best is None:
     print("Not found sol!")
@@ -84,6 +93,6 @@ else:
     print(str(best.chromosome))
     print(best.fitness)
     print(f"Time: {se_engine.solve_time:.2f}s")
-    os.makedirs('/kaggle/working/SeEvoDJSSP/best_solution', exist_ok=True)
-    best.chromosome.save(f'/kaggle/working/SeEvoDJSSP/best_solution/best_{se_engine.fe}.py')
+    os.makedirs('best_solution', exist_ok=True)
+    best.chromosome.save(f'best_after_gen_{se_engine.gen}.py')
 llm_model.close()
