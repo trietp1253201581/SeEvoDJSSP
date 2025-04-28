@@ -1,7 +1,7 @@
 {
-    "DATE": "2025-04-27",
+    "DATE": "2025-04-28",
     "GOOGLE_AI": {
-        "CALL_CNT": 141,
+        "CALL_CNT": 0,
         "CALL_LIMIT": 1000,
         "MAX_TOKENS": 6000
     },

@@ -429,7 +429,8 @@ class SelfEvoEngine:
             self.gen = 1
             
         else:
-            self.load_state(checkpoint_path)
+            self.load_state(checkpoint_path, fields_to_update=['P', 'best', 'fe', 'gen', 'solve_time'])
+            self.log.info(f"Resumed from checkpoint at gen {self.gen}, FE={self.fe}, best={self.best.fitness:.2f}, num_inds={len(self.P.inds)}, solve time={self.solve_time:.2f}")
             
         while self.gen <= num_gen:
             try:
@@ -515,7 +516,15 @@ class SelfEvoEngine:
         with open(checkpoint_path, 'wb') as f:
             pickle.dump(self, f)
             
-    def load_state(self, checkpoint_path: str):
+    def load_state(self, checkpoint_path: str, fields_to_update: list|None = None):
         with open(checkpoint_path, 'rb') as f:
             loaded = pickle.load(f)
-            self.__dict__.update(loaded.__dict__)
+
+            if fields_to_update is None:
+                # Nếu không chỉ định field, update hết (như cũ)
+                self.__dict__.update(loaded.__dict__)
+            else:
+                # Chỉ update các trường được chỉ định
+                for field in fields_to_update:
+                    if hasattr(loaded, field):
+                        setattr(self, field, getattr(loaded, field))
