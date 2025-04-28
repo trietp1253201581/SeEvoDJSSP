@@ -533,6 +533,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
         for i in range(len(self.times)):
             t = int(self.times[i])
             last_t = int(self.times[i - 1]) if i > 0 else 0
+            next_t = int(self.times[i + 1]) if i < len(self.times) - 1 else 1e6
             event_chunk = self._format_event_chunk(last_t, t) if i < len(self.times) - 1 else self._last_event_time(t)
             history_chunk = self._build_hdr_with_history() if i > 0 else self._build_hdrs(hdrs)
             
@@ -541,7 +542,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 current_time=t,
                 events=event_chunk,
                 hdrs_with_history=history_chunk,
-                next_time=self.times[i + 1] if i < len(self.times) - 1 else 1e6
+                next_time=next_t
             )
             
             def single_evaluate(prompt: str):
