@@ -521,15 +521,24 @@ class SelfEvoEngine:
                 pickle.dump(data, f)
             
             
-    def load_state(self, checkpoint_path: str, fields_to_update: list|None = None):
+    def load_state(self, checkpoint_path: str, fields_to_update: list | None = None):
         with open(checkpoint_path, 'rb') as f:
             loaded = pickle.load(f)
-
-            if fields_to_update is None:
-                # Nếu không chỉ định field, update hết (như cũ)
-                self.__dict__.update(loaded.__dict__)
+    
+            if isinstance(loaded, dict):
+                # Nếu file chứa dict, thì lấy từ dict
+                if fields_to_update is None:
+                    for field, value in loaded.items():
+                        setattr(self, field, value)
+                else:
+                    for field in fields_to_update:
+                        if field in loaded:
+                            setattr(self, field, loaded[field])
             else:
-                # Chỉ update các trường được chỉ định
-                for field in fields_to_update:
-                    if hasattr(loaded, field):
-                        setattr(self, field, getattr(loaded, field))
+                # Nếu file chứa nguyên object
+                if fields_to_update is None:
+                    self.__dict__.update(loaded.__dict__)
+                else:
+                    for field in fields_to_update:
+                        if hasattr(loaded, field):
+                            setattr(self, field, getattr(loaded, field))
