@@ -550,8 +550,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 single_results = self._process_json_response(json_repsonse)
                 return single_results
             
-            single_results = self._retry(single_evaluate, self.max_retries, prompt)
-            results.extend(single_results)
+            results = self._retry(single_evaluate, self.max_retries, prompt)
         
         return results
     
