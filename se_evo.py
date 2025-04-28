@@ -376,13 +376,18 @@ class SelfEvoEngine:
     def mutate(self, inds: List[Individual], MR: str, pm: float) -> List[Individual]:
         def _step():
             out=[]
+            cnt = 0
             for ind in inds:
                 if random.random() < pm:
                     m = self.mutation(p=ind, reflection=MR)
-                    out.append(m or copy.deepcopy(ind))
+                    if m is not None:
+                        out.append(m)
+                        cnt += 1
+                    else:
+                        out.append(copy.deepcopy(ind))
                 else:
                     out.append(copy.deepcopy(ind))
-            return out
+            return out, cnt
         return self._retry(_step)
 
     def _retry(self, fn, *args, **kwargs):
@@ -481,10 +486,10 @@ class SelfEvoEngine:
                 self.log.info(f"Collective reflection done with {len(co_refs + self_refs)} reflections")
 
                 # 10. Mutation → P_new
-                mutated = self.mutate(P_self.inds, MR, pm)
+                mutated, cnt = self.mutate(P_self.inds, MR, pm)
                 P_new = Population(size=len(mutated), problem=self.problem)
                 P_new.inds = mutated
-                self.log.info(f"Mutation done with {len(P_new.inds)} individuals")
+                self.log.info(f"Mutation done with {len(P_new.inds)} individuals, {cnt} individuals mutated")
                 
                 # 11. Evaluate P_new
                 P_new = self.evaluate_pop(P_new)
