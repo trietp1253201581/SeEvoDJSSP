@@ -512,9 +512,14 @@ class SelfEvoEngine:
         self.solve_time += time.time() - start_time
         return self.best
     
-    def save_state(self, checkpoint_path: str):
+    def save_state(self, checkpoint_path: str, fields_to_save: list|None = None):
         with open(checkpoint_path, 'wb') as f:
-            pickle.dump(self, f)
+            if fields_to_save is None:
+                pickle.dump(self, f)
+            else:
+                data = {field: getattr(self, field) for field in fields_to_save if hasattr(self, field)}
+                pickle.dump(data, f)
+            
             
     def load_state(self, checkpoint_path: str, fields_to_update: list|None = None):
         with open(checkpoint_path, 'rb') as f:
