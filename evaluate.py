@@ -529,6 +529,7 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
     
     def evaluate_batch(self, hdrs: List[HDR]):
         self._logger.info(f'Start evaluate {len(hdrs)} HDR.')
+        results = []
         for i in range(len(self.times)):
             t = int(self.times[i])
             last_t = int(self.times[i - 1]) if i > 0 else 0
@@ -543,9 +544,14 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 next_time=self.times[i + 1] if i < len(self.times) - 1 else 1e6
             )
             
-            response = self.llm_model.get_response(prompt)
-            json_repsonse = self.llm_model.extract_response(response)
-            results = self._process_json_response(json_repsonse)
+            def single_evaluate(prompt: str):
+                response = self.llm_model.get_response(prompt)
+                json_repsonse = self.llm_model.extract_response(response)
+                single_results = self._process_json_response(json_repsonse)
+                return single_results
+            
+            single_results = self._retry(single_evaluate, self.max_retries, prompt)
+            results.extend(single_results)
         
         return results
     
