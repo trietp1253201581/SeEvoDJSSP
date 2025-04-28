@@ -560,6 +560,8 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
                 return fn(*args, **kwargs)
             except (LLMException, HDRException) as e:
                 self._logger.warning(f"Attempt {attempt}/{max_retries} failed in {fn.__name__}: {e.msg}")
+            except Exception as e:
+                self._logger.error(f"Attempt {attempt}/{max_retries} failed in {fn.__name__}: {e}")
         raise LLMException(f"All {max_retries} retries failed for {fn.__name__}")
     
     def __call__(self, hdrs: List[HDR]):
