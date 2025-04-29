@@ -185,7 +185,7 @@ HDR must be returned as a string with newline characters (\\n) properly escaped.
 - Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
 '''  
 
-SURROGATE_PROMPT_TEMPLATE = """
+EVENT_SURROGATE_PROMPT_TEMPLATE = """
 You are an expert in evaluating dynamic job scheduling (DJSSP), heuristics dispatching rules (HDR).
 
 Problem info:
@@ -245,4 +245,41 @@ where n is the num of HDRs.
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
 - Response should be short and concise, but still include enough information to be useful and IN CORRECT JSON FORMAT.
+"""
+
+SURROGATE_EVALUATION_PROMPT_TEMPLATE = """
+You are an expert in scheduling and job dispatching rule (HDR) analysis.
+
+You will be given multiple code snippets, each representing a heuristic dispatching rule (HDR) written in Python. Each HDR is a simple function that returns a score to prioritize a job based on its attributes. Higher priority jobs have higher scores (or lower if the rule uses negative values).
+
+And terminal set (which are parameter of hdr function) (with their means) is {terminal_set}.
+
+We have some HDRs: 
+{hdrs}
+
+Your task:
+1. For each HDR code snippet analyze the logic.
+2. Write a **concise English description** explaining what kind of jobs this HDR prefers or prioritizes.
+3. Focus on the intention behind the scoring logic (e.g., if the function return -jnpt, your description should contains "jobs with the shortest next operation time are prioritized first").
+
+Return a JSON response with a top-level key `"plained"` that is a list of objects, each with:
+- `"code"`: the original HDR code (string), REMEMBER: DO NOT CHANGE ANYTHING IN THE CODE, JUST KEEP THE ORIGINAL CODE.
+- `"description"`: your short explanation (from 1-3 sentences) of what the HDR prioritizes.
+
+Your response MUST ONLY in following JSON format with no additional text.
+HDR must be returned as a string with newline characters (\\n) properly escaped.
+{{
+    "plained": [
+        {{"code": "<hdr_1>", "description": "<description_1>"}},
+        {{"code": "<hdr_2>", "description": "<description_2>"}},
+        ...
+        {{"code": "<hdr_n>", "description": "<description_n>"}}
+    ]
+}}
+where n is the num of HDRs.
+**Note**:
+- Any text and comment is in English.
+- Do not include any other reason or comment in your response except the JSON format.
+- Response should be short and concise, but still include enough information to be useful and IN CORRECT JSON FORMAT.
+- hdr_i is the i-th HDR code in the provided HDRs, DO NOT CHANGE IT, specify in the definition of function.
 """

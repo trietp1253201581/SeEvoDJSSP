@@ -7,6 +7,10 @@ class HDR(ABC):
     def execute(self, **kwargs) -> any:
         pass
     
+    @abstractmethod
+    def __hash__(self) -> int:
+        pass
+    
 class HDRException(Exception):
     def __init__(self, msg: str):
         super().__init__()
@@ -93,6 +97,9 @@ class CodeSegmentHDR(HDR):
             raise HDRException(str(e))
         except ValueError as e:
             raise HDRException(str(e))
+        
+    def __hash__(self):
+        return hash(self._code.strip())
         
         
     

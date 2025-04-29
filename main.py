@@ -64,7 +64,7 @@ selector = RandomSelectOperator(problem)
 replace_opr = TopKElitismReplaceOperator(problem, k=2)
     
 evaluator = EventDrivenLLMSurrogateEvaluator(llm_model, problem,
-                                             prompt_template=pt.SURROGATE_PROMPT_TEMPLATE, 
+                                             prompt_template=pt.EVENT_SURROGATE_PROMPT_TEMPLATE, 
                                              num_segments=4, batch_size=4,
                                              max_retries=4,
                                              scaling_schedule='linear',

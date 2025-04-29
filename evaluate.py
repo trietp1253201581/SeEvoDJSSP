@@ -1,7 +1,7 @@
 import math
 import random
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
+import uuid
+from sentence_transformers import SentenceTransformer
 from llm import LLM, LLMException
 from model import HDR, CodeSegmentHDR, HDRException
 import problem
@@ -12,6 +12,11 @@ import time
 from abc import ABC, abstractmethod
 import logging
 import collections
+import chromadb
+from sklearn.preprocessing import StandardScaler
+import torch.nn as nn
+import numpy as np
+import torch
         
 class Simulator:
     DEFAULT_PRIOR: int = -1e9
@@ -178,172 +183,6 @@ class SimulationBaseEvaluator(Evaluator):
             makespan = self.simulator.simulate(hdr, debug=False)
             fitness = -makespan
             results.append((hdr, fitness))
-        self._logger.info(f'Successfully evaluate {len(results)}/{len(hdrs)} HDR.')
-        return results
-    
-class StaticLLMSurrogateEvaluator(Evaluator):
-    def __init__(self, llm_model: LLM, problem: Problem, prompt_template: str):
-        super().__init__(problem)
-        self.llm_model = llm_model
-        self.context: str = ""
-        self.vector_store = None
-        self.examples: List[Tuple[HDR, float]] = []
-        self.prompt_template = prompt_template
-        self._summary_chunk = None
-        self._criteria_chunk = None
-        self._logger = logging.getLogger(__name__)
-    
-    def add_example(self, new_hdr: HDR, fitness: float):
-        self.examples.append((new_hdr, fitness))
-        
-    def _update_min_max(self, need_update: list, new_value: int|float):
-        if need_update[0] is None:
-            need_update[0] = new_value
-        else:
-            need_update[0] = min(need_update[0], new_value)
-            
-        if need_update[1] is None:
-            need_update[1] = new_value
-        else:
-            need_update[1] = max(need_update[1], new_value)
-            
-    def get_general_chunk(self):
-        general_chunk = "Dynamic Job Shop Scheduling Problem\n"
-        general_chunk += "Jobs arrive randomly and each job consists of a sequence of operations that must be processed on specific machines. The goal is to minimize the overall makespan\n"
-        general_chunk += f"Each machine have not a specific queue. All machine use a share job pool with size {self.problem.pool_size}.\n"
-        general_chunk += f"We use a HDR to sort unorder job in waiting pool (infinity) and put them orderly into job pool, where these job is immediately match to corresponding machine to process if these machine is available.\n"
-        general_chunk += f"**Note**: The value of HDR function is the priority (The higher the priority, the earlier it is assigned.)"
-        return general_chunk
-            
-    def chunks_descript(self, problem: Problem) -> List[str]:
-        chunks: List[str] = []
-
-        # Chunk 1: General description
-        # chunks.append(self.get_general_chunk())
-
-        # Chunk 2-n: Job info grouped in batches of 12
-        job_batch_size = 12
-        summary = {
-            "num_oprs": [None, None],
-            "arrival_time": [None, None],
-            "process_time": [None, None],
-            "deadlines": [None, None],
-            "priority": [None, None]
-        }
-
-        for i in range(0, len(problem.jobs), job_batch_size):
-            batch = problem.jobs[i:i + job_batch_size]
-            job_chunk = f"#### Job batch {i // job_batch_size + 1} (Jobs {batch[0].id} to {batch[-1].id}):\n"
-            for job in batch:
-                num_oprs = len(job.oprs)
-                self._update_min_max(summary['num_oprs'], num_oprs)
-
-                arrival_time = job.time_arr
-                self._update_min_max(summary['arrival_time'], arrival_time)
-
-                total_process_time = job.get_total_process_time()
-                self._update_min_max(summary['process_time'], total_process_time)
-
-                deadline = job.get_job_deadline()
-                self._update_min_max(summary['deadlines'], deadline)
-
-                prior = job.prior
-                self._update_min_max(summary['priority'], prior)
-
-                job_chunk += (
-                    f"* Job {job.id}: "
-                    f"Num operations: {num_oprs}, "
-                    f"Arrival time: {arrival_time}, "
-                    f"Total process time: {total_process_time:.2f}, "
-                    f"Deadline: {deadline:.2f}, "
-                    f"Priority: {prior:.2f}\n"
-                )
-            chunks.append(job_chunk)
-
-        # Chunk X: Criteria
-        criteria_chunk = "### Evaluation Criteria:\n"
-        criteria_chunk += "\n".join(str(t) for t in problem.terminals)
-        #chunks.append(criteria_chunk)
-        self._criteria_chunk = criteria_chunk
-
-        # Chunk X+1: Summary
-        summary_chunk = "### Problem Summary:\n"
-        summary_chunk += f"- Num machines: {len(problem.machines)}\n"
-        summary_chunk += f"- Num jobs: {len(problem.jobs)}\n"
-        summary_chunk += f"- Operation/job: min={summary['num_oprs'][0]}, max={summary['num_oprs'][1]}\n"
-        summary_chunk += f"- Arrival time: min={summary['arrival_time'][0]}, max={summary['arrival_time'][1]}\n"
-        summary_chunk += f"- Process time: min={summary['process_time'][0]:.2f}, max={summary['process_time'][1]:.2f}\n"
-        summary_chunk += f"- Deadline: min={summary['deadlines'][0]:.2f}, max={summary['deadlines'][1]:.2f}\n"
-        summary_chunk += f"- Priority: min={summary['priority'][0]:.2f}, max={summary['priority'][1]:.2f}\n"
-        summary_chunk += "**Note**: All time-related fields use the same time unit.\n"
-        # chunks.append(summary_chunk)
-        self._summary_chunk = summary_chunk
-
-        return chunks
-
-    
-    def store_vector(self, chunk: list[str]):
-        embed_model = HuggingFaceEmbeddings(
-            model_name = "sentence-transformers/all-MiniLM-L6-v2"
-        )
-        self.vector_store = FAISS.from_texts(chunk, embed_model)
-        
-    def init_vector_store(self):
-        chunk = self.chunks_descript(self.problem)
-        self.store_vector(chunk)
-        
-        
-    def init_problem_context(self):
-        query = f"Dynamic job shop scheduling with {len(self.problem.jobs)} jobs, {len(self.problem.machines)} machines, shared pool of size {self.problem.pool_size}. Jobs have arrival times and multiple operations."
-        retrieved_chunks = self.vector_store.similarity_search(query, k=4)
-        job_chunks = "\n".join(doc.page_content for doc in retrieved_chunks)
-        self.context = self.get_general_chunk() + "\n" + self._summary_chunk + \
-            "\n" + self._criteria_chunk + "\n" + "### Some of job description: \n" + job_chunks 
-        
-    def _build_hdrs(self, hdrs: List[HDR]):
-        hdrs_str = ""
-        for i in range(len(hdrs)):
-            hdrs_str += "---------\n"
-            hdrs_str += f"HDR {i + 1}:\n"
-            hdrs_str += str(hdrs[i]) + '\n'
-        return hdrs_str
-    
-    def _build_examples(self):
-        examples_str = ""
-        for i in range(len(self.examples)):
-            hdr, fitness = self.examples[i]
-            examples_str += "------\n"
-            examples_str += f"Example {i + 1} with fitness {fitness:.2f} \n"
-            examples_str += str(hdr) + '\n'
-        return examples_str
-    
-    def _process_json_response(self, data: dict):
-        evaluated = data['evaluated_hdrs']
-        evaluated_hdrs: List[Tuple[HDR, float]] = []
-        for json_obj in evaluated:
-            try:
-                new_hdr = CodeSegmentHDR(code=json_obj['code'])
-                fitness = float(json_obj['fitness'])
-                evaluated_hdrs.append((new_hdr, fitness))
-            except HDRException as e:
-                self._logger.error(f'HDR Exception: {e.msg} when process response from LLM', exc_info=True)
-                continue
-        return evaluated_hdrs
-            
-    def __call__(self, hdrs: List[HDR]):
-        self._logger.info(f'Start evaluate {len(hdrs)} HDR.')
-        examples = self._build_examples()
-        hdrs_str = self._build_hdrs(hdrs)
-        
-        prompt = self.prompt_template.format(
-            context=self.context,
-            examples=examples,
-            hdrs=hdrs_str
-        )
-        
-        response = self.llm_model.get_response(prompt)
-        json_repsonse = self.llm_model.extract_response(response)
-        results = self._process_json_response(json_repsonse)
         self._logger.info(f'Successfully evaluate {len(results)}/{len(hdrs)} HDR.')
         return results
 
@@ -577,9 +416,214 @@ class EventDrivenLLMSurrogateEvaluator(Evaluator):
         scaled_results = [(hdr, fitness * scaling_factor) for hdr, fitness in all_results]
         return scaled_results
         
-        
-        
-        
-        
+class MetaVectorStore(ABC):
+    @abstractmethod
+    def save(self, vector: List[float], metadata: dict):
+        pass
     
+    @abstractmethod
+    def get(self, vector: List[float], n: int=5):
+        pass
+    
+class ChromaMetaVectorStore(MetaVectorStore):
+    def __init__(self, persist_directory: str,
+                 collection_name: str):
+        self.client = chromadb.PersistentClient(
+            path=persist_directory
+        )
+        self.collection = self.client.get_or_create_collection(collection_name)
         
+    def save(self, vector: List[float], metadata: dict):
+        self.collection.add(
+            ids=[str(uuid.uuid4())],
+            embeddings=[vector],
+            metadatas=[metadata]
+        )
+        
+    def get(self, vector: List[float], n: int=5):
+        results = self.collection.query(
+            query_embeddings=[vector],
+            n_results=n
+        )
+        return results
+    
+class SentenceEmbedding:
+    def __init__(self, model_name: str='all-MiniLM-L6-v2'):
+        self.model = SentenceTransformer(model_name)
+        
+    def embed(self, text: str) -> List[float]:
+        return self.model.encode(text).tolist()
+    
+class VectorEmbedding:
+    def __init__(self, input_dim: int, embedding_dim: int):
+        self.embedding_dim = embedding_dim
+        self.input_dim = input_dim
+        self.scaler = StandardScaler()
+        self.model = nn.Linear(input_dim, embedding_dim)
+        torch.manual_seed(42)
+        self.model.weight.data.normal_(0, 0.3)
+        self.model.bias.data.zero_()
+        self.model.eval()
+        
+    def embed(self, vector: List[float]) -> List[float]:
+        # Chuẩn hóa
+        vector_np = np.array(vector).reshape(1, -1)
+        vector_np = (vector_np - np.mean(vector_np)) / (np.std(vector_np) + 1e-8)
+        
+        # Đảm bảo kích thước đúng input_dim
+        if vector_np.shape[1] < self.input_dim:
+            padded = np.zeros((1, self.input_dim))
+            padded[0, :vector_np.shape[1]] = vector_np
+            vector_np = padded
+        elif vector_np.shape[1] > self.input_dim:
+            vector_np = vector_np[:, :self.input_dim]
+        
+        vector_tensor = torch.tensor(vector_np, dtype=torch.float32)
+        result_vector = self.model(vector_tensor).squeeze(0)
+        return result_vector.tolist()
+    
+class SurrogateEvaluator(Evaluator):
+    def __init__(self, problem: Problem, vector_store: MetaVectorStore, 
+                 hdr_embedding: SentenceEmbedding, problem_embedding: VectorEmbedding,
+                 prompt_template: str, llm_model: LLM, batch_size: int = 10, max_retries: int = 3):
+        super().__init__(problem)
+        self.vector_store = vector_store
+        self.hdr_embedding = hdr_embedding
+        self.problem_embedding = problem_embedding
+        self.prompt_template = prompt_template
+        self._logger = logging.getLogger(__name__)
+        self.llm_model = llm_model
+        self._problem_vector = None
+        self._plain_problem_info()
+        self.batch_size = batch_size
+        self.max_retries = max_retries
+        self.simulator = Simulator(problem)
+        
+    def set_exact_evaluation(self, is_exact_evaluation: bool):
+        self.is_exact_evaluation = is_exact_evaluation
+        
+    def _plain_problem_info(self):
+        problem_vector = []
+        # Embed general info
+        problem_vector.append(len(self.problem.jobs))
+        problem_vector.append(len(self.problem.machines))
+        problem_vector.append(self.problem.pool_size)
+        
+        # Embed job info
+        total_oprs = 0
+        avg_oprs = 0
+        max_arrv_time = 0
+        avg_proc_time = 0
+        max_deadline = 0
+        quantile_25_arrv_time = 0
+        quantile_50_arrv_time = 0
+        quantile_75_arrv_time = 0
+        arrv_time_list = []
+        
+        for job in self.problem.jobs:
+            total_oprs += len(job.oprs)
+            avg_oprs += len(job.oprs) / len(self.problem.jobs)
+            max_arrv_time = max(max_arrv_time, job.time_arr)
+            avg_proc_time += job.get_total_process_time() / len(self.problem.jobs)
+            max_deadline = max(max_deadline, job.get_job_deadline())
+            arrv_time_list.append(job.time_arr)
+        
+        arrv_time_list.sort()
+        quantile_25_arrv_time = arrv_time_list[len(arrv_time_list) // 4]
+        quantile_50_arrv_time = arrv_time_list[len(arrv_time_list) // 2]
+        quantile_75_arrv_time = arrv_time_list[len(arrv_time_list) * 3 // 4]
+        
+        problem_vector.append(total_oprs)
+        problem_vector.append(avg_oprs)
+        problem_vector.append(max_arrv_time)
+        problem_vector.append(avg_proc_time)
+        problem_vector.append(max_deadline)
+        problem_vector.append(quantile_25_arrv_time)
+        problem_vector.append(quantile_50_arrv_time)
+        problem_vector.append(quantile_75_arrv_time)
+        
+        self._problem_vector = self.problem_embedding.embed(problem_vector)
+    
+    def _plain_hdr_info(self, plain_hdr: str) -> List[float]:
+        return self.hdr_embedding.embed(plain_hdr)
+    
+    def _build_hdrs(self, hdrs: List[HDR]):
+        hdrs_str = ""
+        for i in range(len(hdrs)):
+            hdrs_str += "---------\n"
+            hdrs_str += f"HDR {i + 1}:\n"
+            hdrs_str += str(hdrs[i]) + '\n'
+        return hdrs_str
+    
+    def _process_json_response(self, data: dict):
+        predicted = data['plained']
+        
+        plained_hdrs: List[Tuple[HDR, str]] = []
+        for json_obj in predicted:
+            try:
+                new_hdr = CodeSegmentHDR(code=json_obj['code'])
+                plain_hdr = json_obj['description']
+                plained_hdrs.append((new_hdr, plain_hdr))
+            except HDRException as e:
+                self._logger.error(f'HDR Exception: {e.msg} when process response from LLM', exc_info=True)
+                continue
+        return plained_hdrs
+    
+    def _retry(self, fn, max_retries: int, *args, **kwargs):
+        for attempt in range(1, max_retries+1):
+            try:
+                return fn(*args, **kwargs)
+            except (LLMException, HDRException) as e:
+                self._logger.warning(f"Attempt {attempt}/{max_retries} failed in {fn.__name__}: {e.msg}", exc_info=True)
+            except Exception as e:
+                self._logger.error(f"Attempt {attempt}/{max_retries} failed in {fn.__name__}: {e}", exc_info=True)
+        raise LLMException(f"All {max_retries} retries failed for {fn.__name__}")
+                
+    def _plain_batch(self, hdrs: List[HDR]):
+        prompt = self.prompt_template.format(
+            hdrs = self._build_hdrs(hdrs),
+            terminal_set = ", ".join(str(t) for t in self.problem.terminals)
+        )
+        
+        response = self.llm_model.get_response(prompt)
+        json_response = self.llm_model.extract_response(response)
+        results = self._process_json_response(json_response)
+        return results
+    
+    def __call__(self, hdrs: List[HDR]):
+        all_results = []
+        self._logger.info(f'Start evaluate {len(hdrs)} HDR.')
+        if self.is_exact_evaluation:
+            self._logger.info(f'Exact evaluation mode.')
+            for i in range(0, len(hdrs), self.batch_size):
+                self._logger.info(f'Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}')
+                batch = hdrs[i:i + self.batch_size]
+                results = self._retry(self._plain_batch, self.max_retries, batch)
+                for hdr, plain_hdr in results:
+                    makespan = self.simulator.simulate(hdr)
+                    
+                    hdr_vector = self._plain_hdr_info(plain_hdr)
+                    total_vector = hdr_vector + self._problem_vector
+                    self.vector_store.save(total_vector, {'type': 'hdr', 'hash': hash(hdr), 'makespan': makespan})
+                    
+                    all_results.append((hdr, -makespan))
+                    
+                self._logger.info(f'Evaluate {len(all_results)} HDR done.')
+
+        else:
+            self._logger.info(f'Surrogate evaluation mode.')
+            for i in range(0, len(hdrs), self.batch_size):
+                self._logger.info(f'Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}')
+                batch = hdrs[i:i + self.batch_size]
+                results = self._retry(self._plain_batch, self.max_retries, batch)
+                for hdr, plain_hdr in results:
+                    hdr_vector = self._plain_hdr_info(plain_hdr)
+                    total_vector = hdr_vector + self._problem_vector
+                    retrival_results = self.vector_store.get(total_vector, 4)
+                    metadatas = retrival_results['metadatas'][0]
+                    avg_makespan = sum(md['makespan'] for md in metadatas) / len(metadatas)
+                    all_results.append((hdr, -avg_makespan))
+                
+                self._logger.info(f'Evaluate {len(all_results)} HDR done.')
+
+        return all_results

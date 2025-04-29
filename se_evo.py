@@ -6,7 +6,7 @@ from abc import abstractmethod
 import copy
 import random
 from problem import Problem
-from evaluate import Evaluator
+from evaluate import Evaluator, SurrogateEvaluator
 import datetime
 import logging
 import pickle
@@ -418,6 +418,8 @@ class SelfEvoEngine:
         if state == 'new':
             try:
                 self.P = self.initialize(init_size, template)
+                if isinstance(self.fitness_eval, SurrogateEvaluator):
+                    self.fitness_eval.set_exact_evaluation(True)
                 self.P = self.evaluate_pop(self.P)
             except Exception as e:
                 self.log.error(f"Error in initialize: {e}")
@@ -432,6 +434,8 @@ class SelfEvoEngine:
             self.load_state(checkpoint_path, fields_to_update=['P', 'best', 'fe', 'gen', 'solve_time'])
             self.log.info(f"Resumed from checkpoint at gen {self.gen}, FE={self.fe}, best={self.best.fitness:.2f}, num_inds={len(self.P.inds)}, solve time={self.solve_time:.2f}")
             
+        if isinstance(self.fitness_eval, SurrogateEvaluator):
+            self.fitness_eval.set_exact_evaluation(False)
         while self.gen <= num_gen:
             try:
                 self.log.info(f"Gen {self.gen}")
@@ -520,16 +524,24 @@ class SelfEvoEngine:
                 data = {field: getattr(self, field) for field in fields_to_save if hasattr(self, field)}
                 pickle.dump(data, f)
             
-            
-    def load_state(self, checkpoint_path: str, fields_to_update: list|None = None):
+    def load_state(self, checkpoint_path: str, fields_to_update: list | None = None):
         with open(checkpoint_path, 'rb') as f:
             loaded = pickle.load(f)
-
-            if fields_to_update is None:
-                # Nếu không chỉ định field, update hết (như cũ)
-                self.__dict__.update(loaded.__dict__)
+    
+            if isinstance(loaded, dict):
+                # Nếu file chứa dict, thì lấy từ dict
+                if fields_to_update is None:
+                    for field, value in loaded.items():
+                        setattr(self, field, value)
+                else:
+                    for field in fields_to_update:
+                        if field in loaded:
+                            setattr(self, field, loaded[field])
             else:
-                # Chỉ update các trường được chỉ định
-                for field in fields_to_update:
-                    if hasattr(loaded, field):
-                        setattr(self, field, getattr(loaded, field))
+                # Nếu file chứa nguyên object
+                if fields_to_update is None:
+                    self.__dict__.update(loaded.__dict__)
+                else:
+                    for field in fields_to_update:
+                        if hasattr(loaded, field):
+                            setattr(self, field, getattr(loaded, field))
