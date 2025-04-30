@@ -302,7 +302,7 @@ class GoogleAIStudioLLM(LLM):
         if self.call_cnt > self.call_limit:
             raise ReachedCallLimitException()
         try:
-            time.sleep(3.5)
+            time.sleep(4.0)
             resp = requests.post(self.url, headers=headers, params=params,
                                 json=body, timeout=self.timeout)
             resp.raise_for_status()

@@ -17,6 +17,7 @@ from sklearn.preprocessing import StandardScaler
 import torch.nn as nn
 import numpy as np
 import torch
+import pickle
         
 class Simulator:
     DEFAULT_PRIOR: int = -1e9
@@ -168,6 +169,36 @@ class Evaluator(ABC):
     @abstractmethod
     def __call__(self, hdrs: List[HDR]) -> List[Tuple[HDR, float]]:
         pass
+    
+    def save_state(self, checkpoint_path: str, fields_to_save: list|None = None):
+        with open(checkpoint_path, 'wb') as f:
+            if fields_to_save is None:
+                pickle.dump(self, f)
+            else:
+                data = {field: getattr(self, field) for field in fields_to_save if hasattr(self, field)}
+                pickle.dump(data, f)
+            
+    def load_state(self, checkpoint_path: str, fields_to_update: list | None = None):
+        with open(checkpoint_path, 'rb') as f:
+            loaded = pickle.load(f)
+    
+            if isinstance(loaded, dict):
+                # Nếu file chứa dict, thì lấy từ dict
+                if fields_to_update is None:
+                    for field, value in loaded.items():
+                        setattr(self, field, value)
+                else:
+                    for field in fields_to_update:
+                        if field in loaded:
+                            setattr(self, field, loaded[field])
+            else:
+                # Nếu file chứa nguyên object
+                if fields_to_update is None:
+                    self.__dict__.update(loaded.__dict__)
+                else:
+                    for field in fields_to_update:
+                        if hasattr(loaded, field):
+                            setattr(self, field, getattr(loaded, field))
     
 class SimulationBaseEvaluator(Evaluator):
     def __init__(self, problem):
@@ -422,7 +453,7 @@ class MetaVectorStore(ABC):
         pass
     
     @abstractmethod
-    def get(self, vector: List[float], n: int=5):
+    def get(self, vector: List[float], hash_val: int|str|None=None, n: int=5):
         pass
     
     @abstractmethod
@@ -456,7 +487,7 @@ class ChromaMetaVectorStore(MetaVectorStore):
             metadatas=[metadata]
         )
         
-    def get(self, vector: List[float], n: int=5):
+    def get(self, vector: List[float], hash_val: int|str|None=None, n: int=5):
         results = self.collection.query(
             query_embeddings=[vector],
             n_results=n
@@ -464,7 +495,7 @@ class ChromaMetaVectorStore(MetaVectorStore):
         return results
     
     def save_if_novel(self, vector: List[float], metadata: dict, threshold: float=0.5):
-        result = self.get(vector, 1)
+        result = self.get(vector, metadata['hash'], 1)
         
         if result is None or 'distances' not in result:
             self.save(vector, metadata)
@@ -486,7 +517,7 @@ class ChromaMetaVectorStore(MetaVectorStore):
         self.collection.delete(where={'type': 'hdr'})
         
     def is_exist(self, vector: List[float], hash_val: int|str, threshold: float=0.01):
-        result = self.get(vector, 1)
+        result = self.get(vector, hash_val, 1)
         if result is None or 'distances' not in result:
             return False
         distances = result.get('distances')
@@ -502,7 +533,7 @@ class ChromaMetaVectorStore(MetaVectorStore):
         return False
     
     def get_all(self, n: int=100):
-        results = self.collection.get(where={"type": "hdr"}, include=["documents", "metadatas"], n_results=n)
+        results = self.collection.get(where={"type": "hdr"}, include=["documents", "metadatas"], limit=n)
         return results
     
 
@@ -556,8 +587,14 @@ class MLPSurrogateModel(nn.Module):
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x)
+    
+    def save_state_dict(self, path: str):
+        torch.save(self.state_dict(), path)
         
-class SurrogateEvaluator(Evaluator):
+    def load_state_dict(self, path: str):
+        self.load_state_dict(torch.load(path))
+        
+class MLPSurrogateEvaluator(Evaluator):
     def __init__(self, problem: Problem, vector_store: MetaVectorStore, 
                  hdr_embedding: SentenceEmbedding, problem_embedding: VectorEmbedding,
                  surrogate_model: MLPSurrogateModel,   
@@ -733,14 +770,17 @@ class SurrogateEvaluator(Evaluator):
         for i in range(0, len(hdrs), self.batch_size):
             self._logger.info(f"Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}")
             batch = hdrs[i:i + self.batch_size]
-            print(batch[0].hash_code())
             plaineds = self._retry(self._plain_batch, self.max_retries, batch)
-            print(plaineds[0][0].hash_code())
             for hdr, plain_hdr in plaineds:
                 hdr_vector = self._plain_hdr_info(plain_hdr)
-                self._logger.info(f'Plain a HDR to a vector with dim {len(hdr_vector)}')
                 x = hdr_vector + self._problem_vector
-                self._logger.info(f'X vector: {len(x)}')
+                
+                if self.vector_store.is_exist(x, hdr.hash_code(), 0.01):
+                    self._logger.info(f'HDR {hdr.hash_code()} already exists in vector store')
+                    y = self.vector_store.get(x, hdr.hash_code(), 1)['metadatas'][0][0]['makespan']
+                    all_results.append((hdr, int(y * self.output_scale_factor)))
+                    continue
+                
                 if self.is_exact_evaluation:
                     y = -self.simulator.simulate(hdr)
                     if self.output_scale_factor == 1.0:
@@ -754,11 +794,10 @@ class SurrogateEvaluator(Evaluator):
                     ])
                     mean = preds.mean().item()
                     std = preds.std().item()
-                    print(f'{mean} {std}')
                     y = mean + self.ucb_lambda * std
                     self._temp_store.append((hdr, x, y, hdr.hash_code(), False))
                 
-                all_results.append((hdr, y * self.output_scale_factor))
+                all_results.append((hdr, int(y * self.output_scale_factor)))
                 
         if self.is_exact_evaluation:
             self.train_surrogate_model(False)

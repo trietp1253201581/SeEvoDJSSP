@@ -6,7 +6,7 @@ from abc import abstractmethod
 import copy
 import random
 from problem import Problem
-from evaluate import Evaluator, SurrogateEvaluator
+from evaluate import Evaluator, MLPSurrogateEvaluator
 import datetime
 import logging
 import pickle
@@ -418,7 +418,7 @@ class SelfEvoEngine:
         if state == 'new':
             try:
                 self.P = self.initialize(init_size, template)
-                if isinstance(self.fitness_eval, SurrogateEvaluator):
+                if isinstance(self.fitness_eval, MLPSurrogateEvaluator):
                     self.fitness_eval.set_exact_evaluation(True)
                 self.P = self.evaluate_pop(self.P)
             except Exception as e:
@@ -434,7 +434,7 @@ class SelfEvoEngine:
             self.load_state(checkpoint_path, fields_to_update=['P', 'best', 'fe', 'gen', 'solve_time'])
             self.log.info(f"Resumed from checkpoint at gen {self.gen}, FE={self.fe}, best={self.best.fitness:.2f}, num_inds={len(self.P.inds)}, solve time={self.solve_time:.2f}")
             
-        if isinstance(self.fitness_eval, SurrogateEvaluator):
+        if isinstance(self.fitness_eval, MLPSurrogateEvaluator):
             self.fitness_eval.set_exact_evaluation(False)
         while self.gen <= num_gen:
             try:
