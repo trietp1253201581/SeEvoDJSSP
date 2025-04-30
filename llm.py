@@ -34,7 +34,15 @@ class ReachedCallLimitException(LLMException):
         self.msg = msg
         
 class LLM(ABC):
+    """An interface for LLM API Connection"""
     def __init__(self, api_name: str|Literal['GOOGLE_AI', 'OPENROUTER'], runtime_config: str = './llm_runtime_config.json'):
+        """
+        Initialize the LLM
+
+        Args:
+            api_name (str|Literal['GOOGLE_AI', 'OPENROUTER']): Name of the API
+            runtime_config (str): Path to the runtime config file
+        """
         self.config_file = runtime_config
         self._load_runtime_config(api_name)
         self.api_name = api_name

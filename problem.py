@@ -5,6 +5,9 @@ import random
 from typing import Dict
 
 class Terminal:
+    """
+    Terminal is a variable that can be used in the heuristic dispatching rule (HDR)
+    """
     def __init__(self, label: str, description: str=""):
         self.label = label
         self.description = description
@@ -46,15 +49,19 @@ AVAIABLE_TERMINALS = [
 ]
 
 class TerminalDictMaker:
+    """
+    Make a dictionary of terminals and their values
+    """
     def __init__(self):
         self.var_dicts: Dict[str, any] = {}
         
     def add_terminal(self, new_terminal: Terminal, new_value: int|float):
         self.var_dicts[new_terminal.label] = new_value
         
-        
-
 class Operation:
+    """
+    Operation is a job's operation
+    """
     def __init__(self, deadline: float, 
                  available_machines: dict['Machine', float]):
         
@@ -63,6 +70,9 @@ class Operation:
         self.avg_process_time = None
 
     def get_avg_process_time(self):
+        """
+        Get the average process time of the operation
+        """
         if self.avg_process_time is not None:
             return self.avg_process_time
         total_process_time = 0.0
@@ -96,30 +106,51 @@ class Job:
         self.prior = 0
         
     def get_remain_opr(self):
+        """
+        Get the number of remaining operations of the job
+        """
         return len(self.oprs) - self.next_opr
     
     def get_remain_process_time(self):
+        """
+        Get the remaining process time of the job
+        """
         remain_process_time = 0
         for i in range(self.next_opr, len(self.oprs)):
             remain_process_time += self.oprs[i].get_avg_process_time()
         return remain_process_time
     
     def get_total_process_time(self):
+        """
+        Get the total process time of the job
+        """
         total_process_time = 0
         for opr in self.oprs:
             total_process_time += opr.get_avg_process_time()
         return total_process_time
     
     def get_next_deadline(self):
+        """
+        Get the deadline of the next operation of the job
+        """
         return self.oprs[self.next_opr].deadline
     
     def get_job_deadline(self):
+        """
+        Get the deadline of the job
+        """
         return self.oprs[-1].deadline
     
     def get_slack_time(self, curr_time: float):
+        """
+        Get the slack time of the job
+        """
         return max(0, self.get_job_deadline() - curr_time - self.get_remain_process_time())
         
     def add_opr(self, new_opr: Operation):
+        """
+        Add a new operation to the job
+        """
         self.oprs.append(new_opr)
     
     def __str__(self):
@@ -147,22 +178,37 @@ class Machine:
         self.processed_time = 0
         
     def clear(self):
+        """
+        Clear the machine
+        """
         self.curr_job = None
         self.finish_time = 0
         self.processed_count = 0
         
     def get_status(self) -> Status:
+        """
+        Get the status of the machine
+        """
         if self.curr_job is None:
             return Machine.Status.RELAX
         return Machine.Status.PROCESSING
     
     def get_relax_time(self, curr_time: float):
+        """
+        Get the relax time of the machine
+        """
         return max(0, curr_time - self.finish_time)
     
     def get_remain_time(self, curr_time: float):
+        """
+        Get the remain time of the machine
+        """
         return max(0, self.finish_time - curr_time)
     
     def get_util(self, curr_time: float):
+        """
+        Get the utilization of the machine
+        """
         return self.processed_time / curr_time if curr_time > 0 else 0
         
     def __str__(self):
@@ -178,12 +224,28 @@ class Machine:
 
 class Problem:
     def __init__(self, terminals: List[Terminal], pool_size: int):
+        """
+        Initialize the DJSSP problem
+
+        Args:
+            terminals (List[Terminal]): List of terminals
+            pool_size (int): Size of job pool
+        """
         self.jobs: List[Job] = []
         self.machines: List[Machine] = []
         self.terminals = terminals
         self.pool_size = pool_size
         
     def random_generate(self, num_jobs: int, max_oprs_each_job: int, num_machines: int, max_arr_time = 1000):
+        """
+        Total Randomly generate a DJSSP problem
+
+        Args:
+            num_jobs (int): Number of jobs
+            max_oprs_each_job (int): Maximum number of operations for each job
+            num_machines (int): Number of machines
+            max_arr_time (int): Maximum arrival time
+        """
         self.jobs = []
         self.machines = [Machine(i) for i in range(num_machines)]
         for i in range(num_jobs):
@@ -206,6 +268,18 @@ class Problem:
             
     def custom_generate(self, num_jobs:int, max_oprs_each_job:int, num_machines:int, max_arr_time:int = 1000,
                         arrival_type: str='uniform', proc_dist: str='uniform', deadline_factor: float=2.0):
+        """
+        Custom generate a DJSSP problem
+
+        Args:
+            num_jobs (int): Number of jobs
+            max_oprs_each_job (int): Maximum number of operations for each job
+            num_machines (int): Number of machines
+            max_arr_time (int): Maximum arrival time
+            arrival_type (str): Type of arrival time
+            proc_dist (str): Type of processing time
+            deadline_factor (float): Factor of deadline
+        """
         self.jobs = []
         self.machines = [Machine(i) for i in range(num_machines)]
         
@@ -252,6 +326,3 @@ class Problem:
                 
             new_job.oprs = oprs
             self.jobs.append(new_job)
-            
-            
-

@@ -3,12 +3,21 @@ import ast
 import re
 import hashlib
 class HDR(ABC):
+    """
+    Abstract class for Heuristic Dispatching Rule (HDR)
+    """
     @abstractmethod
     def execute(self, **kwargs) -> any:
+        """
+        Execute the HDR with the given kwargs
+        """
         pass
     
     @abstractmethod
     def hash_code(self) -> str:
+        """
+        Hash the code of the HDR
+        """
         pass
     
 class HDRException(Exception):
@@ -41,6 +50,7 @@ class CodeSegmentHDR(HDR):
             return
         self._extract_func(code)
         res = self.execute(jnpt=1.0, japt=2.5, jrt=3.6, jro=4.1, jwt=6.7, jat=6.0, jd=8.0, jcd=3.0, js=2.0, jw=1.0, ml=89.0, mr=20.0, mrel=20.0, mpr=20.1, mutil=3.9, tnow=15, util=60, avgwt=20.0)
+        res = self.execute(jnpt=0.0, japt=0.0, jrt=0.0, jro=0.0, jwt=0.0, jat=0.0, jd=0.0, jcd=0.0, js=0.0, jw=0.0, ml=0.0, mr=0.0, mrel=0.0, mpr=0.0, mutil=0.0, tnow=0.0, util=0.0, avgwt=0.0)
         if not isinstance(res, (int, float)):
             raise HDRException('Not support return type')
         
