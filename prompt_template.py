@@ -31,6 +31,7 @@ where n equals to {init_size}.
 - Any text and comment is in English.
 - Do not include any other reason or comment in your response except the JSON format.
 - Response should be short and concise, but still include enough information to be useful AND IN CORRECT JSON FORMAT.
+- You should look up simple error in your code like division by zero, undefined variable, etc.
 '''
 
 CO_EVO_PROMPT_TEMPLATE = '''Dynamic Job Shop Scheduling Problem (DJSSP): 

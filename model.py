@@ -93,6 +93,8 @@ class CodeSegmentHDR(HDR):
             raise InvalidKwargsException(f"Invalid kwargs " + str(e))
         except NameError as e:
             raise InvalidKwargsException(f"Invalid kwargs " + str(e))
+        except ZeroDivisionError as e:
+            raise HDRException(str(e))
         except ArithmeticError as e:
             raise HDRException(str(e))
         except ValueError as e:
