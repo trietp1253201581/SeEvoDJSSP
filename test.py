@@ -1,9 +1,29 @@
 from se_evo import SelfEvoEngine
-from evaluate import SurrogateEvaluator, ChromaMetaVectorStore, VectorEmbedding, SentenceEmbedding
+from evaluate import MLPSurrogateModel, SurrogateEvaluator, ChromaMetaVectorStore, VectorEmbedding, SentenceEmbedding
 from llm import GoogleAIStudioLLM
 from problem import Problem, AVAIABLE_TERMINALS
 import random
 import prompt_template as pt
+
+
+# Set logging
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Định dạng chung
+formatter = logging.Formatter(
+    '[%(asctime)s] %(levelname)s in %(name)s (%(filename)s:%(lineno)d): %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+# Handler ghi ra console
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+
+# Thêm cả 2 handler vào logger
+#logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 # Create problem 
 random.seed(42)
@@ -24,7 +44,7 @@ vector_store = ChromaMetaVectorStore(
     persist_directory='./chroma_db',
     collection_name='se_evo_collection'
 )
-
+vector_store.clear()
 hdrs = [ind.chromosome for ind in se_engine.P.inds]
 
 llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600), 
@@ -34,12 +54,35 @@ llm_model = GoogleAIStudioLLM(model='gemini-2.0-flash', timeout=(60,600),
 vector_embedding = VectorEmbedding(input_dim=11, embedding_dim=50)
 hdr_embedding = SentenceEmbedding()
 
+surrogate_model = MLPSurrogateModel(input_dim=384 + 50, hidden_dim=128, dropout_rate=0.1)
 
 fitness_eval = SurrogateEvaluator(problem, vector_store, hdr_embedding, vector_embedding, 
+                                  surrogate_model,
                                   prompt_template=pt.SURROGATE_EVALUATION_PROMPT_TEMPLATE, 
-                                  llm_model=llm_model, batch_size=10, max_retries=3)
-#fitness_eval.is_exact_evaluation = True
-fitness_eval.is_exact_evaluation = False
-results = fitness_eval(hdrs[5:6])
+                                  llm_model=llm_model, batch_size=10, max_retries=3,
+                                  train_cycle=2, n_dropout=4, train_epoch=8, finetune_epoch=3,
+                                  ucb_lambda=0.3)
 
+all_results = []
+
+# Exact evaluation
+fitness_eval.is_exact_evaluation = True
+results = fitness_eval(hdrs[:10])
+all_results.extend(results)
+print(len(fitness_eval._temp_store))
+
+# Surrogate evaluation
+fitness_eval.is_exact_evaluation = False
+results = fitness_eval(hdrs[10:15])
+all_results.extend(results)
+print(len(fitness_eval._temp_store))
+
+fitness_eval.is_exact_evaluation = False
+results = fitness_eval(hdrs[15:20])
+all_results.extend(results)
+print(len(fitness_eval._temp_store))
+
+for hdr, score in all_results:
+    print(f':{score}')
+print(fitness_eval.output_scale_factor)
 llm_model.close()
