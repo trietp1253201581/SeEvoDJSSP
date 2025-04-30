@@ -78,11 +78,16 @@ all_results.extend(results)
 print(len(fitness_eval._temp_store))
 
 fitness_eval.is_exact_evaluation = False
-results = fitness_eval(hdrs[15:20])
+results = fitness_eval(hdrs[10:15])
 all_results.extend(results)
 print(len(fitness_eval._temp_store))
 
-for hdr, score in all_results:
-    print(f':{score}')
+fitness_eval.is_exact_evaluation = False
+results = fitness_eval(hdrs[10:15])
+all_results.extend(results)
+print(len(fitness_eval._temp_store))
+
+for i, (hdr, score) in enumerate(all_results):
+    print(f'{i}: {score}')
 print(fitness_eval.output_scale_factor)
 llm_model.close()

@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
 import ast
 import re
-
+import hashlib
 class HDR(ABC):
     @abstractmethod
     def execute(self, **kwargs) -> any:
         pass
     
     @abstractmethod
-    def __hash__(self) -> int:
+    def hash_code(self) -> str:
         pass
     
 class HDRException(Exception):
@@ -98,8 +98,8 @@ class CodeSegmentHDR(HDR):
         except ValueError as e:
             raise HDRException(str(e))
         
-    def __hash__(self):
-        return hash(self._code.strip())
+    def hash_code(self):
+        return hashlib.sha256(self._code.strip().encode('utf-8')).hexdigest()
         
         
     

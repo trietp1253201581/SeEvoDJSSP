@@ -433,6 +433,14 @@ class MetaVectorStore(ABC):
     def clear(self):
         pass
     
+    @abstractmethod
+    def is_exist(self, vector: List[float], hash_val: int|str, threshold: float=0.01):
+        pass
+    
+    @abstractmethod
+    def get_all(self, n: int=100):
+        pass
+    
 class ChromaMetaVectorStore(MetaVectorStore):
     def __init__(self, persist_directory: str,
                  collection_name: str):
@@ -476,6 +484,26 @@ class ChromaMetaVectorStore(MetaVectorStore):
 
     def clear(self):
         self.collection.delete(where={'type': 'hdr'})
+        
+    def is_exist(self, vector: List[float], hash_val: int|str, threshold: float=0.01):
+        result = self.get(vector, 1)
+        if result is None or 'distances' not in result:
+            return False
+        distances = result.get('distances')
+        metadatas = result.get('metadatas', [])
+
+        if not distances or not distances[0] or not metadatas or not metadatas[0]:
+            return False
+
+        for dist, meta in zip(distances[0], metadatas[0]):
+            if dist <= threshold or str(meta.get("hash")) == str(hash_val):
+                return True
+
+        return False
+    
+    def get_all(self, n: int=100):
+        results = self.collection.get(where={"type": "hdr"}, include=["documents", "metadatas"], n_results=n)
+        return results
     
 
 class SentenceEmbedding:
@@ -552,13 +580,21 @@ class SurrogateEvaluator(Evaluator):
         self.ucb_lambda = ucb_lambda
         self.train_cycle = train_cycle
         self.n_dropout = n_dropout
-        self._temp_store: List[Tuple[HDR, List[float], float, int, bool]] = []
+        self._temp_store: List[Tuple[HDR, List[float], float, str, bool]] = []
         self.call_cnt = 0
         self.is_exact_evaluation = False
         self.train_epoch = train_epoch
         self.finetune_epoch = finetune_epoch
         self.max_hdr_to_finetune = max_hdr_to_finetune
         self.output_scale_factor = 1.0
+        
+    def reload_from_vector_store(self):
+        results = self.vector_store.get_all(10)
+        for result in results:
+            self._temp_store.append((None, result['embedding'], result['metadata']['makespan'], result['metadata']['hash'], True))
+        self._logger.info(f'Reload {len(self._temp_store)} HDRs from vector store')
+        self._logger.info(f'Train surrogate model on {len(self._temp_store)} HDRs')
+        self.train_surrogate_model(False)
 
     def train_surrogate_model(self, is_finetune: bool=False):
         self._logger.info(f'Train surrogate model.')
@@ -574,6 +610,7 @@ class SurrogateEvaluator(Evaluator):
             self._logger.info(f'No exact evaluation data to train.')
             return
         
+        self.surrogate_model.train()
         # Huấn luyện mô hình
         optimizer = torch.optim.Adam(self.surrogate_model.parameters(), lr=0.001 if not is_finetune else 0.0001)
         loss_fn = nn.MSELoss()
@@ -595,6 +632,7 @@ class SurrogateEvaluator(Evaluator):
         
         self._logger.info(f'Train surrogate model done. {num_saved} HDRs saved.')
         self._temp_store = [(hdr, x, y, hash_hdr, is_exact) for hdr, x, y, hash_hdr, is_exact in self._temp_store if not is_exact]
+        self.surrogate_model.eval()
         
     def set_exact_evaluation(self, is_exact_evaluation: bool):
         self.is_exact_evaluation = is_exact_evaluation
@@ -695,7 +733,9 @@ class SurrogateEvaluator(Evaluator):
         for i in range(0, len(hdrs), self.batch_size):
             self._logger.info(f"Processing HDR batch {i // self.batch_size + 1} of {((len(hdrs) - 1) // self.batch_size + 1)}")
             batch = hdrs[i:i + self.batch_size]
+            print(batch[0].hash_code())
             plaineds = self._retry(self._plain_batch, self.max_retries, batch)
+            print(plaineds[0][0].hash_code())
             for hdr, plain_hdr in plaineds:
                 hdr_vector = self._plain_hdr_info(plain_hdr)
                 self._logger.info(f'Plain a HDR to a vector with dim {len(hdr_vector)}')
@@ -706,7 +746,7 @@ class SurrogateEvaluator(Evaluator):
                     if self.output_scale_factor == 1.0:
                         self.output_scale_factor = abs(y)
                     y = y / self.output_scale_factor
-                    self._temp_store.append((hdr, x, y, hash(hdr), True))
+                    self._temp_store.append((hdr, x, y, hdr.hash_code(), True))
                 else:
                     preds = torch.stack([
                         self.surrogate_model(torch.tensor(x, dtype=torch.float32).unsqueeze(0).float())
@@ -716,7 +756,7 @@ class SurrogateEvaluator(Evaluator):
                     std = preds.std().item()
                     print(f'{mean} {std}')
                     y = mean + self.ucb_lambda * std
-                    self._temp_store.append((hdr, x, y, hash(hdr), False))
+                    self._temp_store.append((hdr, x, y, hdr.hash_code(), False))
                 
                 all_results.append((hdr, y * self.output_scale_factor))
                 
@@ -728,12 +768,15 @@ class SurrogateEvaluator(Evaluator):
             self._logger.info(f'Calculate exact for {num_finetune} HDRs')
             for i in range(num_finetune):
                 hdr, hdr_vector, score, hash_hdr, _ = self._temp_store[i]
+                if self.vector_store.is_exist(hdr_vector, hash_hdr, 0.01):
+                    self._logger.info(f'HDR {hash_hdr} already exists in vector store')
+                    continue
                 y = -self.simulator.simulate(hdr)
                 if self.output_scale_factor == 1.0:
                     self.output_scale_factor = y
                 y = y / self.output_scale_factor
                 self._temp_store[i] = (hdr, hdr_vector, y, hash_hdr, True)
             self.train_surrogate_model(True)
-        
+
         return all_results
 
