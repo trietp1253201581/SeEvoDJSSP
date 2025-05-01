@@ -554,11 +554,14 @@ class VectorEmbedding:
         self.model.weight.data.normal_(0, 0.3)
         self.model.bias.data.zero_()
         self.model.eval()
+    
+    def set_norm_vector(self, norm_vector: List[float]):
+        self.norm_vector = norm_vector
         
     def embed(self, vector: List[float]) -> List[float]:
         # Chuẩn hóa
         vector_np = np.array(vector).reshape(1, -1)
-        vector_np = (vector_np - np.mean(vector_np)) / (np.std(vector_np) + 1e-8)
+        vector_np = vector_np / self.norm_vector
         
         # Đảm bảo kích thước đúng input_dim
         if vector_np.shape[1] < self.input_dim:
@@ -714,6 +717,8 @@ class MLPSurrogateEvaluator(Evaluator):
         problem_vector.append(quantile_50_arrv_time)
         problem_vector.append(quantile_75_arrv_time)
         
+        norm_vector = [500, 40, 30, 1000, 5, 500, 1000, 5000, 50, 100, 200]
+        self.problem_embedding.set_norm_vector(norm_vector)
         self._problem_vector = self.problem_embedding.embed(problem_vector)
     
     def _plain_hdr_info(self, plain_hdr: str) -> List[float]:
